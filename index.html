@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Prirucka k nastroju, ktory zisti, kto stoji za developerskym projektom, ktory stavebny urad ho povoluje a do ktorej skupiny patri ucelova firma.">
+<meta name="color-scheme" content="light dark">
+<title>Kto stojí za projektom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground:#ECEEF0; --surface:#FFFFFF; --sunken:#E1E5E8;
+    --ink:#0F151A; --ink-soft:#39454F; --muted:#5F6E79;
+    --line:#CBD3D9; --line-soft:#DEE4E8;
+    --acc:#B01B52; --acc-bg:#FBE9EF;
+    --ok:#0B6B5E; --ok-bg:#E2F0ED;
+    --warn:#9A5B08; --warn-bg:#FAEEDD;
+    --shadow:0 1px 2px rgba(15,21,26,.05), 0 10px 28px rgba(15,21,26,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#0B0F13; --surface:#141A20; --sunken:#1C242B;
+      --ink:#E8EEF3; --ink-soft:#C0CBD4; --muted:#8A98A3;
+      --line:#2B353D; --line-soft:#222B32;
+      --acc:#FF6F9C; --acc-bg:#2A141C;
+      --ok:#43C6AF; --ok-bg:#102420;
+      --warn:#E5A648; --warn-bg:#2A2113;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.32);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#0B0F13; --surface:#141A20; --sunken:#1C242B;
+    --ink:#E8EEF3; --ink-soft:#C0CBD4; --muted:#8A98A3;
+    --line:#2B353D; --line-soft:#222B32;
+    --acc:#FF6F9C; --acc-bg:#2A141C;
+    --ok:#43C6AF; --ok-bg:#102420;
+    --warn:#E5A648; --warn-bg:#2A2113;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.32);
+  }
+
+  * { box-sizing:border-box; }
+  body { background:var(--ground); color:var(--ink); margin:0;
+    font-family:"Public Sans", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+    font-size:17px; line-height:1.62; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:49rem; margin:0 auto; padding:3.5rem 1.3rem 6rem; display:flex; flex-direction:column; gap:3rem; }
+  h1,h2,h3 { font-family:"Newsreader", Georgia, serif; font-weight:600; }
+  .mono, code, pre { font-family:"IBM Plex Mono", ui-monospace, monospace; }
+
+  header { display:flex; flex-direction:column; gap:.85rem; }
+  .eyebrow { font-family:"IBM Plex Mono",monospace; font-size:.71rem; letter-spacing:.14em; text-transform:uppercase; color:var(--acc); margin:0; }
+  h1 { font-size:clamp(2.6rem,8vw,4rem); line-height:1; letter-spacing:-.03em; margin:0; }
+  .podnazov { font-family:"Newsreader",serif; font-size:1.3rem; color:var(--muted); margin:0; font-style:italic; }
+  .lede { font-size:1.12rem; color:var(--ink-soft); margin:.4rem 0 0; max-width:38rem; }
+
+  nav.obsah { background:var(--surface); border:1px solid var(--line); padding:1.1rem 1.3rem; }
+  nav.obsah ol { margin:0; padding-left:1.2rem; columns:2; column-gap:2rem; font-size:.93rem; }
+  nav.obsah li { margin:.18rem 0; break-inside:avoid; }
+  nav.obsah a { color:var(--ink-soft); text-decoration:none; border-bottom:1px solid var(--line); }
+  nav.obsah a:hover { color:var(--acc); border-color:var(--acc); }
+
+  section { display:flex; flex-direction:column; gap:1.05rem; scroll-margin-top:1rem; }
+  section > h2 { font-size:1.7rem; letter-spacing:-.015em; margin:0; line-height:1.18; text-wrap:balance; }
+  section > h2 .n { color:var(--acc); font-family:"IBM Plex Mono",monospace; font-size:.95rem; font-weight:500; vertical-align:.45em; margin-right:.5rem; }
+  h3 { font-size:1.12rem; margin:.55rem 0 -.45rem; }
+  p { margin:0; max-width:39rem; }
+  strong { font-weight:600; color:var(--ink); }
+  code { font-size:.86em; background:var(--sunken); padding:.08em .35em; border-radius:2px; }
+  pre { background:var(--surface); border:1px solid var(--line); padding:1rem 1.15rem; overflow-x:auto; font-size:.83rem; line-height:1.75; margin:0; }
+  ul { margin:0; padding-left:1.15rem; display:flex; flex-direction:column; gap:.4rem; max-width:39rem; }
+  li::marker { color:var(--muted); }
+  a { color:var(--acc); text-underline-offset:2px; }
+
+  .tab { overflow-x:auto; border:1px solid var(--line); background:var(--surface); }
+  table { border-collapse:collapse; width:100%; font-size:.9rem; min-width:30rem; }
+  th,td { text-align:left; padding:.5rem .7rem; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+  th { font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:.66rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:var(--sunken); white-space:nowrap; }
+  tbody tr:last-child td { border-bottom:none; }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .pill { font-family:"IBM Plex Mono",monospace; font-size:.66rem; padding:.14rem .42rem; border-radius:2px; white-space:nowrap; }
+  .p-ok { background:var(--ok-bg); color:var(--ok); }
+  .p-mid { background:var(--warn-bg); color:var(--warn); }
+  .p-no { background:var(--sunken); color:var(--muted); }
+
+  .zist { background:var(--acc-bg); border-left:3px solid var(--acc); padding:1.05rem 1.2rem; display:flex; flex-direction:column; gap:.35rem; }
+  .zist b { font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.11em; text-transform:uppercase; color:var(--acc); font-weight:500; }
+  .zist p { color:var(--ink-soft); }
+  .hot { background:var(--ok-bg); border-left:3px solid var(--ok); padding:1.05rem 1.2rem; }
+  .hot b { font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.11em; text-transform:uppercase; color:var(--ok); font-weight:500; display:block; margin-bottom:.3rem; }
+  .hot p, .hot ul { color:var(--ink-soft); }
+
+  .mena { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:.75rem; }
+  .m { background:var(--surface); border:1px solid var(--line); padding:1rem 1.1rem; display:flex; flex-direction:column; gap:.25rem; }
+  .m.vyber { border-color:var(--acc); background:var(--acc-bg); }
+  .m b { font-family:"Newsreader",serif; font-size:1.35rem; font-weight:600; }
+  .m.vyber b { color:var(--acc); }
+  .m span { font-size:.88rem; color:var(--muted); }
+
+  figure { margin:.3rem 0; display:flex; flex-direction:column; gap:.55rem; }
+  figure svg { width:100%; height:auto; display:block; color:var(--ink-soft); }
+  figcaption { font-size:.85rem; color:var(--muted); max-width:39rem; }
+  svg .a-s { stroke:var(--acc); } svg .a-f { fill:var(--acc); }
+
+  footer { border-top:1px solid var(--line); padding-top:1.5rem; color:var(--muted); font-size:.88rem; display:flex; flex-direction:column; gap:.5rem; }
+
+  @media (max-width:640px) {
+    body { font-size:16px; }
+    .wrap { padding:2.4rem 1rem 4rem; gap:2.4rem; }
+    nav.obsah ol { columns:1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Nástroj · MIB (Metropolitný inštitút Bratislavy)</p>
+  <h1>Kto stojí za projektom</h1>
+  <p class="podnazov">príručka k nástroju</p>
+  <p class="lede">Zadáš názov projektu a za pol minúty vieš, kto ho stavia, ktorý stavebný úrad ho povoľuje, do ktorej developerskej skupiny patrí a máš stiahnuté výkresy zo spisu.</p>
+</header>
+
+<nav class="obsah">
+  <ol>
+    <li><a href="#spustenie">Ako to spustiť</a></li>
+    <li><a href="#princip">Ako to funguje</a></li>
+    <li><a href="#zdroje">Zdroje dát</a></li>
+    <li><a href="#skupiny">Rozpoznávanie skupín</a></li>
+    <li><a href="#nazvy">Komerčné názvy</a></li>
+    <li><a href="#podlafirmy">Hľadanie podľa firmy</a></li>
+    <li><a href="#podklady">Podklady zo spisu</a></li>
+    <li><a href="#nevie">Čo nevie</a></li>
+    <li><a href="#cisla">Čísla zo zberu</a></li>
+    <li><a href="#subory">Súbory v projekte</a></li>
+  </ol>
+</nav>
+
+<!-- ============ spustenie ============ -->
+<section id="spustenie">
+  <h2><span class="n">01</span>Ako to spustiť</h2>
+  <p><strong>Pre kolegov:</strong> dvojklik na <code>Kto-stoji-za-projektom.exe</code> a otvorí sa stránka v prehliadači. Nič iné — <strong>žiadne čierne okno, žiadna inštalácia</strong>, Python netreba. Program sa ukončí tlačidlom <em>Ukončiť program</em> naspodku stránky.</p>
+  <p>Keď na ikonu dvojklikneš druhýkrát, program sa nespustí nanovo — len otvorí ďalšie okno prehliadača na tom, čo už beží.</p>
+  <p><strong>Z príkazového riadku:</strong></p>
+  <pre>python web.py                                  # lokálna appka
+python register_dossier.py --projekt "River Park"
+python register_dossier.py --ico 52455475
+python register_dossier.py --napln-skupiny     # raz na začiatku</pre>
+  <p>Beží to lokálne zámerne. Verejná stránka by posielala všetky dopyty z jednej adresy a obchodný register by nás odpojil za hodinu. Takto si každý číta verejný register zo svojho počítača.</p>
+</section>
+
+<!-- ============ princip ============ -->
+<section id="princip">
+  <h2><span class="n">02</span>Ako to funguje</h2>
+  <p>Projekt sa predáva pod marketingovým názvom. Povolenia sú vedené na účelovú firmu založenú kvôli jednej stavbe. Tú vlastní firma v zahraničí. Medzi tým, čo hľadá človek, a tým, čo je v registri, <strong>neexistuje žiadne spoločné pole</strong>.</p>
+
+  <figure>
+    <svg viewBox="0 0 740 250" role="img" aria-label="Schéma: od komerčného názvu vedú dve obchádzky — ochranná známka a zhoda sídla — k účelovej firme a skupine, pretože priama cesta cez vlastníctvo je prerušená zahraničnou firmou.">
+      <defs>
+        <marker id="sp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <polygon points="0,1 10,5 0,9" fill="currentColor"></polygon>
+        </marker>
+      </defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor">
+        <text x="0" y="16" font-size="9.5" opacity=".55" letter-spacing="1.4">TROJICA KĽÚČOV</text>
+        <line x1="0" y1="28" x2="740" y2="28" stroke="currentColor" stroke-width="1" opacity=".2"></line>
+
+        <rect x="0" y="56" width="150" height="50" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
+        <text x="75" y="77" text-anchor="middle" font-size="12.5">River Park</text>
+        <text x="75" y="93" text-anchor="middle" opacity=".6">komerčný názov</text>
+
+        <rect x="212" y="56" width="150" height="50" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
+        <text x="287" y="77" text-anchor="middle" font-size="12.5">JTRE a.s.</text>
+        <text x="287" y="93" text-anchor="middle" opacity=".6">majiteľ známky</text>
+
+        <rect x="424" y="56" width="150" height="50" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
+        <text x="499" y="77" text-anchor="middle" font-size="12.5">WOAL, s.r.o.</text>
+        <text x="499" y="93" text-anchor="middle" opacity=".6">na nej sú povolenia</text>
+
+        <rect class="a-s" x="590" y="56" width="150" height="50" fill="none" stroke-width="1.8"></rect>
+        <text class="a-f" x="665" y="77" text-anchor="middle" font-size="12.5" font-weight="500">J&amp;T Real Estate</text>
+        <text class="a-f" x="665" y="93" text-anchor="middle" opacity=".8">skupina</text>
+
+        <line class="a-s" x1="150" y1="81" x2="210" y2="81" stroke-width="1.5" marker-end="url(#sp)"></line>
+        <text class="a-f" x="180" y="47" text-anchor="middle" font-size="10">známka</text>
+
+        <line class="a-s" x1="362" y1="81" x2="422" y2="81" stroke-width="1.5" marker-end="url(#sp)"></line>
+        <text class="a-f" x="392" y="47" text-anchor="middle" font-size="10">IČO</text>
+
+        <line class="a-s" x1="574" y1="81" x2="588" y2="81" stroke-width="1.5" marker-end="url(#sp)"></line>
+
+        <!-- adresa -->
+        <path class="a-s" d="M 499,108 L 499,150 L 665,150 L 665,110" fill="none" stroke-width="1.5" marker-end="url(#sp)"></path>
+        <text class="a-f" x="582" y="166" text-anchor="middle" font-size="10">zhoda sídla — Dvořákovo nábrežie 10</text>
+
+        <!-- prerusena -->
+        <text x="499" y="200" text-anchor="middle" font-size="10.5" opacity=".62">priama cesta cez vlastníctvo</text>
+        <text x="499" y="215" text-anchor="middle" font-size="10.5" opacity=".62">končí na cyperskej firme bez IČO</text>
+        <line x1="440" y1="192" x2="558" y2="192" stroke="currentColor" stroke-width="1" opacity=".3" stroke-dasharray="4 4"></line>
+      </g>
+    </svg>
+    <figcaption>Tri kľúče, ktoré držia celý nástroj: <strong>známka</strong> spája marketing s úradom, <strong>IČO</strong> je jediný presný identifikátor firmy, <strong>sídlo</strong> prezradí skupinu aj vtedy, keď je vlastníctvo zámerne prerušené v zahraničí.</figcaption>
+  </figure>
+
+  <p>Postup je vždy rovnaký: nájdi zámer v registri EIA → vezmi IČO navrhovateľa → vystúp po vlastníckej reťazi cez register právnických osôb → urči skupinu podľa sídla, názvov a osôb → spáruj komerčný názov cez ochrannú známku → vytiahni spis.</p>
+</section>
+
+<!-- ============ zdroje ============ -->
+<section id="zdroje">
+  <h2><span class="n">03</span>Zdroje dát</h2>
+  <p>Všetko sú verejné registre. Žiadne licencie, žiadny dodávateľ, žiadne obchádzanie prihlásenia — číta sa presne to, čo vidí ktokoľvek v prehliadači.</p>
+  <div class="tab">
+    <table>
+      <thead><tr><th>zdroj</th><th>čo dáva</th><th>prístup</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Enviroportál</strong><br><span class="mono" style="font-size:.8em">Ministerstvo životného prostredia SR</span></td>
+            <td>register EIA (posudzovanie vplyvov na životné prostredie): navrhovateľ s IČO, povoľujúci stavebný úrad, stav konania, účel, celý spis</td>
+            <td><span class="pill p-ok">JSON API</span></td></tr>
+        <tr><td><strong>RPO</strong><br><span class="mono" style="font-size:.8em">Register právnických osôb, Štatistický úrad SR</span></td>
+            <td>história názvov aj sídiel, konatelia, spoločníci s IČO — motor vlastníckej reťaze</td>
+            <td><span class="pill p-ok">JSON API</span></td></tr>
+        <tr><td><strong>ORSR</strong><br><span class="mono" style="font-size:.8em">Obchodný register SR</span></td>
+            <td>výpis a sesterské firmy cez mená konateľov</td>
+            <td><span class="pill p-mid">HTML</span></td></tr>
+        <tr><td><strong>TMview</strong><br><span class="mono" style="font-size:.8em">EUIPO — Úrad EÚ pre duševné vlastníctvo</span></td>
+            <td>majiteľ ochrannej známky, vrátane slovenského registra ÚPV SR</td>
+            <td><span class="pill p-ok">JSON API</span></td></tr>
+        <tr><td><strong>Stránky projektov</strong></td>
+            <td>IČO z pätičky alebo kontaktov</td>
+            <td><span class="pill p-mid">HTML</span></td></tr>
+        <tr><td><strong>Yimba</strong></td>
+            <td>developer pri projektoch bez EIA — len jednotlivý dopyt</td>
+            <td><span class="pill p-mid">HTML</span></td></tr>
+        <tr><td><strong>Kataster</strong><br><span class="mono" style="font-size:.8em">mestský geoportál</span></td>
+            <td>čísla parciel pod adresou (register C a E) — <em>bez vlastníkov</em></td>
+            <td><span class="pill p-ok">zapojené</span></td></tr>
+        <tr><td><strong>CUET</strong><br><span class="mono" style="font-size:.8em">Centrálna úradná elektronická tabuľa</span></td>
+            <td>stavebné povolenia a oznámenia ako verejná vyhláška</td>
+            <td><span class="pill p-ok">zapojené</span></td></tr>
+        <tr><td><strong>Miestny index zámerov</strong><br><span class="mono" style="font-size:.8em">z vlastného zberu</span></td>
+            <td>2 303 bratislavských zámerov s IČO — hľadanie podľa firmy</td>
+            <td><span class="pill p-ok">zapojené</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="zist">
+    <b>Slušnosť k serverom</b>
+    <p>Pauza medzi dopytmi (3,5 s na obchodný register, ktorý pri rýchlejšom tempe reálne odpája), jedno znovupoužité spojenie, čakanie pri výpadku a lokálna cache — druhé spustenie na server vôbec nesiahne. Keď má obchodný register zapnutú ochranu proti robotom, nástroj to <strong>povie a odmietne výsledok</strong>, namiesto aby ju obchádzal.</p>
+  </div>
+</section>
+
+<!-- ============ skupiny ============ -->
+<section id="skupiny">
+  <h2><span class="n">04</span>Rozpoznávanie skupín</h2>
+  <p>Vlastnícka reťaz sa dá prerušiť a developeri to robia — firma za River Parkom je vlastnená spoločnosťou na Cypre, ktorá u nás nemá ani IČO. <strong>Sídlo prerušiť nejde</strong>, lebo tam chodí pošta.</p>
+  <div class="tab">
+    <table>
+      <thead><tr><th>signál</th><th class="num">váha</th><th>poznámka</th></tr></thead>
+      <tbody>
+        <tr><td>spoločník alebo článok reťaze je známa firma skupiny</td><td class="num">0,55</td><td>najtvrdší</td></tr>
+        <tr><td>sídlo zhodné so sídlom skupiny</td><td class="num">0,42</td><td>0,22 pri veľkej kancelárskej budove</td></tr>
+        <tr><td>názov nesie značku skupiny</td><td class="num">0,35</td><td>dá sa zvoliť</td></tr>
+        <tr><td>bývalý názov nesie značku</td><td class="num">0,30</td><td>účelové firmy sa premenúvajú</td></tr>
+        <tr><td>zdieľa štatutárov so známou firmou</td><td class="num">0,30</td><td>0,18 pri jednej osobe</td></tr>
+        <tr><td>rovnaké sídlo ako už videná firma</td><td class="num">0,15</td><td>rastie používaním</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>Jeden signál nikdy nestačí</strong> — istota sa zastropuje na 0,55, kým sa neozvú aspoň dva. Osoby sa porovnávajú menom <em>aj obcou bydliska</em>, inak by sa spájali cudzí menovci.</p>
+
+  <h3>Index adries zo zberu</h3>
+  <p>Zo všetkých bratislavských zámerov je postavený index <strong>147 adries, na ktorých sídlia dve a viac firiem</strong>. Nástroj pri každej firme vypíše, kto ďalší sídli na tej istej adrese — a funguje to aj pre skupiny, ktoré v ručnej tabuľke nie sú.</p>
+  <pre>WOAL, s.r.o. → J&amp;T Real Estate (istota 0,78)
+
+Na tej istej adrese sídlia ďalší navrhovatelia (13):
+  Bratislavské podhradie · DNV 3 · FUXTON · Kalos · Lomnická
+  Menolli · Panorama byty · Popper Capital · Starland Holding
+  Wayden · Wendel · Westend Crossing</pre>
+  <p>Ani jeden z tých názvov by človek s J&amp;T nespojil.</p>
+</section>
+
+<!-- ============ nazvy ============ -->
+<section id="nazvy">
+  <h2><span class="n">05</span>Komerčné názvy</h2>
+  <p>Komerčný názov sa registruje ako ochranná známka, lebo sa naň predáva — a majiteľ známky je verejný údaj. Filtruje sa dvakrát: znenie sa musí presne zhodovať a známka musí byť v <strong>realitnej triede</strong> (35, 36, 37, 42, 43). Bez toho vyskočí pri „Zelke" výrobca cestovín.</p>
+  <div class="tab">
+    <table>
+      <tbody>
+        <tr><td>River Park</td><td>JTRE a.s.</td><td>Klingerka</td><td>JTRE a.s.</td></tr>
+        <tr><td>Eurovea</td><td>EUROVEA, a. s.</td><td>Slnečnice</td><td>CRESCO GROUP, a. s.</td></tr>
+        <tr><td>Sky Park</td><td>SKY PARK RESIDENCES</td><td>Čerešne</td><td>ITB Development a.s.</td></tr>
+        <tr><td>Nesto</td><td>Lucron Group, a. s.</td><td>Nové Lido</td><td>NOVÉ LIDO s. r. o.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Osem z deviatich testovaných projektov správne, deviaty (Zelka) správne priznal, že známku nemá. Keď známka chýba, skúsi sa <strong>stránka projektu</strong> — adresa sa uhádne zo slugu názvu a IČO sa hľadá na titulke aj v kontaktoch.</p>
+  <div class="zist">
+    <b>Krížová kontrola</b>
+    <p>Register EIA hľadá podľa textu v názve, takže „River Park" trafí <em>úpravu Dunajskej promenády pri River Parku</em> — iné konanie, iný navrhovateľ. Ak majiteľ známky nesúvisí s navrhovateľom nájdeného zámeru, nástroj to <strong>napíše rovno do výstupu</strong>, namiesto aby ťa nechal vyvodiť nesprávny záver.</p>
+  </div>
+</section>
+
+<!-- ============ podla firmy ============ -->
+<section id="podlafirmy">
+  <h2><span class="n">06</span>Hľadanie podľa firmy</h2>
+  <p>Enviroportál vie filtrovať <strong>iba podľa názvu zámeru</strong>. Podľa navrhovateľa ani podľa IČO sa hľadať nedá — jeho rozhranie priznáva len tri filtre a firma medzi nimi nie je. Má to dva nepríjemné dôsledky:</p>
+  <ul>
+    <li>Napíšeš <strong>River Park</strong> — zámer sa volá <em>„Polyfunkčný komplex CPR, blok CPR-B“</em> a tie slová v ňom nie sú. Nenájde sa.</li>
+    <li>Napíšeš <strong>WOAL</strong> — WOAL je navrhovateľ, nie názov stavby. Tiež sa nenájde.</li>
+  </ul>
+  <p>Pritom oba zámery WOAL-u v registri sú. Preto si nosíme <strong>vlastný index 2 303 bratislavských zámerov</strong> s IČO navrhovateľa a hľadáme v ňom lokálne — okamžite a bez jediného dopytu na server.</p>
+  <div class="zist">
+    <b>Čo to spravilo</b>
+    <p>Zadanie IČO firmy za River Parkom teraz vypíše <strong>obidva jej zámery</strong> aj <strong>22 zámerov ostatných firiem tej istej skupiny</strong> — Zuckermandel, Panorama City I aj II, Klingerka, Westend Crossing, Harmincova, Bajkalská, Celomestské centrum Petržalka. Celé portfólio jedným dopytom.</p>
+    <p>A funguje to aj opačne: keď zadáš komerčný názov, nástroj cez majiteľa značky a jeho adresu ponúkne zámery, ktoré k nej pravdepodobne patria — tam sa CPR objaví tiež.</p>
+  </div>
+  <p>Jedna pasca, na ktorú sa prišlo až pri testovaní: v zámere je adresa <em>spred rokov</em>. WOAL podával ešte z Hodžovho námestia a na Dvořákovo sa presťahoval až v roku 2022. Preto sa okrem dnešnej adresy prehľadávajú aj firmy, ktoré nástroj do skupiny zaradil skôr.</p>
+</section>
+
+<!-- ============ podklady ============ -->
+<section id="podklady">
+  <h2><span class="n">07</span>Podklady zo spisu</h2>
+  <p>Každý zámer má v spise priemerne <strong>9,3 dokumentu</strong> a štvrtina z nich sú grafické — situácie, výkresy, širšie vzťahy, koordinačné výkresy. To sú jediné podklady, ktoré sa dajú priamo použiť na modelovanie.</p>
+  <p>V appke sú nad zoznamom dve tlačidlá: <strong>Stiahnuť plány</strong> (len grafické) a <strong>Stiahnuť celý spis</strong>. Sťahuje sa priamo z enviroportálu do priečinka <code>podklady/&lt;názov projektu&gt;/</code> vedľa programu, s pauzou medzi súbormi. Po dokončení sa objaví odkaz na otvorenie priečinka.</p>
+  <p>Pri Vydrici je to napríklad <em>Širšie vzťahy</em> (35,8 MB) a <em>Prílohy</em> (65,6 MB) — veci, ktoré by človek ručne hľadal dvadsať minút.</p>
+</section>
+
+<!-- ============ nevie ============ -->
+<section id="nevie">
+  <h2><span class="n">08</span>Čo nevie</h2>
+  <ul>
+    <li><strong>Menšie projekty posudzovaním EIA neprejdú</strong> — sú pod zákonnou prahovou hodnotou, takže o nich register nemá záznam. Sú to práve tie, o ktorých sa nepíše. Vtedy zostáva známka, web projektu a kataster.</li>
+    <li><strong>Stavebné povolenie samotné nikde centrálne nie je.</strong> Nástroj povie, ktorý úrad ho vedie; spis treba vypýtať. Ani nový štátny portál výstavby verejný register nemá.</li>
+    <li><strong>Konečného vlastníka zahraničnej firmy nezistí.</strong> Na to je RPVS (Register partnerov verejného sektora).</li>
+    <li><strong>Vlastníka pozemku nezistí.</strong> Mestská katastrálna vrstva má len tvary a čísla parciel, vlastnícke polia nie. Služby ÚGKK SR (Úrad geodézie, kartografie a katastra) sa priamo čítať nedajú.</li>
+    <li><strong>Výsledok je istota, nie dôkaz.</strong> Každý záver má číslo a zoznam dôvodov. Nástroj nikdy nerozhoduje sám.</li>
+  </ul>
+</section>
+
+<!-- ============ cisla ============ -->
+<section id="cisla">
+  <h2><span class="n">09</span>Čísla zo zberu</h2>
+  <p>4. septembra 2026 bol stiahnutý celý register a bratislavské zámery rozobrané do detailu.</p>
+  <div class="tab">
+    <table>
+      <tbody>
+        <tr><td>zámerov v celom registri</td><td class="num">18 673</td><td>zber trval 10 minút</td></tr>
+        <tr><td>bratislavských, do detailu</td><td class="num">2 303</td><td>ďalšia pol hodina</td></tr>
+        <tr><td>dokumentov v spisoch</td><td class="num">21 395</td><td>9,3 na zámer</td></tr>
+        <tr><td>z toho výkresov a situácií</td><td class="num">5 634</td><td>26 %</td></tr>
+        <tr><td>s IČO navrhovateľa</td><td class="num">97 %</td><td>napojenie na obchodný register</td></tr>
+        <tr><td>s čitateľnou adresou sídla</td><td class="num">73 %</td><td>základ pre zhluky</td></tr>
+        <tr><td>ulica sa dá vytiahnuť z textu</td><td class="num">12 %</td><td>preto mapa potrebuje parcely</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Podrobný rozbor vrátane rebríčka navrhovateľov je v samostatnom dokumente <a href="https://claude.ai/code/artifact/e06598e8-99b3-4d4d-88cc-25cc06fa0f0d">Anatómia bratislavskej výstavby</a>.</p>
+</section>
+
+<!-- ============ subory ============ -->
+<section id="subory">
+  <h2><span class="n">10</span>Súbory v projekte</h2>
+  <div class="tab">
+    <table>
+      <thead><tr><th>súbor</th><th>čo robí</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">web.py</td><td>lokálna appka — karty, podklady, sťahovanie</td></tr>
+        <tr><td class="mono">register_dossier.py</td><td>jadro: EIA, reťaz, sesterské firmy, výstup</td></tr>
+        <tr><td class="mono">skupiny.py</td><td>rozpoznávanie developerskej skupiny, tabuľka skupín</td></tr>
+        <tr><td class="mono">nazvy.py</td><td>ochranné známky, weby projektov, krížová kontrola</td></tr>
+        <tr><td class="mono">kataster.py</td><td>ulica z textu → adresný bod → parcela</td></tr>
+        <tr><td class="mono">tabula.py</td><td>CUET — verejné vyhlášky, teda skutočné povolenia</td></tr>
+        <tr><td class="mono">zamery.py</td><td>hľadanie zámerov podľa firmy, nie podľa názvu</td></tr>
+        <tr><td class="mono">zamery_ba.json</td><td>2 303 bratislavských zámerov s IČO navrhovateľa</td></tr>
+        <tr><td class="mono">adresy_eia.json</td><td>index 147 adries so zhlukmi firiem</td></tr>
+        <tr><td class="mono">skupiny_index.json</td><td>firmy, ktoré nástroj videl — rastie používaním</td></tr>
+        <tr><td class="mono">podklady/</td><td>stiahnuté výkresy, po projektoch</td></tr>
+        <tr><td class="mono">.cache/</td><td>odpovede registrov; zmazať = natiahnuť nanovo</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="hot">
+    <b>Prebalenie pre kolegov</b>
+    <p>Po zmene kódu:</p>
+    <pre style="background:transparent;border:0;padding:.4rem 0">python -m PyInstaller --onefile --clean --noconfirm --noconsole ^
+    --icon=ikona.ico ^
+    --hidden-import skupiny --hidden-import nazvy ^
+    --hidden-import kataster --hidden-import tabula --hidden-import zamery ^
+    --add-data "adresy_eia.json;." --add-data "zamery_ba.json;." ^
+    --name "Kto-stoji-za-projektom" web.py</pre>
+    <p><code>--noconsole</code> je to, čo odstráni čierne okno. Kvôli nemu ale program nesmie nič vypisovať na obrazovku — výpisy sú preto ošetrené, inak by prvý riadok zhodil celý beh.</p>
+    <p>Súbor nie je digitálne podpísaný, takže Windows pri prvom spustení ukáže modré okno — treba kliknúť <em>Viac informácií → Spustiť aj tak</em>. Dobré o tom dopredu povedať, inak to ľudí vystraší.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Súvisiace dokumenty: <a href="https://claude.ai/code/artifact/d828ddf3-53d9-4ff4-9af7-7691643243c4">Kto stojí za projektom</a> — prehľad pre vedenie · <a href="https://claude.ai/code/artifact/5b753f2a-a56c-49e0-acb6-8431c46ae4a5">Kto stavia Bratislavu</a> — rešerš k mape rozvoja · <a href="https://claude.ai/code/artifact/e06598e8-99b3-4d4d-88cc-25cc06fa0f0d">Anatómia bratislavskej výstavby</a> — analýza zberu.</p>
+  <p>Všetky údaje pochádzajú z verejných registrov a sú platné k dátumu zberu. Katastrálne dáta z licencovaných zdrojov zostávajú interné.</p>
+</footer>
+
+</div>
+</body>
+</html>
