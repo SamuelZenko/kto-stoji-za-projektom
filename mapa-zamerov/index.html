@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Mapa developerských zámerov v Bratislave z registra posudzovania vplyvov na životné prostredie.">
+<title>Zámery v Bratislave</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#ECEEF0; --card:#FFFFFF; --sunk:#E1E5E8;
+  --ink:#0F151A; --ink2:#39454F; --mu:#5F6E79;
+  --ln:#CBD3D9; --ln2:#B4BEC6;
+  --acc:#B01B52; --acc-bg:#FBE9EF;
+  --ok:#0B6B5E; --zem:#F7F8F9; --zem2:#DCE2E6;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0B0F13; --card:#141A20; --sunk:#1C242B;
+    --ink:#E8EEF3; --ink2:#C0CBD4; --mu:#8A98A3;
+    --ln:#2B353D; --ln2:#3A464F;
+    --acc:#FF6F9C; --acc-bg:#2A141C; --ok:#43C6AF;
+    --zem:#121820; --zem2:#232C34;}
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg)}
+body{font-family:"Public Sans",ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif;
+  color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;height:100vh;overflow:hidden}
+a{color:var(--acc)}
+h1{font-family:"Newsreader",Georgia,serif;font-size:20px;font-weight:600;margin:0;letter-spacing:-.02em}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+
+header{display:flex;align-items:center;gap:16px;padding:12px 18px;
+  border-bottom:1px solid var(--ln);background:var(--card);flex-wrap:wrap}
+header .pod{color:var(--mu);font-size:12.5px}
+header .odkaz{margin-left:auto;font-size:12.5px}
+
+.telo{flex:1;display:flex;min-height:0}
+.filtre{width:270px;flex:none;border-right:1px solid var(--ln);background:var(--card);
+  padding:14px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.filtre h2{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);
+  margin:0 0 6px;font-family:"IBM Plex Mono",monospace;font-weight:500}
+input[type=search],select{width:100%;background:var(--bg);border:1px solid var(--ln);
+  border-radius:3px;color:var(--ink);padding:8px 10px;font-size:14px;font-family:inherit}
+input[type=search]:focus,select:focus{outline:none;border-color:var(--acc)}
+.pocty{font-size:12.5px;color:var(--mu);font-family:"IBM Plex Mono",monospace;line-height:1.7}
+.pocty b{color:var(--ink)}
+.legenda{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--ink2)}
+.legenda div{display:flex;align-items:center;gap:8px}
+.tecka{width:11px;height:11px;border-radius:50%;flex:none}
+.tecka.duta{background:transparent;border:1.5px solid var(--mu)}
+
+.mapa{flex:1;position:relative;background:var(--zem);min-width:0}
+svg{width:100%;height:100%;display:block;cursor:grab}
+svg.tahame{cursor:grabbing}
+.mc{fill:var(--card);stroke:var(--zem2);stroke-width:.7;vector-effect:non-scaling-stroke}
+.mc.zvyraz{fill:var(--sunk)}
+.bod{cursor:pointer;vector-effect:non-scaling-stroke}
+.pomoc{position:absolute;left:14px;bottom:12px;font-size:11.5px;color:var(--mu);
+  font-family:"IBM Plex Mono",monospace;background:var(--card);border:1px solid var(--ln);
+  padding:5px 9px;border-radius:3px}
+.zoom{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;gap:4px}
+.zoom button{width:30px;height:30px;border:1px solid var(--ln);background:var(--card);
+  color:var(--ink);font-size:16px;cursor:pointer;border-radius:3px;font-family:inherit;padding:0}
+.zoom button:hover{border-color:var(--acc)}
+
+.panel{width:330px;flex:none;border-left:1px solid var(--ln);background:var(--card);
+  padding:16px 18px;overflow-y:auto;display:none;flex-direction:column;gap:12px}
+.panel.on{display:flex}
+.panel h3{font-family:"Newsreader",serif;font-size:17px;margin:0;font-weight:600;line-height:1.25}
+.panel dl{margin:0;display:flex;gap:12px;font-size:13.5px}
+.panel dt{flex:none;width:78px;color:var(--mu);font-family:"IBM Plex Mono",monospace;font-size:11.5px}
+.panel dd{margin:0;flex:1;min-width:0;color:var(--ink2);word-break:break-word}
+.panel .zavri{align-self:flex-start;background:transparent;border:1px solid var(--ln);
+  color:var(--mu);border-radius:3px;padding:5px 11px;font-size:12.5px;cursor:pointer;font-family:inherit}
+.znacka{display:inline-block;font-size:11px;padding:2px 7px;border-radius:20px;
+  background:var(--acc-bg);color:var(--acc);font-family:"IBM Plex Mono",monospace}
+.znacka.sed{background:var(--sunk);color:var(--mu)}
+
+@media (max-width:900px){
+  .filtre{width:210px}
+  .panel{position:absolute;right:0;top:0;bottom:0;width:300px;z-index:5}
+}
+@media (max-width:640px){
+  .telo{flex-direction:column}
+  .filtre{width:100%;border-right:0;border-bottom:1px solid var(--ln);max-height:160px}
+  .panel{width:100%}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Zámery v Bratislave</h1>
+  <span class="pod">z registra posudzovania vplyvov na životné prostredie</span>
+  <span class="odkaz"><a href="../">späť na príručku</a></span>
+</header>
+
+<div class="telo">
+  <aside class="filtre">
+    <div>
+      <h2>Hľadať</h2>
+      <input type="search" id="q" placeholder="názov, firma, IČO…">
+    </div>
+    <div>
+      <h2>Mestská časť</h2>
+      <select id="mc"><option value="">všetky</option></select>
+    </div>
+    <div>
+      <h2>Skupina</h2>
+      <select id="sk"><option value="">všetky</option></select>
+    </div>
+    <div>
+      <h2>Poloha</h2>
+      <select id="pr">
+        <option value="">presná aj približná</option>
+        <option value="presná">len presná</option>
+        <option value="približná">len približná</option>
+      </select>
+    </div>
+    <div>
+      <h2>Zobrazené</h2>
+      <p class="pocty" id="pocty">—</p>
+    </div>
+    <div>
+      <h2>Legenda</h2>
+      <div class="legenda">
+        <div><span class="tecka" style="background:var(--acc)"></span> známa skupina</div>
+        <div><span class="tecka" style="background:var(--mu)"></span> firma bez skupiny</div>
+        <div><span class="tecka duta"></span> približná poloha</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="mapa">
+    <svg id="mapa"><g id="vrstvy"></g></svg>
+    <div class="zoom">
+      <button id="plus" title="Priblížiť">+</button>
+      <button id="minus" title="Oddialiť">−</button>
+      <button id="reset" title="Späť na celé mesto">⤾</button>
+    </div>
+    <div class="pomoc">ťahaním posunieš · kolieskom priblížiš</div>
+  </div>
+
+  <aside class="panel" id="panel"></aside>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let MC=null, Z=null, filtr={q:'',mc:'',sk:'',pr:''};
+let vid={x:0,y:0,k:1}, bbox=null;
+
+/* ---------- projekcia: lon/lat -> rovina, s korekciou na šírku ---------- */
+const LAT0=48.15, KOR=Math.cos(LAT0*Math.PI/180);
+const px=c=>[c[0]*KOR, -c[1]];
+
+function spocitajBbox(fc){
+  let a=[1e9,1e9], b=[-1e9,-1e9];
+  const jeden=c=>{const p=px(c); a[0]=Math.min(a[0],p[0]); a[1]=Math.min(a[1],p[1]);
+    b[0]=Math.max(b[0],p[0]); b[1]=Math.max(b[1],p[1]);};
+  fc.features.forEach(f=>{
+    const g=f.geometry; if(!g) return;
+    const ok=g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[];
+    ok.forEach(p=>p.forEach(r=>r.forEach(jeden)));
+  });
+  return {a,b};
+}
+
+function cesta(g){
+  const ok=g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[];
+  let d='';
+  ok.forEach(p=>p.forEach(r=>{
+    r.forEach((c,i)=>{const q=px(c); d+=(i?'L':'M')+q[0].toFixed(5)+' '+q[1].toFixed(5);});
+    d+='Z';
+  }));
+  return d;
+}
+
+function nastavViewBox(){
+  const {a,b}=bbox, w=b[0]-a[0], h=b[1]-a[1], m=Math.max(w,h)*0.03;
+  $('#mapa').setAttribute('viewBox', (a[0]-m)+' '+(a[1]-m)+' '+(w+2*m)+' '+(h+2*m));
+}
+
+/* ---------- vykreslenie ---------- */
+function vyhovuje(p){
+  if(filtr.mc && p.obec!==filtr.mc) return false;
+  if(filtr.sk && (p.skupina||'—')!==filtr.sk) return false;
+  if(filtr.pr && p.presnost!==filtr.pr) return false;
+  if(filtr.q){
+    const h=(p.nazov+' '+p.firma+' '+p.ico+' '+(p.skupina||'')).toLowerCase();
+    if(!h.includes(filtr.q)) return false;
+  }
+  return true;
+}
+
+function kresli(){
+  const g=$('#vrstvy');
+  const {a,b}=bbox, r=Math.max(b[0]-a[0], b[1]-a[1])/380;
+  let s='';
+  MC.features.forEach(f=>{
+    const nz=(f.properties&&(f.properties.NAZOV_ZUJ||f.properties.MC_LABEL||''))||'';
+    s+='<path class="mc'+(filtr.mc&&String(nz).includes(filtr.mc)?' zvyraz':'')+'" d="'+cesta(f.geometry)+'"></path>';
+  });
+  let n=0, np=0;
+  Z.features.forEach((f,i)=>{
+    const p=f.properties; if(!vyhovuje(p)) return;
+    n++; if(p.presnost==='presná') np++;
+    const q=px(f.geometry.coordinates);
+    const skup=!!p.skupina;
+    const presna=p.presnost==='presná';
+    s+='<circle class="bod" data-i="'+i+'" cx="'+q[0].toFixed(5)+'" cy="'+q[1].toFixed(5)+'" r="'+
+      (presna?r*1.5:r*1.1).toFixed(5)+'" fill="'+(presna?(skup?'var(--acc)':'var(--mu)'):'none')+
+      '" stroke="'+(skup?'var(--acc)':'var(--mu)')+'" stroke-width="'+(r*0.4).toFixed(5)+
+      '" opacity="'+(presna?0.9:0.55)+'"></circle>';
+  });
+  g.innerHTML=s;
+  $('#pocty').innerHTML='<b>'+n+'</b> zámerov<br>z toho <b>'+np+'</b> s presnou polohou';
+}
+
+/* ---------- panel ---------- */
+function ukaz(i){
+  const p=Z.features[i].properties;
+  $('#panel').className='panel on';
+  $('#panel').innerHTML=
+    '<button class="zavri" onclick="document.getElementById(\'panel\').className=\'panel\'">zavrieť</button>'
+    +'<h3>'+esc(p.nazov)+'</h3>'
+    +(p.skupina?'<div><span class="znacka">'+esc(p.skupina)+'</span></div>':
+      (p.zhluk?'<div><span class="znacka sed">zhluk '+esc(p.zhluk)+'</span></div>':''))
+    +'<dl><dt>navrhovateľ</dt><dd>'+esc(p.firma)+(p.ico?'<br><span class="mono">IČO '+esc(p.ico)+'</span>':'')+'</dd></dl>'
+    +'<dl><dt>povoľuje</dt><dd>'+esc(p.urad||'—')+'</dd></dl>'
+    +'<dl><dt>stav</dt><dd>'+esc(p.stav||'—')+'</dd></dl>'
+    +'<dl><dt>mestská časť</dt><dd>'+esc(p.obec)+'</dd></dl>'
+    +'<dl><dt>poloha</dt><dd>'+esc(p.presnost)+(p.presnost==='približná'?' — bod je v ťažisku mestskej časti, nie na stavbe':'')+'</dd></dl>'
+    +'<dl><dt>zmena</dt><dd>'+esc(p.zmena||'—')+'</dd></dl>'
+    +'<p><a href="https://www.enviroportal.sk/eia/detail/'+esc(p.id)+'" target="_blank" rel="noopener">otvoriť zámer na enviroportáli</a></p>';
+}
+
+/* ---------- posun a priblíženie ---------- */
+function posun(dx,dy,dk,cx,cy){
+  const sv=$('#mapa'), vb=sv.getAttribute('viewBox').split(' ').map(Number);
+  let [x,y,w,h]=vb;
+  if(dk){
+    const nw=w*dk, nh=h*dk;
+    x+=(w-nw)*(cx==null?0.5:cx); y+=(h-nh)*(cy==null?0.5:cy);
+    w=nw; h=nh;
+  }
+  x+=dx*w; y+=dy*h;
+  sv.setAttribute('viewBox',[x,y,w,h].join(' '));
+}
+
+function pripoj(){
+  const sv=$('#mapa');
+  let tahame=false, sx=0, sy=0;
+  sv.addEventListener('mousedown',e=>{tahame=true;sx=e.clientX;sy=e.clientY;sv.classList.add('tahame');});
+  window.addEventListener('mouseup',()=>{tahame=false;sv.classList.remove('tahame');});
+  window.addEventListener('mousemove',e=>{
+    if(!tahame) return;
+    const r=sv.getBoundingClientRect();
+    posun(-(e.clientX-sx)/r.width, -(e.clientY-sy)/r.height, 0);
+    sx=e.clientX; sy=e.clientY;
+  });
+  sv.addEventListener('wheel',e=>{
+    e.preventDefault();
+    const r=sv.getBoundingClientRect();
+    posun(0,0, e.deltaY>0?1.15:0.87, (e.clientX-r.left)/r.width, (e.clientY-r.top)/r.height);
+  },{passive:false});
+  sv.addEventListener('click',e=>{
+    const c=e.target.closest('.bod'); if(c) ukaz(+c.dataset.i);
+  });
+  $('#plus').onclick=()=>posun(0,0,0.8);
+  $('#minus').onclick=()=>posun(0,0,1.25);
+  $('#reset').onclick=nastavViewBox;
+  ['q','mc','sk','pr'].forEach(id=>{
+    $('#'+id).addEventListener('input',()=>{
+      filtr={q:$('#q').value.trim().toLowerCase(), mc:$('#mc').value,
+             sk:$('#sk').value, pr:$('#pr').value};
+      kresli();
+    });
+  });
+}
+
+/* ---------- štart ---------- */
+Promise.all([
+  fetch('mestske-casti.geojson').then(r=>r.json()),
+  fetch('zamery.geojson').then(r=>r.json()),
+]).then(([mc,z])=>{
+  MC=mc; Z=z;
+  bbox=spocitajBbox(mc);
+  nastavViewBox();
+  const obce=[...new Set(z.features.map(f=>f.properties.obec).filter(Boolean))].sort();
+  obce.forEach(o=>$('#mc').insertAdjacentHTML('beforeend','<option>'+esc(o)+'</option>'));
+  const sk=[...new Set(z.features.map(f=>f.properties.skupina).filter(Boolean))].sort();
+  sk.forEach(o=>$('#sk').insertAdjacentHTML('beforeend','<option>'+esc(o)+'</option>'));
+  kresli(); pripoj();
+}).catch(e=>{
+  $('#pocty').textContent='Dáta sa nepodarilo načítať: '+e;
+});
+</script>
+</body>
+</html>
