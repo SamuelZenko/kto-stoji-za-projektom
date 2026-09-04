@@ -71,6 +71,9 @@ svg.tahame{cursor:grabbing}
 .mc{fill:var(--card);stroke:var(--zem2);stroke-width:.7;vector-effect:non-scaling-stroke}
 .mc.zvyraz{fill:var(--sunk)}
 .bod{cursor:pointer;vector-effect:non-scaling-stroke}
+.zhluk,.hromada{cursor:pointer}
+.zhluk:hover circle{opacity:1}
+.hromada:hover circle{opacity:.3}
 .pomoc{position:absolute;left:14px;bottom:12px;font-size:11.5px;color:var(--mu);
   font-family:"IBM Plex Mono",monospace;background:var(--card);border:1px solid var(--ln);
   padding:5px 9px;border-radius:3px}
@@ -260,23 +263,44 @@ function kresli(){
     const nz=(f.properties&&(f.properties.NAZOV_ZUJ||f.properties.MC_LABEL||''))||'';
     s+='<path class="mc'+(filtr.mc&&String(nz).includes(filtr.mc)?' zvyraz':'')+'" d="'+cesta(f.geometry)+'"></path>';
   });
-  // Presné body sa kreslia jednotlivo. Približné NIE — nevieme, kde stoja,
-  // a rozsypať ich okolo ťažiska by bola len krajšia nepravda. Zbalia sa
-  // do jednej značky na mestskú časť s počtom.
+  // DVA druhy zhlukov, a je dôležité ich nezameniť:
+  //   • presné body sa zhlukujú len preto, aby sa neprekrývali — pri
+  //     priblížení sa rozpadnú na jednotlivé stavby (plná značka)
+  //   • pri približných nevieme, kde stoja; tie sa nikdy nerozpadnú
+  //     a značka je prerušovaná, aby bolo vidieť, že je to neistota
+  const vb=$('#mapa').getAttribute('viewBox').split(' ').map(Number);
+  const bunka=vb[2]/26;                       // mriežka podľa priblíženia
   let n=0, np=0, npl=0;
-  const hromady={};
+  const hromady={}, mriezka={};
   Z.features.forEach((f,i)=>{
     const p=f.properties; if(!vyhovuje(p)) return;
     n++; if(p.plany&&p.plany.length) npl++;
     if(p.presnost==='presná'){
       np++;
-      const q=px(f.geometry.coordinates), c=FARBA[p.faza]||'#9AA6AE';
-      s+='<circle class="bod" data-i="'+i+'" cx="'+q[0].toFixed(5)+'" cy="'+q[1].toFixed(5)+
-        '" r="'+(r*1.6).toFixed(5)+'" fill="'+c+'" stroke="var(--card)" stroke-width="'+
-        (r*0.35).toFixed(5)+'" opacity="0.92"></circle>';
+      const q=px(f.geometry.coordinates);
+      const kl=Math.floor(q[0]/bunka)+'|'+Math.floor(q[1]/bunka);
+      (mriezka[kl] = mriezka[kl] || []).push([i,q]);
     } else {
       (hromady[p.obec] = hromady[p.obec] || []).push(i);
     }
+  });
+  Object.values(mriezka).forEach(bunky=>{
+    if(bunky.length===1){
+      const [i,q]=bunky[0], p=Z.features[i].properties;
+      const c=FARBA[p.faza]||'#9AA6AE';
+      s+='<circle class="bod" data-i="'+i+'" cx="'+q[0].toFixed(5)+'" cy="'+q[1].toFixed(5)+
+        '" r="'+(r*1.6).toFixed(5)+'" fill="'+c+'" stroke="var(--card)" stroke-width="'+
+        (r*0.35).toFixed(5)+'" opacity="0.92"></circle>';
+      return;
+    }
+    const cx=bunky.reduce((a,b)=>a+b[1][0],0)/bunky.length;
+    const cy=bunky.reduce((a,b)=>a+b[1][1],0)/bunky.length;
+    const k=bunky.length, rr=r*(2.4+Math.sqrt(k)*1.1);
+    s+='<g class="zhluk" data-b="'+bunky.map(x=>x[0]).join(',')+'">'
+      +'<circle cx="'+cx.toFixed(5)+'" cy="'+cy.toFixed(5)+'" r="'+rr.toFixed(5)+
+        '" fill="var(--acc)" opacity="0.9"></circle>'
+      +'<text x="'+cx.toFixed(5)+'" y="'+(cy+rr*0.36).toFixed(5)+'" text-anchor="middle" font-size="'
+      +(rr*1.05).toFixed(4)+'" fill="#fff" font-family="IBM Plex Mono, monospace">'+k+'</text></g>';
   });
   Object.keys(hromady).forEach(obec=>{
     const t=TAZISKA[obec]; if(!t) return;
@@ -390,6 +414,36 @@ function ukazHromadu(obec){
     +'</div>';
 }
 
+/* Klik na zhluk priblíži naň — tak sa rozpadne na jednotlivé stavby.
+   Keď je zhluk už veľmi tesný, radšej sa vypíše zoznam, aby sa
+   priblíženie nezacyklilo. */
+function priblizNa(zoznam){
+  const idx=zoznam.split(',').map(Number);
+  const b=idx.map(i=>px(Z.features[i].geometry.coordinates));
+  const x0=Math.min(...b.map(q=>q[0])), x1=Math.max(...b.map(q=>q[0]));
+  const y0=Math.min(...b.map(q=>q[1])), y1=Math.max(...b.map(q=>q[1]));
+  const w=x1-x0, h=y1-y0;
+  const vb=$('#mapa').getAttribute('viewBox').split(' ').map(Number);
+  if(Math.max(w,h) < vb[2]*0.01){          // všetko na jednom mieste
+    $('#panel').className='panel on';
+    $('#panel').innerHTML=
+      '<button class="zavri" onclick="document.getElementById(\'panel\').className=\'panel\'">zavrieť</button>'
+      +'<h3>'+idx.length+' zámerov na jednom mieste</h3>'
+      +'<div style="display:flex;flex-direction:column;gap:7px">'
+      +idx.map(i=>{const p=Z.features[i].properties;
+        return '<button class="zavri" style="text-align:left;width:100%;border-color:var(--ln);'
+          +'color:var(--ink2);padding:7px 10px" onclick="ukaz('+i+')">'
+          +'<span style="color:'+(FARBA[p.faza]||'var(--mu)')+'">●</span> '
+          +esc(p.nazov.slice(0,70))+'</button>';}).join('')
+      +'</div>';
+    return;
+  }
+  const m=Math.max(w,h)*0.6+vb[2]*0.01;
+  $('#mapa').setAttribute('viewBox',
+    (x0-m)+' '+(y0-m)+' '+(w+2*m)+' '+(h+2*m));
+  kresli();
+}
+
 /* ---------- posun a priblíženie ---------- */
 function posun(dx,dy,dk,cx,cy){
   const sv=$('#mapa'), vb=sv.getAttribute('viewBox').split(' ').map(Number);
@@ -403,11 +457,21 @@ function posun(dx,dy,dk,cx,cy){
   sv.setAttribute('viewBox',[x,y,w,h].join(' '));
 }
 
+/* Po zmene priblíženia sa musí prekresliť, aby sa zhluky rozpadli.
+   Nie počas ťahania — to by trhalo. */
+let cakanie=null;
+function prekresliOneskorene(){
+  clearTimeout(cakanie);
+  cakanie=setTimeout(kresli, 160);
+}
+
 function pripoj(){
   const sv=$('#mapa');
   let tahame=false, sx=0, sy=0;
   sv.addEventListener('mousedown',e=>{tahame=true;sx=e.clientX;sy=e.clientY;sv.classList.add('tahame');});
-  window.addEventListener('mouseup',()=>{tahame=false;sv.classList.remove('tahame');});
+  window.addEventListener('mouseup',()=>{
+    if(tahame) prekresliOneskorene();
+    tahame=false;sv.classList.remove('tahame');});
   window.addEventListener('mousemove',e=>{
     if(!tahame) return;
     const r=sv.getBoundingClientRect();
@@ -418,14 +482,16 @@ function pripoj(){
     e.preventDefault();
     const r=sv.getBoundingClientRect();
     posun(0,0, e.deltaY>0?1.15:0.87, (e.clientX-r.left)/r.width, (e.clientY-r.top)/r.height);
+    prekresliOneskorene();
   },{passive:false});
   sv.addEventListener('click',e=>{
     const c=e.target.closest('.bod'); if(c){ ukaz(+c.dataset.i); return; }
+    const zh=e.target.closest('.zhluk'); if(zh){ priblizNa(zh.dataset.b); return; }
     const h=e.target.closest('.hromada'); if(h) ukazHromadu(h.dataset.o);
   });
-  $('#plus').onclick=()=>posun(0,0,0.8);
-  $('#minus').onclick=()=>posun(0,0,1.25);
-  $('#reset').onclick=nastavViewBox;
+  $('#plus').onclick=()=>{posun(0,0,0.8); kresli();};
+  $('#minus').onclick=()=>{posun(0,0,1.25); kresli();};
+  $('#reset').onclick=()=>{nastavViewBox(); kresli();};
   ['q','mc','sk','pr','fz','pl'].forEach(id=>{
     $('#'+id).addEventListener('input',()=>{
       filtr={q:$('#q').value.trim().toLowerCase(), mc:$('#mc').value,
