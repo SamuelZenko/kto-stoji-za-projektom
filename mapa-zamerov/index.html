@@ -166,7 +166,7 @@ svg.tahame{cursor:grabbing}
         <div><span class="tecka" style="background:#5B7C99"></span> posúdené</div>
         <div><span class="tecka" style="background:#C67A1E"></span> povolené</div>
         <div><span class="tecka" style="background:#0B6B5E"></span> dokončené</div>
-        <div style="margin-top:4px"><span class="tecka duta"></span> približná poloha</div>
+        <div style="margin-top:4px"><span class="tecka duta"></span> počet bez presnej polohy</div>
       </div>
     </div>
   </aside>
@@ -193,6 +193,20 @@ let vid={x:0,y:0,k:1}, bbox=null;
 /* ---------- projekcia: lon/lat -> rovina, s korekciou na šírku ---------- */
 const LAT0=48.15, KOR=Math.cos(LAT0*Math.PI/180);
 const px=c=>[c[0]*KOR, -c[1]];
+
+/* ťažiská mestských častí — pre značky zámerov bez presnej polohy */
+const TAZISKA={};
+function spocitajTaziska(fc){
+  fc.features.forEach(f=>{
+    const g=f.geometry, a=f.properties||{};
+    const nz=a.NAZOV_ZUJ||a.MC_LABEL||''; if(!g||!nz) return;
+    const kr=g.type==='Polygon'?g.coordinates[0]
+      :g.type==='MultiPolygon'?g.coordinates.reduce((x,y)=>y[0].length>x.length?y[0]:x,[]):[];
+    if(!kr.length) return;
+    TAZISKA[nz]=[kr.reduce((s,c)=>s+c[0],0)/kr.length,
+                 kr.reduce((s,c)=>s+c[1],0)/kr.length];
+  });
+}
 
 function spocitajBbox(fc){
   let a=[1e9,1e9], b=[-1e9,-1e9];
@@ -246,18 +260,37 @@ function kresli(){
     const nz=(f.properties&&(f.properties.NAZOV_ZUJ||f.properties.MC_LABEL||''))||'';
     s+='<path class="mc'+(filtr.mc&&String(nz).includes(filtr.mc)?' zvyraz':'')+'" d="'+cesta(f.geometry)+'"></path>';
   });
+  // Presné body sa kreslia jednotlivo. Približné NIE — nevieme, kde stoja,
+  // a rozsypať ich okolo ťažiska by bola len krajšia nepravda. Zbalia sa
+  // do jednej značky na mestskú časť s počtom.
   let n=0, np=0, npl=0;
+  const hromady={};
   Z.features.forEach((f,i)=>{
     const p=f.properties; if(!vyhovuje(p)) return;
-    n++; if(p.presnost==='presná') np++;
-    if(p.plany&&p.plany.length) npl++;
-    const q=px(f.geometry.coordinates);
-    const presna=p.presnost==='presná';
-    const c=FARBA[p.faza]||'#9AA6AE';
-    s+='<circle class="bod" data-i="'+i+'" cx="'+q[0].toFixed(5)+'" cy="'+q[1].toFixed(5)+'" r="'+
-      (presna?r*1.5:r*1.1).toFixed(5)+'" fill="'+(presna?c:'none')+
-      '" stroke="'+c+'" stroke-width="'+(r*0.4).toFixed(5)+
-      '" opacity="'+(presna?0.9:0.6)+'"></circle>';
+    n++; if(p.plany&&p.plany.length) npl++;
+    if(p.presnost==='presná'){
+      np++;
+      const q=px(f.geometry.coordinates), c=FARBA[p.faza]||'#9AA6AE';
+      s+='<circle class="bod" data-i="'+i+'" cx="'+q[0].toFixed(5)+'" cy="'+q[1].toFixed(5)+
+        '" r="'+(r*1.6).toFixed(5)+'" fill="'+c+'" stroke="var(--card)" stroke-width="'+
+        (r*0.35).toFixed(5)+'" opacity="0.92"></circle>';
+    } else {
+      (hromady[p.obec] = hromady[p.obec] || []).push(i);
+    }
+  });
+  Object.keys(hromady).forEach(obec=>{
+    const t=TAZISKA[obec]; if(!t) return;
+    const q=px(t), k=hromady[obec].length;
+    const rr=r*(3.2+Math.sqrt(k)*1.5);
+    s+='<g class="hromada" data-o="'+esc(obec)+'">'
+      +'<circle cx="'+q[0].toFixed(5)+'" cy="'+q[1].toFixed(5)+'" r="'+rr.toFixed(5)+
+        '" fill="var(--mu)" opacity="0.16"></circle>'
+      +'<circle cx="'+q[0].toFixed(5)+'" cy="'+q[1].toFixed(5)+'" r="'+rr.toFixed(5)+
+        '" fill="none" stroke="var(--mu)" stroke-width="'+(r*0.35).toFixed(5)+
+        '" stroke-dasharray="'+(r*1.2).toFixed(3)+' '+(r*0.9).toFixed(3)+'" opacity="0.7"></circle>'
+      +'<text x="'+q[0].toFixed(5)+'" y="'+(q[1]+rr*0.35).toFixed(5)+
+        '" text-anchor="middle" font-size="'+(rr*0.9).toFixed(4)+
+        '" fill="var(--ink2)" font-family="IBM Plex Mono, monospace">'+k+'</text></g>';
   });
   g.innerHTML=s;
   $('#pocty').innerHTML='<b>'+n+'</b> zámerov<br>z toho <b>'+np+
@@ -336,6 +369,27 @@ function ukaz(i){
     +'<p><a href="https://www.enviroportal.sk/eia/detail/'+esc(p.id)+'" target="_blank" rel="noopener">otvoriť zámer na enviroportáli</a></p>';
 }
 
+function ukazHromadu(obec){
+  const zoz=[];
+  Z.features.forEach((f,i)=>{
+    const p=f.properties;
+    if(p.obec===obec && p.presnost!=='presná' && vyhovuje(p)) zoz.push([i,p]);
+  });
+  $('#panel').className='panel on';
+  $('#panel').innerHTML=
+    '<button class="zavri" onclick="document.getElementById(\'panel\').className=\'panel\'">zavrieť</button>'
+    +'<h3>'+esc(obec)+'</h3>'
+    +'<p style="font-size:13.5px;color:var(--mu);margin:0">'+zoz.length
+    +' zámerov, pri ktorých register neuvádza ulicu. Presné miesto sa dá zistiť'
+    +' len z parcelných čísel v rozhodnutí — preto nie sú na mape umiestnené jednotlivo.</p>'
+    +'<div style="display:flex;flex-direction:column;gap:7px;margin-top:4px">'
+    +zoz.map(([i,p])=>'<button class="zavri" style="text-align:left;width:100%;border-color:var(--ln);'
+      +'color:var(--ink2);padding:7px 10px" onclick="ukaz('+i+')">'
+      +'<span style="color:'+(FARBA[p.faza]||'var(--mu)')+'">●</span> '+esc(p.nazov.slice(0,70))
+      +'</button>').join('')
+    +'</div>';
+}
+
 /* ---------- posun a priblíženie ---------- */
 function posun(dx,dy,dk,cx,cy){
   const sv=$('#mapa'), vb=sv.getAttribute('viewBox').split(' ').map(Number);
@@ -366,7 +420,8 @@ function pripoj(){
     posun(0,0, e.deltaY>0?1.15:0.87, (e.clientX-r.left)/r.width, (e.clientY-r.top)/r.height);
   },{passive:false});
   sv.addEventListener('click',e=>{
-    const c=e.target.closest('.bod'); if(c) ukaz(+c.dataset.i);
+    const c=e.target.closest('.bod'); if(c){ ukaz(+c.dataset.i); return; }
+    const h=e.target.closest('.hromada'); if(h) ukazHromadu(h.dataset.o);
   });
   $('#plus').onclick=()=>posun(0,0,0.8);
   $('#minus').onclick=()=>posun(0,0,1.25);
@@ -394,6 +449,7 @@ Promise.all([
   fetch('zamery.geojson').then(r=>r.json()),
 ]).then(([mc,z])=>{
   MC=mc; Z=z;
+  spocitajTaziska(mc);
   bbox=spocitajBbox(mc);
   nastavViewBox();
   const obce=[...new Set(z.features.map(f=>f.properties.obec).filter(Boolean))].sort();
