@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Analýza zberu">
+<title>Anatómia bratislavskej výstavby</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground:#ECEEF0; --surface:#FFFFFF; --sunken:#E1E5E8;
+    --ink:#0F151A; --ink-soft:#39454F; --muted:#5F6E79;
+    --line:#CBD3D9; --line-soft:#DEE4E8;
+    --acc:#B01B52; --acc-bg:#FBE9EF;
+    --ok:#0B6B5E; --ok-bg:#E2F0ED;
+    --warn:#9A5B08; --warn-bg:#FAEEDD;
+    --shadow:0 1px 2px rgba(15,21,26,.05), 0 10px 28px rgba(15,21,26,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#0B0F13; --surface:#141A20; --sunken:#1C242B;
+      --ink:#E8EEF3; --ink-soft:#C0CBD4; --muted:#8A98A3;
+      --line:#2B353D; --line-soft:#222B32;
+      --acc:#FF6F9C; --acc-bg:#2A141C;
+      --ok:#43C6AF; --ok-bg:#102420;
+      --warn:#E5A648; --warn-bg:#2A2113;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.32);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#0B0F13; --surface:#141A20; --sunken:#1C242B;
+    --ink:#E8EEF3; --ink-soft:#C0CBD4; --muted:#8A98A3;
+    --line:#2B353D; --line-soft:#222B32;
+    --acc:#FF6F9C; --acc-bg:#2A141C;
+    --ok:#43C6AF; --ok-bg:#102420;
+    --warn:#E5A648; --warn-bg:#2A2113;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.32);
+  }
+
+  * { box-sizing:border-box; }
+  body { background:var(--ground); color:var(--ink); margin:0;
+    font-family:"Public Sans", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+    font-size:17px; line-height:1.62; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:49rem; margin:0 auto; padding:3.5rem 1.3rem 6rem; display:flex; flex-direction:column; gap:3rem; }
+  h1,h2,h3 { font-family:"Newsreader", Georgia, serif; font-weight:600; }
+  .mono, code { font-family:"IBM Plex Mono", ui-monospace, monospace; }
+
+  header { display:flex; flex-direction:column; gap:.85rem; }
+  .eyebrow { font-family:"IBM Plex Mono",monospace; font-size:.71rem; letter-spacing:.14em; text-transform:uppercase; color:var(--acc); margin:0; }
+  h1 { font-size:clamp(2.3rem,6.6vw,3.3rem); line-height:1.03; letter-spacing:-.02em; margin:0; text-wrap:balance; }
+  .lede { font-size:1.14rem; color:var(--ink-soft); margin:0; max-width:38rem; }
+
+  .cisla { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .c { background:var(--surface); padding:1rem .95rem; display:flex; flex-direction:column; gap:.1rem; }
+  .c b { font-family:"Newsreader",serif; font-size:1.75rem; line-height:1; color:var(--acc); font-weight:600; font-variant-numeric:tabular-nums; }
+  .c span { font-size:.78rem; color:var(--muted); line-height:1.35; }
+
+  section { display:flex; flex-direction:column; gap:1.1rem; }
+  section > h2 { font-size:1.75rem; letter-spacing:-.015em; margin:0; line-height:1.18; text-wrap:balance; }
+  section > h2 .n { color:var(--acc); font-family:"IBM Plex Mono",monospace; font-size:1rem; font-weight:500; vertical-align:.45em; margin-right:.5rem; }
+  h3 { font-size:1.13rem; margin:.55rem 0 -.45rem; }
+  p { margin:0; max-width:39rem; }
+  strong { font-weight:600; color:var(--ink); }
+  code { font-size:.86em; background:var(--sunken); padding:.08em .35em; border-radius:2px; }
+  ul { margin:0; padding-left:1.15rem; display:flex; flex-direction:column; gap:.4rem; max-width:39rem; }
+  li::marker { color:var(--muted); }
+
+  .tab { overflow-x:auto; border:1px solid var(--line); background:var(--surface); }
+  table { border-collapse:collapse; width:100%; font-size:.9rem; min-width:30rem; }
+  th,td { text-align:left; padding:.5rem .7rem; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+  th { font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:.66rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:var(--sunken); white-space:nowrap; }
+  tbody tr:last-child td { border-bottom:none; }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  td.zn { color:var(--acc); font-weight:600; white-space:nowrap; }
+
+  .zist { background:var(--acc-bg); border-left:3px solid var(--acc); padding:1.1rem 1.25rem; display:flex; flex-direction:column; gap:.4rem; }
+  .zist b { font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.11em; text-transform:uppercase; color:var(--acc); font-weight:500; }
+  .zist p { color:var(--ink-soft); }
+
+  .oprava { background:var(--warn-bg); border-left:3px solid var(--warn); padding:1.1rem 1.25rem; display:flex; flex-direction:column; gap:.4rem; }
+  .oprava b { font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.11em; text-transform:uppercase; color:var(--warn); font-weight:500; }
+  .oprava p { color:var(--ink-soft); }
+
+  .hot { background:var(--ok-bg); border-left:3px solid var(--ok); padding:1.1rem 1.25rem; }
+  .hot b { font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.11em; text-transform:uppercase; color:var(--ok); font-weight:500; display:block; margin-bottom:.3rem; }
+  .hot p, .hot ul { color:var(--ink-soft); }
+
+  .vypis { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); padding:1.2rem 1.3rem; font-family:"IBM Plex Mono",monospace; font-size:.8rem; line-height:1.85; overflow-x:auto; }
+  .vypis .h { color:var(--acc); font-weight:500; }
+  .vypis .d { color:var(--muted); }
+
+  footer { border-top:1px solid var(--line); padding-top:1.5rem; color:var(--muted); font-size:.88rem; display:flex; flex-direction:column; gap:.5rem; }
+
+  @media (max-width:640px) {
+    body { font-size:16px; }
+    .wrap { padding:2.4rem 1rem 4rem; gap:2.4rem; }
+    .cisla { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Analýza zberu · MIB · september 2026</p>
+  <h1>Anatómia bratislavskej výstavby</h1>
+  <p class="lede">Čo ukázalo stiahnutie celého registra EIA a rozobratie 2 303 bratislavských zámerov — vrátane jedného zistenia, ktoré vyvracia môj vlastný skorší odhad.</p>
+</header>
+
+<div class="cisla">
+  <div class="c"><b>18 673</b><span>zámerov v celom registri</span></div>
+  <div class="c"><b>2 303</b><span>bratislavských, stiahnutých do detailu</span></div>
+  <div class="c"><b>21 395</b><span>dokumentov v spisoch</span></div>
+  <div class="c"><b>5 634</b><span>z toho výkresov a situácií</span></div>
+</div>
+
+<!-- 1 -->
+<section>
+  <h2><span class="n">01</span>Dáta sú lepšie, než sa čakalo</h2>
+  <p>Zoznam v registri je „ľahký“ — obsahuje len názov, polohu a stav. Navrhovateľ, účel a povoľujúci orgán sú až v detaile, takže zber musí byť dvojfázový. Zoznam trval 10 minút, detaily pre Bratislavu asi pol hodiny. Za to dostaneme:</p>
+  <div class="tab">
+    <table>
+      <thead><tr><th>údaj</th><th class="num">pokrytie</th><th>čo to umožní</th></tr></thead>
+      <tbody>
+        <tr><td>IČO navrhovateľa</td><td class="num zn">97 %</td><td>presné napojenie na obchodný register</td></tr>
+        <tr><td>vyplnený účel činnosti</td><td class="num zn">96 %</td><td>o čo v projekte ide</td></tr>
+        <tr><td>čitateľná adresa sídla</td><td class="num zn">73 %</td><td>zhluky adries, teda skupiny</td></tr>
+        <tr><td>spis s dokumentmi</td><td class="num zn">100 %</td><td>9,3 dokumentu na zámer</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 2 -->
+<section>
+  <h2><span class="n">02</span>Musím opraviť vlastný odhad</h2>
+  <div class="oprava">
+    <b>Presná poloha z textu — 12 %, nie 60 až 70 %</b>
+    <p>Odhadoval som, že ulicu sa podarí vytiahnuť z popisu účelu asi v dvoch tretinách prípadov. Po zmeraní na 2 303 zámeroch je to <strong>12 %</strong>. Ulicu spomína len 13 % textov a konkrétny názov sa dá izolovať v 12 %. Zvyšok popisuje činnosť, nie miesto.</p>
+    <p><strong>Čo to mení:</strong> mapa sa <em>nedá</em> automaticky posadiť na presnú adresu. Na úroveň mestskej časti áno, na 100 %. Presné umiestnenie musí prísť odinakiaľ — z parcelných čísel v rozhodnutiach alebo ručne. Vo výpočte pre mapu to posúva „presnú adresu“ z optimistickej vrstvy medzi tie drahé.</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section>
+  <h2><span class="n">03</span>Zhluky adries fungujú lepšie, než dúfam</h2>
+  <p>Z adries navrhovateľov som postavil index a nechal ho nájsť miesta, odkiaľ podáva zámery viac rôznych firiem. Štyri najväčšie zhluky sadli na skupiny, ktoré už nástroj pozná — a to je overenie metódy, nie náhoda.</p>
+  <div class="tab">
+    <table>
+      <thead><tr><th>adresa</th><th class="num">zámerov</th><th class="num">firiem</th><th>rozpoznané</th></tr></thead>
+      <tbody>
+        <tr><td>Einsteinova 25</td><td class="num">56</td><td class="num">30</td><td class="zn">Penta Real Estate</td></tr>
+        <tr><td>Dvořákovo nábrežie 10</td><td class="num">18</td><td class="num">14</td><td class="zn">J&amp;T Real Estate</td></tr>
+        <tr><td>Poštová 3</td><td class="num">13</td><td class="num">12</td><td class="zn">Cresco Real Estate</td></tr>
+        <tr><td>Karadžičova 12</td><td class="num">8</td><td class="num">7</td><td class="zn">HB Reavis</td></tr>
+        <tr><td>Panenská 6</td><td class="num">10</td><td class="num">10</td><td>zatiaľ nepomenované</td></tr>
+        <tr><td>Karloveská 34</td><td class="num">8</td><td class="num">8</td><td>zatiaľ nepomenované</td></tr>
+        <tr><td>Krížna 47</td><td class="num">—</td><td class="num">5</td><td>zatiaľ nepomenované</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Ako to vyzerá v praxi</h3>
+  <p>Toto je dnes výstup nástroja, keď zadáš IČO firmy stojacej za River Parkom. Ani jeden z tých názvov by človek s J&amp;T nespojil:</p>
+  <div class="vypis">
+    <div class="h">Na tej istej adrese sídlia ďalší navrhovatelia (13)</div>
+    <div>Bratislavské podhradie, s.r.o. <span class="d">— IČO 35835672</span></div>
+    <div>DNV 3 s.r.o. <span class="d">— IČO 47849711</span></div>
+    <div>FUXTON, s.r.o. <span class="d">— IČO 35833513</span></div>
+    <div>Kalos, s. r. o. <span class="d">— IČO 36392966</span></div>
+    <div>Lomnická, s.r.o. <span class="d">— IČO 35837403</span></div>
+    <div>Menolli, s.r.o. <span class="d">— IČO 36666602</span></div>
+    <div>Panorama byty, s.r.o. <span class="d">— IČO 46627596</span></div>
+    <div>Popper Capital, s.r.o. <span class="d">— IČO 35957174</span></div>
+    <div>Starland Holding a.s. <span class="d">— IČO 35683015</span></div>
+    <div>Wayden, s. r. o. <span class="d">— IČO 46075453</span></div>
+    <div>Wendel, s.r.o. <span class="d">— IČO 47243392</span></div>
+    <div>Westend Crossing, s.r.o. <span class="d">— IČO 47928905</span></div>
+    <div class="d">… a ďalšie</div>
+  </div>
+  <div class="zist">
+    <b>Prečo je to silné</b>
+    <p>Index je postavený <strong>z dát, nie z môjho zoznamu</strong>. Funguje aj pre skupiny, ktoré v tabuľke nie sú — napríklad Panenská 6 alebo Krížna 47, kde sedia <em>RV Development 1</em> a <em>RV Development 2</em>. Stačí, že raz podali zámer.</p>
+  </div>
+</section>
+
+<!-- 4 -->
+<section>
+  <h2><span class="n">04</span>Kto v skutočnosti podáva zámery</h2>
+  <p>Rebríček najaktívnejších navrhovateľov nevyzerá tak, ako by človek čakal — a práve to je celé vysvetlenie, prečo je nástroj potrebný.</p>
+  <div class="tab">
+    <table>
+      <thead><tr><th>navrhovateľ</th><th class="num">zámerov</th></tr></thead>
+      <tbody>
+        <tr><td>Národná diaľničná spoločnosť</td><td class="num">29</td></tr>
+        <tr><td>Hlavné mesto SR Bratislava</td><td class="num">25</td></tr>
+        <tr><td>NAFTA</td><td class="num">27</td></tr>
+        <tr><td>SLOVNAFT</td><td class="num">26</td></tr>
+        <tr><td>Volkswagen Slovakia</td><td class="num">24</td></tr>
+        <tr><td>Železnice Slovenskej republiky</td><td class="num">10</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="zist">
+    <b>Čo z toho vyplýva</b>
+    <p>Hore sú <strong>infraštruktúra, priemysel a samospráva</strong> — subjekty, ktoré podávajú pod vlastným menom. Developeri v rebríčku nie sú vôbec, lebo <strong>každý projekt majú na inej firme</strong>. Bez rozpoznávania skupín sú preto v štatistike neviditeľní, hoci postavia väčšinu bytov v meste.</p>
+  </div>
+</section>
+
+<!-- 5 -->
+<section>
+  <h2><span class="n">05</span>Dôkaz, že podľa mena to nejde</h2>
+  <p>V rebríčku sa tá istá firma objavila viackrát — s rovnakým IČO a rôznym zápisom mena:</p>
+  <ul>
+    <li><code>NAFTA a.s.</code> a <code>NAFTA a. s.</code> — jedna medzera</li>
+    <li><code>SLOVNAFT, a. s.</code> a <code>SLOVNAFT, a.s.</code></li>
+    <li><code>Hlavné mesto Slovenskej republiky Bratislava</code> a <code>Hlavné mesto SR Bratislava</code></li>
+    <li>pri povoľujúcich orgánoch <code>Mestská časť Bratislava - Ružinov</code> a <code>… – Ružinov</code> — spojovník verzus pomlčka, čím sa 45 konaní rozpadlo na dve skupiny</li>
+  </ul>
+  <p>Presne preto celý nástroj spája cez IČO a nikdy cez názov. Toto nie je teoretický argument, je to <strong>zmerané na reálnych dátach</strong>.</p>
+</section>
+
+<!-- 6 -->
+<section>
+  <h2><span class="n">06</span>Nový signál: firma pomenovaná podľa projektu</h2>
+  <p>V <strong>33 %</strong> zámerov zdieľa názov firmy slovo s názvom projektu. To je použiteľný párovací signál, ktorý sme doteraz nemali:</p>
+  <div class="tab">
+    <table>
+      <thead><tr><th>projekt</th><th>firma</th></tr></thead>
+      <tbody>
+        <tr><td>Obytný súbor RÍNOK RAČA</td><td>Rínok Rača s.r.o.</td></tr>
+        <tr><td>Obytný súbor Nový Svet – Juh</td><td>Nový Svet Development, s.r.o.</td></tr>
+        <tr><td>Polyfunkčná stavba TWIN CITY</td><td>Twin City VIII, s.r.o.</td></tr>
+        <tr><td>„Pri Mlynoch“</td><td>Pri Mlynoch, s.r.o.</td></tr>
+        <tr><td>LEAF Academy Vištuk</td><td>SPV Vištuk, s.r.o.</td></tr>
+        <tr><td>Skladová hala Logistyx</td><td>LOGISTYX, s.r.o.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Funguje to aj opačne: keď poznáš len komerčný názov, dá sa hľadať firma, ktorá ho má v mene. Pri veľkých hráčoch to nepomôže — <em>FUXTON</em> ani <em>Menolli</em> o projekte nepovedia nič — ale pri strednej triede projektov je to lacná trefa.</p>
+</section>
+
+<!-- 7 -->
+<section>
+  <h2><span class="n">07</span>Fázy z EIA nedostaneme</h2>
+  <p>Dve tretiny bratislavských zámerov (1 548 z 2 303) majú stav <em>„Akcia je ukončená v procese EIA“</em>. To hovorí len toľko, že posudzovanie skončilo — nie či sa stavia, či stojí, alebo či sa nikdy nezačalo.</p>
+  <div class="zist">
+    <b>Potvrdenie skoršieho plánu</b>
+    <p>Fázy projektu na mape teda <strong>musia prísť z úradných tabúľ</strong>. Dobrá správa: CUET (Centrálna úradná elektronická tabuľa) je medzitým overená — bratislavské mestské časti tam publikujú a vyhľadáva sa obyčajným odkazom.</p>
+  </div>
+</section>
+
+<!-- 8 -->
+<section>
+  <h2><span class="n">08</span>Čo z toho je už v nástroji</h2>
+  <div class="hot">
+    <b>Zapracované dnes</b>
+    <ul>
+      <li><strong>Index adries zo všetkých bratislavských zámerov</strong> — 147 adries s dvomi a viac firmami. Nástroj pri každej firme vypíše, kto ďalší sídli na tej istej adrese.</li>
+      <li>Index je <strong>súbor vedľa programu</strong>, dá sa prepočítať po ďalšom zbere.</li>
+      <li>Funguje aj pre skupiny, ktoré v ručnej tabuľke nie sú.</li>
+    </ul>
+  </div>
+  <h3>Čo by som pridal ďalej</h3>
+  <ul>
+    <li><strong>Signál „firma pomenovaná podľa projektu“</strong> — 33 % úspešnosť, pár riadkov kódu.</li>
+    <li><strong>Zjednotenie pomlčiek a medzier</strong> v názvoch orgánov, aby sa konania nerozpadali.</li>
+    <li><strong>Parcelné čísla z rozhodnutí</strong> — jediná cesta k presnej polohe, keď text ulicu nespomína.</li>
+  </ul>
+</section>
+
+<footer>
+  <p>Zber: register EIA (Enviroportál, Ministerstvo životného prostredia SR), 18 673 zámerov, 4. 9. 2026. Detaily pre Bratislavský kraj: 2 303 záznamov. Údaje o firmách z RPO (Register právnických osôb, Štatistický úrad SR).</p>
+  <p>Percentá sú merané na tomto zbere, nie odhadované. Kde bol skorší odhad nesprávny, je to označené.</p>
+</footer>
+
+</div>
+</body>
+</html>
