@@ -263,6 +263,8 @@ function kresli(){
   $('#pocty').innerHTML='<b>'+n+'</b> zámerov<br>z toho <b>'+np+
     '</b> s presnou polohou<br>a <b>'+npl+'</b> s výkresmi';
   cipy();
+  pocty_v_zozname('mc','mc','všetky mestské časti');
+  pocty_v_zozname('sk','sk','všetky skupiny');
 }
 
 /* ---------- účel stavby ----------
@@ -281,6 +283,24 @@ function cipy(){
       +esc(t)+' <b>'+n+'</b></button>';
   }).join('');
   $('#zrus').hidden = filtr.typ.size===0;
+}
+
+/* Počty aj v rozbaľovacích zoznamoch — každý ráta tak, ako keby jeho
+   vlastný filter nebol nastavený. Inak by pri výbere všetko okrem
+   vybranej položky spadlo na nulu a zoznam by stratil zmysel. */
+function pocty_v_zozname(id, kluc, prazdne){
+  const sel=$('#'+id), bolo=sel.value, poc={};
+  Z.features.forEach(f=>{
+    const p=f.properties, ulozene=filtr[kluc];
+    filtr[kluc]='';
+    if(vyhovuje(p)){const v=p[kluc==='mc'?'obec':'skupina']||''; if(v) poc[v]=(poc[v]||0)+1;}
+    filtr[kluc]=ulozene;
+  });
+  [...sel.options].forEach(o=>{
+    if(!o.value){o.textContent=prazdne; return;}
+    o.textContent=o.value+' ('+(poc[o.value]||0)+')';
+  });
+  sel.value=bolo;
 }
 
 /* ---------- panel ---------- */
