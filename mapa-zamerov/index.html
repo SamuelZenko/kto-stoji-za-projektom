@@ -114,11 +114,28 @@ svg.tahame{cursor:grabbing}
       <select id="sk"><option value="">všetky</option></select>
     </div>
     <div>
+      <h2>Fáza</h2>
+      <select id="fz">
+        <option value="">všetky fázy</option>
+        <option value="zámer">zámer</option>
+        <option value="posúdené">posúdené</option>
+        <option value="povolené">povolené</option>
+        <option value="dokončené">dokončené</option>
+      </select>
+    </div>
+    <div>
       <h2>Poloha</h2>
       <select id="pr">
         <option value="">presná aj približná</option>
         <option value="presná">len presná</option>
         <option value="približná">len približná</option>
+      </select>
+    </div>
+    <div>
+      <h2>Podklady</h2>
+      <select id="pl">
+        <option value="">všetky</option>
+        <option value="1">len s výkresmi</option>
       </select>
     </div>
     <div>
@@ -128,9 +145,11 @@ svg.tahame{cursor:grabbing}
     <div>
       <h2>Legenda</h2>
       <div class="legenda">
-        <div><span class="tecka" style="background:var(--acc)"></span> známa skupina</div>
-        <div><span class="tecka" style="background:var(--mu)"></span> firma bez skupiny</div>
-        <div><span class="tecka duta"></span> približná poloha</div>
+        <div><span class="tecka" style="background:#9AA6AE"></span> zámer</div>
+        <div><span class="tecka" style="background:#5B7C99"></span> posúdené</div>
+        <div><span class="tecka" style="background:#C67A1E"></span> povolené</div>
+        <div><span class="tecka" style="background:#0B6B5E"></span> dokončené</div>
+        <div style="margin-top:4px"><span class="tecka duta"></span> približná poloha</div>
       </div>
     </div>
   </aside>
@@ -186,10 +205,14 @@ function nastavViewBox(){
 }
 
 /* ---------- vykreslenie ---------- */
+const FARBA={'zámer':'#9AA6AE','posúdené':'#5B7C99','povolené':'#C67A1E','dokončené':'#0B6B5E'};
+
 function vyhovuje(p){
   if(filtr.mc && p.obec!==filtr.mc) return false;
   if(filtr.sk && (p.skupina||'—')!==filtr.sk) return false;
   if(filtr.pr && p.presnost!==filtr.pr) return false;
+  if(filtr.fz && p.faza!==filtr.fz) return false;
+  if(filtr.pl && !(p.plany&&p.plany.length)) return false;
   if(filtr.q){
     const h=(p.nazov+' '+p.firma+' '+p.ico+' '+(p.skupina||'')).toLowerCase();
     if(!h.includes(filtr.q)) return false;
@@ -205,20 +228,22 @@ function kresli(){
     const nz=(f.properties&&(f.properties.NAZOV_ZUJ||f.properties.MC_LABEL||''))||'';
     s+='<path class="mc'+(filtr.mc&&String(nz).includes(filtr.mc)?' zvyraz':'')+'" d="'+cesta(f.geometry)+'"></path>';
   });
-  let n=0, np=0;
+  let n=0, np=0, npl=0;
   Z.features.forEach((f,i)=>{
     const p=f.properties; if(!vyhovuje(p)) return;
     n++; if(p.presnost==='presná') np++;
+    if(p.plany&&p.plany.length) npl++;
     const q=px(f.geometry.coordinates);
-    const skup=!!p.skupina;
     const presna=p.presnost==='presná';
+    const c=FARBA[p.faza]||'#9AA6AE';
     s+='<circle class="bod" data-i="'+i+'" cx="'+q[0].toFixed(5)+'" cy="'+q[1].toFixed(5)+'" r="'+
-      (presna?r*1.5:r*1.1).toFixed(5)+'" fill="'+(presna?(skup?'var(--acc)':'var(--mu)'):'none')+
-      '" stroke="'+(skup?'var(--acc)':'var(--mu)')+'" stroke-width="'+(r*0.4).toFixed(5)+
-      '" opacity="'+(presna?0.9:0.55)+'"></circle>';
+      (presna?r*1.5:r*1.1).toFixed(5)+'" fill="'+(presna?c:'none')+
+      '" stroke="'+c+'" stroke-width="'+(r*0.4).toFixed(5)+
+      '" opacity="'+(presna?0.9:0.6)+'"></circle>';
   });
   g.innerHTML=s;
-  $('#pocty').innerHTML='<b>'+n+'</b> zámerov<br>z toho <b>'+np+'</b> s presnou polohou';
+  $('#pocty').innerHTML='<b>'+n+'</b> zámerov<br>z toho <b>'+np+
+    '</b> s presnou polohou<br>a <b>'+npl+'</b> s výkresmi';
 }
 
 /* ---------- panel ---------- */
@@ -234,8 +259,22 @@ function ukaz(i){
     +'<dl><dt>povoľuje</dt><dd>'+esc(p.urad||'—')+'</dd></dl>'
     +'<dl><dt>stav</dt><dd>'+esc(p.stav||'—')+'</dd></dl>'
     +'<dl><dt>mestská časť</dt><dd>'+esc(p.obec)+'</dd></dl>'
-    +'<dl><dt>poloha</dt><dd>'+esc(p.presnost)+(p.presnost==='približná'?' — bod je v ťažisku mestskej časti, nie na stavbe':'')+'</dd></dl>'
+    +'<dl><dt>fáza</dt><dd><span class="znacka" style="background:transparent;color:'
+      +(FARBA[p.faza]||'var(--mu)')+';border:1px solid '+(FARBA[p.faza]||'var(--mu)')+'">'
+      +esc(p.faza||'—')+'</span>'
+      +(p.doklad?'<br><span style="font-size:12px;color:var(--mu)">z úradnej tabule: '+esc(p.doklad)+'</span>':'')+'</dd></dl>'
+    +'<dl><dt>poloha</dt><dd>'+esc(p.presnost)
+      +(p.ulica?' — '+esc(p.ulica):'')
+      +(p.presnost==='približná'?' — bod je v ťažisku mestskej časti, nie na stavbe':'')+'</dd></dl>'
     +'<dl><dt>zmena</dt><dd>'+esc(p.zmena||'—')+'</dd></dl>'
+    +(p.plany&&p.plany.length
+       ? '<div><h2 style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin:6px 0 6px;font-family:\'IBM Plex Mono\',monospace">Výkresy a situácie ('
+         +p.plany.length+' z '+(p.dok||0)+' dokumentov)</h2>'
+         +p.plany.map(d=>'<div style="font-size:13px;margin:4px 0"><a href="'+esc(d.u)
+           +'" target="_blank" rel="noopener">'+esc(d.p)+'</a> <span class="mono" style="color:var(--mu);font-size:11.5px">'
+           +esc(d.t||'')+(d.v?' · '+(d.v>=1e6?(d.v/1e6).toFixed(1)+' MB':Math.round(d.v/1000)+' kB'):'')
+           +'</span></div>').join('')+'</div>'
+       : (p.dok?'<dl><dt>spis</dt><dd>'+p.dok+' dokumentov, žiadne výkresy</dd></dl>':''))
     +'<p><a href="https://www.enviroportal.sk/eia/detail/'+esc(p.id)+'" target="_blank" rel="noopener">otvoriť zámer na enviroportáli</a></p>';
 }
 
@@ -274,10 +313,11 @@ function pripoj(){
   $('#plus').onclick=()=>posun(0,0,0.8);
   $('#minus').onclick=()=>posun(0,0,1.25);
   $('#reset').onclick=nastavViewBox;
-  ['q','mc','sk','pr'].forEach(id=>{
+  ['q','mc','sk','pr','fz','pl'].forEach(id=>{
     $('#'+id).addEventListener('input',()=>{
       filtr={q:$('#q').value.trim().toLowerCase(), mc:$('#mc').value,
-             sk:$('#sk').value, pr:$('#pr').value};
+             sk:$('#sk').value, pr:$('#pr').value,
+             fz:$('#fz').value, pl:$('#pl').value};
       kresli();
     });
   });
