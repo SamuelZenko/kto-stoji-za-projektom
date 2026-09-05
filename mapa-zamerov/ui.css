@@ -42,10 +42,20 @@ button,input,select{font-family:inherit}
 #map{position:absolute;inset:0}
 
 /* ---------- panel nad mapou ---------- */
-.ovladanie{position:absolute;left:20px;top:20px;width:326px;max-height:calc(100% - 130px);
+.ovladanie{position:absolute;left:20px;top:20px;width:326px;min-width:250px;max-width:640px;
+  max-height:calc(100% - 130px);
   background:var(--panel);border:1px solid var(--ln);border-radius:var(--r);
-  box-shadow:var(--tien);padding:18px;display:flex;flex-direction:column;gap:15px;
-  overflow-y:auto;z-index:4}
+  box-shadow:var(--tien);display:flex;z-index:4}
+.ovl-vnutro{flex:1;min-width:0;min-height:0;padding:18px;overflow-y:auto;
+  display:flex;flex-direction:column;gap:15px}
+/* ťahadlo na šírku panela */
+.tahadlo{width:10px;flex:none;cursor:col-resize;position:relative;
+  border-radius:0 var(--r) var(--r) 0;border-left:1px solid transparent}
+.tahadlo:hover,.tahadlo.ide{background:var(--karta2);border-left-color:var(--ln)}
+.tahadlo::after{content:"";position:absolute;left:3.5px;top:50%;transform:translateY(-50%);
+  width:3px;height:38px;border-radius:2px;background:var(--ln2)}
+.tahadlo:hover::after,.tahadlo.ide::after{background:var(--ac)}
+body.tiaham{cursor:col-resize;user-select:none}
 .hladanie{position:relative}
 .hladanie input{width:100%;background:var(--karta);border:1px solid var(--ln);
   border-radius:var(--r2);color:var(--tx);padding:11px 12px 11px 38px;font-size:14px}
@@ -89,10 +99,15 @@ button,input,select{font-family:inherit}
 .vsetky{background:transparent;border:0;color:var(--ac2);font-size:13px;cursor:pointer;
   padding:9px 0 0;text-align:left;font-weight:500}
 
-/* ---------- legenda dole ---------- */
-.legenda{position:absolute;left:20px;bottom:20px;z-index:4;display:flex;gap:18px;
+/* ---------- spodná lišta: Vrstvy + legenda ----------
+   Vľavo dole, lebo vpravo ich prekrýva vysunutá karta detailu. */
+.spodok{position:absolute;left:20px;bottom:20px;z-index:5;display:flex;gap:10px;
+  align-items:stretch;flex-wrap:wrap;max-width:calc(100% - 40px);
+  transition:max-width .24s cubic-bezier(.4,0,.2,1)}
+body:has(.detail.on) .spodok{max-width:calc(100% - 494px)}
+.legenda{display:flex;gap:18px;align-items:center;
   background:var(--panel);border:1px solid var(--ln);border-radius:var(--r);
-  box-shadow:var(--tien);padding:13px 18px;flex-wrap:wrap;max-width:calc(100% - 300px)}
+  box-shadow:var(--tien);padding:13px 18px;flex-wrap:wrap}
 .legenda .r{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tx2);
   cursor:pointer;white-space:nowrap}
 .legenda .r:hover{color:var(--tx)}
@@ -102,7 +117,9 @@ button,input,select{font-family:inherit}
 
 /* ---------- ovládanie mapy ---------- */
 .mapctrl{position:absolute;right:20px;bottom:78px;z-index:4;display:flex;
-  flex-direction:column;gap:9px}
+  flex-direction:column;gap:9px;transition:right .24s cubic-bezier(.4,0,.2,1)}
+/* karta detailu je 448 px — ovládanie sa pred ňu uhne, nech ostane po ruke */
+body:has(.detail.on) .mapctrl{right:468px}
 .mapctrl .sk{background:var(--panel);border:1px solid var(--ln);border-radius:var(--r2);
   box-shadow:var(--tien);display:flex;flex-direction:column;overflow:hidden}
 .mapctrl button{width:44px;height:44px;background:transparent;border:0;color:var(--tx);
@@ -113,15 +130,44 @@ button,input,select{font-family:inherit}
 .mapctrl .pridat{background:var(--ac);border-color:var(--ac);color:#fff}
 .mapctrl .pridat:hover{background:var(--ac);filter:brightness(1.14)}
 body.pridavam .mapctrl .pridat{background:var(--karta2);border-color:var(--ln2);color:var(--tx)}
-.vrstvy-tl{position:absolute;right:20px;top:20px;z-index:4;background:var(--panel);
-  border:1px solid var(--ln);border-radius:var(--r2);box-shadow:var(--tien);
+.vrstvy-tl{flex:none;background:var(--panel);
+  border:1px solid var(--ln);border-radius:var(--r);box-shadow:var(--tien);
   color:var(--tx);padding:11px 15px;font-size:13.5px;font-weight:500;cursor:pointer;
-  display:flex;align-items:center;gap:8px}
+  display:flex;align-items:center;gap:8px;white-space:nowrap}
 .vrstvy-tl:hover{background:var(--karta2)}
-.pop{position:absolute;right:20px;top:70px;z-index:6;background:var(--panel);
+.pop{position:absolute;left:20px;bottom:78px;z-index:6;background:var(--panel);
   border:1px solid var(--ln2);border-radius:var(--r);padding:16px;width:238px;
   display:none;flex-direction:column;gap:14px;box-shadow:var(--tien)}
 .pop.on{display:flex}
+
+/* ---------- ponuka po pravom kliku ---------- */
+.ponuka{position:absolute;z-index:9;background:var(--panel);border:1px solid var(--ln2);
+  border-radius:var(--r);box-shadow:var(--tien);padding:6px;min-width:246px;
+  display:none;flex-direction:column}
+.ponuka.on{display:flex}
+.ponuka .hl{padding:8px 10px 9px;border-bottom:1px solid var(--ln);margin-bottom:5px}
+.ponuka .hl b{display:block;font-size:12.5px;color:var(--tx);
+  font-family:ui-monospace,"SF Mono",Menlo,monospace;font-variant-numeric:tabular-nums}
+.ponuka .hl span{font-size:11.5px;color:var(--tx3)}
+.ponuka button{display:flex;align-items:center;gap:10px;width:100%;background:transparent;
+  border:0;color:var(--tx2);border-radius:var(--r2);padding:9px 10px;font-size:13.5px;
+  cursor:pointer;text-align:left;font-family:inherit}
+.ponuka button:hover{background:var(--karta2);color:var(--tx)}
+.ponuka button .k{margin-left:auto;color:var(--tx3);font-size:11.5px}
+.ponuka button svg{width:15px;height:15px;flex:none;color:var(--tx3)}
+.ponuka button:hover svg{color:var(--ac2)}
+.ponuka .ciara{height:1px;background:var(--ln);margin:5px 4px}
+
+.odkaz-hlaska{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(8px);
+  z-index:9;background:var(--karta2);border:1px solid var(--ln2);color:var(--tx);
+  border-radius:var(--r2);padding:10px 16px;font-size:13px;box-shadow:var(--tien);
+  opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
+.odkaz-hlaska.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* kompas — ukáže sa, až keď je mapa otočená alebo naklonená */
+.mapctrl .kompas{display:none}
+body.otocena .mapctrl .kompas{display:flex}
+.mapctrl .kompas svg{transition:transform .1s linear}
 .pop h4{margin:0 0 6px;font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--tx3)}
 .pop label{display:flex;align-items:center;gap:10px;font-size:13.5px;cursor:pointer;
   color:var(--tx2);padding:3px 0}
@@ -242,16 +288,22 @@ body.pridavam .mapctrl .pridat{background:var(--karta2);border-color:var(--ln2);
 
 @media (max-width:1100px){
   .detail{width:380px}
-  .legenda{max-width:calc(100% - 40px)}
+  body:has(.detail.on) .spodok{max-width:calc(100% - 426px)}
+  body:has(.detail.on) .mapctrl{right:400px}
 }
 @media (max-width:760px){
   .lista{padding:0 14px;gap:12px}
   .lista .pod,.znacka .kto{display:none}
   .lista nav{gap:14px}
-  .ovladanie{left:12px;right:12px;top:12px;width:auto;max-height:44vh}
-  .legenda{left:12px;right:12px;bottom:12px;gap:12px;padding:11px 13px}
+  /* na mobile je panel cez celú šírku, ťahadlo nemá čo meniť */
+  .ovladanie{left:12px;right:12px;top:12px;width:auto!important;max-height:44vh}
+  .tahadlo{display:none}
+  .spodok{left:12px;right:12px;bottom:12px;max-width:none}
+  body:has(.detail.on) .spodok{max-width:none}
+  .legenda{gap:12px;padding:11px 13px}
   .detail{width:100%}
-  .mapctrl{bottom:130px;right:12px}
-  .vrstvy-tl{right:12px;top:auto;bottom:130px}
-  .pop{right:12px;top:auto;bottom:186px}
+  .mapctrl{bottom:150px;right:12px}
+  body:has(.detail.on) .mapctrl{right:12px}
+  .pop{left:12px;right:12px;width:auto;bottom:78px}
+  .ponuka{min-width:0;width:calc(100% - 24px)}
 }

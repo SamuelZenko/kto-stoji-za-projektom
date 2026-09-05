@@ -3,6 +3,7 @@
 const $=s=>document.querySelector(s);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cis=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+const sklon=n=>n===1?'zámer':(n<5?'zámery':'zámerov');
 const FAZY=[['zámer','#D6165A'],['posúdené','#3B82D9'],['povolené','#12A67A'],
             ['dokončené','#7FC4EA']];
 const FARBA=Object.fromEntries(FAZY);
@@ -650,6 +651,191 @@ prep('v-komunita','kom','kom-txt','moj','moj-txt');
 
 $('#tl-plus').onclick=()=>map.zoomIn();
 $('#tl-minus').onclick=()=>map.zoomOut();
-$('#tl-domov').onclick=()=>map.easeTo(DOMOV);
+$('#tl-domov').onclick=()=>map.easeTo({...DOMOV,bearing:0,pitch:0});
+$('#tl-kompas').onclick=()=>map.easeTo({bearing:0,pitch:0});
 $('#tl-pridat').onclick=()=>pridavam?zrusPridavanie():zacniPridavanie();
 $('#navod-zrus').onclick=()=>{zrusPridavanie(); zavriDetail();};
+
+/* ---------- šírka bočného panela ----------
+   Ukladá sa, aby si ju nemusel nastavovať pri každom otvorení. */
+const KLUC_SIRKA='mib-sirka-panela', SIRKA_ZAKL=326, SIRKA_MIN=250, SIRKA_MAX=640;
+(function(){
+  const p=$('#ovladanie'), t=$('#tahadlo');
+  const nastav=w=>{p.style.width=Math.round(w)+'px';};
+  const zapamataj=()=>{try{localStorage.setItem(KLUC_SIRKA,p.offsetWidth);}catch(e){}};
+  let bolo=0; try{ bolo=+localStorage.getItem(KLUC_SIRKA)||0; }catch(e){}
+  if(bolo>=SIRKA_MIN&&bolo<=SIRKA_MAX) nastav(bolo);
+
+  /* pohyb a pustenie počúvame na okne, nie na ťahadle — kurzor pri
+     rýchlom ťahaní z neho ujde a zachytávanie ukazovateľa nemusí vyjsť */
+  let tiaham=false, od=0, zaciatok=0;
+  t.addEventListener('pointerdown',e=>{
+    tiaham=true; od=e.clientX; zaciatok=p.offsetWidth;
+    t.classList.add('ide'); document.body.classList.add('tiaham');
+    try{ t.setPointerCapture(e.pointerId); }catch(err){}
+    e.preventDefault();
+  });
+  window.addEventListener('pointermove',e=>{
+    if(!tiaham) return;
+    nastav(Math.max(SIRKA_MIN, Math.min(SIRKA_MAX, zaciatok + e.clientX - od)));
+  });
+  const koniec=()=>{
+    if(!tiaham) return;
+    tiaham=false;
+    t.classList.remove('ide'); document.body.classList.remove('tiaham'); zapamataj();
+  };
+  window.addEventListener('pointerup',koniec);
+  window.addEventListener('pointercancel',koniec);
+  t.addEventListener('dblclick',()=>{nastav(SIRKA_ZAKL); zapamataj();});
+})();
+
+/* ---------- otáčanie a naklonenie ----------
+   Pravý klik teraz patrí ponuke, tak sa rotácia presunula na stlačené
+   koliesko a na Shift + ťahanie. */
+map.dragRotate.disable();
+(function(){
+  const c=map.getCanvasContainer();
+  let otacam=false, px=0, py=0;
+  c.addEventListener('mousedown',e=>{
+    if(e.button!==1 && !(e.button===0 && e.shiftKey)) return;
+    otacam=true; px=e.clientX; py=e.clientY;
+    map.dragPan.disable(); document.body.classList.add('tiaham');
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove',e=>{
+    if(!otacam) return;
+    map.setBearing(map.getBearing() - (e.clientX-px)*0.42);
+    map.setPitch(Math.max(0, Math.min(72, map.getPitch() - (e.clientY-py)*0.36)));
+    px=e.clientX; py=e.clientY;
+  });
+  window.addEventListener('mouseup',()=>{
+    if(!otacam) return;
+    otacam=false; map.dragPan.enable(); document.body.classList.remove('tiaham');
+  });
+  // koliesko myši inak v Chrome spustí automatické rolovanie
+  c.addEventListener('auxclick',e=>{ if(e.button===1) e.preventDefault(); });
+})();
+map.on('rotate',ukazKompas); map.on('pitch',ukazKompas);
+function ukazKompas(){
+  const b=map.getBearing(), p=map.getPitch();
+  document.body.classList.toggle('otocena', Math.abs(b)>0.5 || p>0.5);
+  $('#ruzica').style.transform='rotate('+(-b)+'deg)';
+}
+
+/* ---------- ponuka po pravom kliku ---------- */
+function hlaska(t){
+  const h=$('#hlaska'); h.textContent=t; h.classList.add('on');
+  clearTimeout(hlaska.t); hlaska.t=setTimeout(()=>h.classList.remove('on'),2400);
+}
+async function doSchranky(text,sprava){
+  try{ await navigator.clipboard.writeText(text); hlaska(sprava); }
+  catch(e){
+    // schránka je bez https zakázaná — aspoň nech sa dá text označiť
+    const p=document.createElement('textarea');
+    p.value=text; p.style.cssText='position:fixed;top:-200px'; document.body.appendChild(p);
+    p.select();
+    try{ document.execCommand('copy'); hlaska(sprava); }
+    catch(e2){ hlaska('Skopíruj ručne: '+text); }
+    p.remove();
+  }
+}
+const suradniceText=l=>l.lat.toFixed(6)+', '+l.lng.toFixed(6);
+const odkazNaMiesto=l=>location.origin+location.pathname
+  +'#'+l.lat.toFixed(6)+','+l.lng.toFixed(6)+','+map.getZoom().toFixed(1);
+
+function zavriPonuku(){ $('#ponuka').classList.remove('on'); }
+
+function ponukaMiesta(e){
+  const l=e.lngLat, n=$('#ponuka');
+  // zámery v okolí — 300 m stačí na blok, nie na celú štvrť
+  const blizke=(Z?Z.features:[]).filter(f=>f.properties.presnost==='presná'
+    && vyhovuje(f.properties)
+    && vzdialenost(l.lng,l.lat,f.geometry.coordinates[0],f.geometry.coordinates[1])<300);
+  const ikona=d=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+    +'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';
+  n.innerHTML='<div class="hl"><b>'+suradniceText(l)+'</b>'
+      +'<span>'+(blizke.length?blizke.length+' '+sklon(blizke.length)+' do 300 m'
+                              :'v okolí 300 m nič nemáme')+'</span></div>'
+    +'<button data-a="pridat">'+ikona('<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><path d="M12 7v6M9 10h6"/>')
+      +'Pridať sem zámer</button>'
+    +'<button data-a="sur">'+ikona('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5h10"/>')
+      +'Kopírovať súradnice</button>'
+    +'<button data-a="odkaz">'+ikona('<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>')
+      +'Kopírovať odkaz na toto miesto</button>'
+    +'<div class="ciara"></div>'
+    +(blizke.length?'<button data-a="okolie">'+ikona('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>')
+      +'Zámery v okolí<span class="k">'+blizke.length+'</span></button>':'')
+    +'<button data-a="google">'+ikona('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/>')
+      +'Otvoriť v Google Maps<span class="k">↗</span></button>'
+    +'<button data-a="zbgis">'+ikona('<path d="M4 7l5-2 6 2 5-2v12l-5 2-6-2-5 2z"/><path d="M9 5v12M15 7v12"/>')
+      +'Otvoriť v ZBGIS (kataster)<span class="k">↗</span></button>'
+    +'<div class="ciara"></div>'
+    +'<button data-a="sem">'+ikona('<path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="3"/>')
+      +'Priblížiť sem</button>';
+
+  n.classList.add('on');
+  // aby sa ponuka nevysunula mimo okna
+  const r=n.getBoundingClientRect(), pl=$('#plocha').getBoundingClientRect();
+  n.style.left=Math.min(e.point.x, pl.width - r.width - 12)+'px';
+  n.style.top=Math.min(e.point.y, pl.height - r.height - 12)+'px';
+
+  n.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    zavriPonuku();
+    switch(b.dataset.a){
+      case 'pridat': zacniPridavanie(); formularBodu(l); break;
+      case 'sur': doSchranky(suradniceText(l),'Súradnice skopírované'); break;
+      case 'odkaz': doSchranky(odkazNaMiesto(l),'Odkaz na toto miesto skopírovaný'); break;
+      case 'okolie': ukazOkolie(l,blizke); break;
+      case 'google': window.open('https://www.google.com/maps/search/?api=1&query='
+        +l.lat.toFixed(6)+','+l.lng.toFixed(6),'_blank','noopener'); break;
+      case 'zbgis': window.open('https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?bm=zbgis'
+        +'&z='+Math.round(Math.max(map.getZoom(),17))
+        +'&c='+l.lng.toFixed(6)+','+l.lat.toFixed(6),'_blank','noopener'); break;
+      case 'sem': map.easeTo({center:[l.lng,l.lat],zoom:Math.max(map.getZoom()+2,16)}); break;
+    }
+  });
+}
+/* hrubá vzdialenosť v metroch — na 300 m v Bratislave to stačí */
+function vzdialenost(x1,y1,x2,y2){
+  const k=Math.cos(y1*Math.PI/180);
+  return Math.hypot((x2-x1)*k, y2-y1)*111320;
+}
+function ukazOkolie(l,zoznam){
+  const zor=zoznam.slice().sort((a,b)=>
+    vzdialenost(l.lng,l.lat,a.geometry.coordinates[0],a.geometry.coordinates[1])
+    -vzdialenost(l.lng,l.lat,b.geometry.coordinates[0],b.geometry.coordinates[1]));
+  $('#detail').className='detail on'; $('#detail').scrollTop=0;
+  $('#detail').innerHTML='<button class="zavri" onclick="zavriDetail()">×</button>'
+    +'<div class="stitky"><span class="stitok b">V OKOLÍ 300 M</span></div>'
+    +'<h2>'+zor.length+' '+sklon(zor.length)+'</h2>'
+    +'<div class="miesto">'+suradniceText(l)+'</div>'
+    +'<div class="dok">'+zor.map(f=>{
+      const p=f.properties, m=Math.round(vzdialenost(l.lng,l.lat,
+        f.geometry.coordinates[0],f.geometry.coordinates[1]));
+      return '<div class="r" data-id="'+esc(p.id)+'">'
+        +(p.nahlad?'<img class="mini" src="'+esc(p.nahlad)+'" alt="" loading="lazy">'
+                 :'<span class="mini prazdna">'+esc((p.faza||'').slice(0,4))+'</span>')
+        +'<span class="nm">'+esc(p.nazov)+'</span>'
+        +'<span class="vel">'+m+' m</span></div>';}).join('')+'</div>';
+  $('#detail').querySelectorAll('.dok .r').forEach(r=>r.onclick=()=>{
+    const f=Z.features.find(x=>x.properties.id===r.dataset.id);
+    if(f){ ukaz(f.properties); naMape(f.properties.id); }});
+}
+
+map.on('contextmenu',e=>{
+  if(e.originalEvent) e.originalEvent.preventDefault();
+  if(!pridavam) ponukaMiesta(e);
+});
+/* zatvára len ľavý klik mimo ponuky — pravý ju práve otvoril */
+document.addEventListener('mousedown',e=>{
+  if(e.button===0 && !e.target.closest('#ponuka')) zavriPonuku();});
+map.on('dragstart',zavriPonuku);
+map.on('zoomstart',zavriPonuku);
+
+/* odkaz na miesto: #lat,lon,zoom — DOMOV zostáva celé mesto, nech sa
+   tlačidlom ⌖ dá vrátiť na prehľad aj po otvorení zdieľaného odkazu */
+(function(){
+  const m=(location.hash||'').match(/^#(-?\d+\.?\d*),(-?\d+\.?\d*)(?:,(\d+\.?\d*))?$/);
+  if(!m) return;
+  map.jumpTo({center:[+m[2],+m[1]], zoom:m[3]?+m[3]:16});
+})();
