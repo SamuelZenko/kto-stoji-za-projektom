@@ -659,6 +659,7 @@ prep('v-nazvy','bod-txt');
    isteho zdroja ako ulice v podklade, takze sadnu na cestu presne. */
 let mhdStav='ne';
 $('#v-mhd').onchange=async e=>{
+  $('#legenda-mhd').hidden=!e.target.checked;
   if(!e.target.checked){
     if(map.getLayer('mhd-v')) map.setLayoutProperty('mhd-v','visibility','none');
     return;
@@ -671,7 +672,7 @@ $('#v-mhd').onchange=async e=>{
   let g;
   try{ g=await (await fetch('mhd.geojson',{cache:'force-cache'})).json(); }
   catch(err){
-    mhdStav='chyba'; e.target.checked=false;
+    mhdStav='chyba'; e.target.checked=false; $('#legenda-mhd').hidden=true;
     $('#stav-mhd').textContent='(nedá sa načítať)'; return;
   }
   map.addSource('mhd',{type:'geojson',data:g});
@@ -702,11 +703,12 @@ const ploche=v=>{ if(map.getLayer('v-budovy'))
   map.setLayoutProperty('v-budovy','visibility',v?'visible':'none'); };
 
 $('#v-3d').onchange=async e=>{
+  $('#legenda-3d').hidden=!e.target.checked;
   if(!e.target.checked){
     if(map.getLayer('bud3d')) map.setLayoutProperty('bud3d','visibility','none');
     ploche(true); $('#stav-3d').textContent=''; return;
   }
-  if(budovy3d==='chyba'){ e.target.checked=false; return; }
+  if(budovy3d==='chyba'){ e.target.checked=false; $('#legenda-3d').hidden=true; return; }
   if(budovy3d==='hotove'){
     map.setLayoutProperty('bud3d','visibility','visible'); ploche(false);
     if(map.getPitch()<20) map.easeTo({pitch:55});
@@ -716,7 +718,7 @@ $('#v-3d').onchange=async e=>{
   try{
     BUD.index=await (await fetch('budovy/index.json',{cache:'no-cache'})).json();
   }catch(err){
-    budovy3d='chyba'; e.target.checked=false;
+    budovy3d='chyba'; e.target.checked=false; $('#legenda-3d').hidden=true;
     $('#stav-3d').textContent='(nedá sa načítať)';
     hlaska('3D budovy sa nepodarilo načítať: '+(err.message||err)); return;
   }

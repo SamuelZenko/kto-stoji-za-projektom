@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,600&family=Public+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260905j">
+<link rel="stylesheet" href="ui.css?v=20260905k">
 <style>
 /* pridávanie bodu priamo v mape */
 .pridavam #map{cursor:crosshair}
@@ -97,6 +97,19 @@
       Vrstvy
     </button>
     <div class="legenda" id="legenda"></div>
+    <div class="legenda pridavna" id="legenda-mhd" hidden>
+      <span class="nadpis">MHD</span>
+      <div class="r"><span class="ciara" style="background:#E8B44A"></span>električka</div>
+      <div class="r"><span class="ciara" style="background:#4FA3D9"></span>trolejbus</div>
+      <div class="r"><span class="ciara" style="background:#6F8095"></span>autobus</div>
+    </div>
+    <div class="legenda pridavna" id="legenda-3d" hidden>
+      <span class="nadpis">VÝŠKA BUDOV</span>
+      <div class="r"><span class="ciara" style="background:#23323F"></span>do 12 m</div>
+      <div class="r"><span class="ciara" style="background:#2C4051"></span>25 m</div>
+      <div class="r"><span class="ciara" style="background:#3B5670"></span>45 m</div>
+      <div class="r"><span class="ciara" style="background:#52789B"></span>70 m a viac</div>
+    </div>
   </div>
 
   <div class="pop" id="pop-vrstvy">
@@ -195,6 +208,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260905j"></script>
+<script src="app.js?v=20260905k"></script>
 </body>
 </html>
