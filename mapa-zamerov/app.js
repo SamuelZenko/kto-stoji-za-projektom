@@ -561,6 +561,12 @@ async function spusti(){
 
   obnov(); kresliMoje(); nacitajKomunitu();
 
+  /* ?3d=1 zapne 3D budovy hneď po načítaní — nech sa dá poslať odkaz,
+     ktorý ich rovno ukáže, bez hľadania v ponuke Vrstvy */
+  if(new URLSearchParams(location.search).get('3d')==='1'){
+    const c=$('#v-3d'); c.checked=true; c.dispatchEvent(new Event('change'));
+  }
+
   map.on('click',e=>{ if(pridavam) formularBodu(e.lngLat); });
   map.on('click','zh',e=>{ if(pridavam) return;
     map.getSource('zamery').getClusterExpansionZoom(e.features[0].properties.cluster_id)
@@ -670,7 +676,8 @@ $('#v-3d').onchange=async e=>{
   try{ g=await (await fetch('budovy3d.geojson',{cache:'no-cache'})).json(); }
   catch(err){
     budovy3d='chyba'; e.target.checked=false;
-    $('#stav-3d').textContent='(zatiaľ nie sú)'; return;
+    $('#stav-3d').textContent='(nedá sa načítať)';
+    hlaska('3D budovy sa nepodarilo načítať: '+(err.message||err)); return;
   }
   map.addSource('bud3d',{type:'geojson',data:g});
   map.addLayer({id:'bud3d',type:'fill-extrusion',source:'bud3d',minzoom:13,
