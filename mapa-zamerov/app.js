@@ -656,28 +656,28 @@ $('#tl-kompas').onclick=()=>map.easeTo({bearing:0,pitch:0});
 $('#tl-pridat').onclick=()=>pridavam?zrusPridavanie():zacniPridavanie();
 $('#navod-zrus').onclick=()=>{zrusPridavanie(); zavriDetail();};
 
-/* ---------- šírka bočného panela ----------
-   Ukladá sa, aby si ju nemusel nastavovať pri každom otvorení. */
-const KLUC_SIRKA='mib-sirka-panela', SIRKA_ZAKL=326, SIRKA_MIN=250, SIRKA_MAX=640;
-(function(){
-  const p=$('#ovladanie'), t=$('#tahadlo');
-  const nastav=w=>{p.style.width=Math.round(w)+'px';};
-  const zapamataj=()=>{try{localStorage.setItem(KLUC_SIRKA,p.offsetWidth);}catch(e){}};
-  let bolo=0; try{ bolo=+localStorage.getItem(KLUC_SIRKA)||0; }catch(e){}
-  if(bolo>=SIRKA_MIN&&bolo<=SIRKA_MAX) nastav(bolo);
+/* ---------- šírka panelov ----------
+   Ukladá sa, aby si ju nemusel nastavovať pri každom otvorení.
+   `smer` je +1, keď ťahadlo sedí na pravej hrane panela (bočný panel),
+   a -1, keď na ľavej (karta detailu sa rozťahuje doľava). */
+function tahadloSirky({tahadlo, sirku, daj, kluc, zakl, min, max, smer}){
+  const t=$(tahadlo);
+  const nastav=w=>sirku(Math.round(Math.max(min, Math.min(max, w))));
+  const zapamataj=()=>{try{localStorage.setItem(kluc, daj());}catch(e){}};
+  let bolo=0; try{ bolo=+localStorage.getItem(kluc)||0; }catch(e){}
+  if(bolo>=min&&bolo<=max) nastav(bolo);
 
   /* pohyb a pustenie počúvame na okne, nie na ťahadle — kurzor pri
      rýchlom ťahaní z neho ujde a zachytávanie ukazovateľa nemusí vyjsť */
   let tiaham=false, od=0, zaciatok=0;
   t.addEventListener('pointerdown',e=>{
-    tiaham=true; od=e.clientX; zaciatok=p.offsetWidth;
+    tiaham=true; od=e.clientX; zaciatok=daj();
     t.classList.add('ide'); document.body.classList.add('tiaham');
     try{ t.setPointerCapture(e.pointerId); }catch(err){}
     e.preventDefault();
   });
   window.addEventListener('pointermove',e=>{
-    if(!tiaham) return;
-    nastav(Math.max(SIRKA_MIN, Math.min(SIRKA_MAX, zaciatok + e.clientX - od)));
+    if(tiaham) nastav(zaciatok + smer*(e.clientX - od));
   });
   const koniec=()=>{
     if(!tiaham) return;
@@ -686,8 +686,16 @@ const KLUC_SIRKA='mib-sirka-panela', SIRKA_ZAKL=326, SIRKA_MIN=250, SIRKA_MAX=64
   };
   window.addEventListener('pointerup',koniec);
   window.addEventListener('pointercancel',koniec);
-  t.addEventListener('dblclick',()=>{nastav(SIRKA_ZAKL); zapamataj();});
-})();
+  t.addEventListener('dblclick',()=>{nastav(zakl); zapamataj();});
+}
+tahadloSirky({
+  tahadlo:'#tahadlo', kluc:'mib-sirka-panela', zakl:326, min:250, max:640, smer:1,
+  sirku:w=>{$('#ovladanie').style.width=w+'px';},
+  daj:()=>$('#ovladanie').offsetWidth});
+tahadloSirky({
+  tahadlo:'#tahadlo-d', kluc:'mib-sirka-detailu', zakl:448, min:360, max:820, smer:-1,
+  sirku:w=>document.documentElement.style.setProperty('--detail-w',w+'px'),
+  daj:()=>$('#detail').offsetWidth});
 
 /* ---------- otáčanie a naklonenie ----------
    Pravý klik teraz patrí ponuke, tak sa rotácia presunula na stlačené

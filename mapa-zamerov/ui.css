@@ -8,6 +8,7 @@
   --kom:#8B6FD4;
   --r:14px; --r2:10px;
   --tien:0 18px 48px rgba(0,0,0,.45);
+  --detail-w:448px;   /* mení sa ťahadlom, ukladá sa do prehliadača */
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--mapa)}
@@ -104,7 +105,7 @@ body.tiaham{cursor:col-resize;user-select:none}
 .spodok{position:absolute;left:20px;bottom:20px;z-index:5;display:flex;gap:10px;
   align-items:stretch;flex-wrap:wrap;max-width:calc(100% - 40px);
   transition:max-width .24s cubic-bezier(.4,0,.2,1)}
-body:has(.detail.on) .spodok{max-width:calc(100% - 494px)}
+body:has(.detail.on) .spodok{max-width:calc(100% - var(--detail-w) - 46px)}
 .legenda{display:flex;gap:18px;align-items:center;
   background:var(--panel);border:1px solid var(--ln);border-radius:var(--r);
   box-shadow:var(--tien);padding:13px 18px;flex-wrap:wrap}
@@ -118,8 +119,8 @@ body:has(.detail.on) .spodok{max-width:calc(100% - 494px)}
 /* ---------- ovládanie mapy ---------- */
 .mapctrl{position:absolute;right:20px;bottom:78px;z-index:4;display:flex;
   flex-direction:column;gap:9px;transition:right .24s cubic-bezier(.4,0,.2,1)}
-/* karta detailu je 448 px — ovládanie sa pred ňu uhne, nech ostane po ruke */
-body:has(.detail.on) .mapctrl{right:468px}
+/* ovládanie sa pred kartou detailu uhne, nech ostane po ruke */
+body:has(.detail.on) .mapctrl{right:calc(var(--detail-w) + 20px)}
 .mapctrl .sk{background:var(--panel);border:1px solid var(--ln);border-radius:var(--r2);
   box-shadow:var(--tien);display:flex;flex-direction:column;overflow:hidden}
 .mapctrl button{width:44px;height:44px;background:transparent;border:0;color:var(--tx);
@@ -178,11 +179,23 @@ body.otocena .mapctrl .kompas{display:flex}
 .maplibregl-ctrl-bottom-right{margin-bottom:18px;margin-right:76px}
 
 /* ---------- detail ---------- */
-.detail{position:absolute;right:0;top:0;bottom:0;width:448px;background:var(--panel);
+.detail{position:absolute;right:0;top:0;bottom:0;width:var(--detail-w);background:var(--panel);
   border-left:1px solid var(--ln);z-index:7;overflow-y:auto;padding:24px 30px 40px;
   transform:translateX(100%);transition:transform .24s cubic-bezier(.4,0,.2,1);
   display:flex;flex-direction:column;gap:16px}
 .detail.on{transform:translateX(0)}
+/* ťahadlo na ľavej hrane karty — sedí nad mapou, nie v karte, aby ho
+   neprepisovalo prekresľovanie obsahu detailu */
+.tahadlo-d{position:absolute;top:0;bottom:0;right:var(--detail-w);width:11px;z-index:8;
+  display:none;cursor:col-resize;
+  transition:right .24s cubic-bezier(.4,0,.2,1),background .15s}
+body:has(.detail.on) .tahadlo-d{display:block}
+body.tiaham .tahadlo-d{transition:background .15s}
+.tahadlo-d:hover,.tahadlo-d.ide{background:rgba(214,22,90,.22)}
+.tahadlo-d::after{content:"";position:absolute;left:4px;top:50%;transform:translateY(-50%);
+  width:3px;height:44px;border-radius:2px;background:var(--ln2)}
+.tahadlo-d:hover::after,.tahadlo-d.ide::after{background:var(--ac)}
+
 /* Sticky, nie absolute — pri dlhom formulári nesmie odrolovať mimo dosahu. */
 .detail .zavri{position:sticky;top:-4px;align-self:flex-end;margin:-10px -14px -30px 0;
   background:var(--panel);border:0;border-radius:7px;color:var(--tx2);font-size:24px;
@@ -287,9 +300,7 @@ body.otocena .mapctrl .kompas{display:flex}
   border-radius:var(--r2);padding:10px 16px;font-size:13.5px}
 
 @media (max-width:1100px){
-  .detail{width:380px}
-  body:has(.detail.on) .spodok{max-width:calc(100% - 426px)}
-  body:has(.detail.on) .mapctrl{right:400px}
+  :root{--detail-w:380px}
 }
 @media (max-width:760px){
   .lista{padding:0 14px;gap:12px}
@@ -302,6 +313,7 @@ body.otocena .mapctrl .kompas{display:flex}
   body:has(.detail.on) .spodok{max-width:none}
   .legenda{gap:12px;padding:11px 13px}
   .detail{width:100%}
+  .tahadlo-d{display:none!important}
   .mapctrl{bottom:150px;right:12px}
   body:has(.detail.on) .mapctrl{right:12px}
   .pop{left:12px;right:12px;width:auto;bottom:78px}
