@@ -444,11 +444,17 @@ function ukazKomunitu(p){
    Dáta sťahujeme hneď, súbežne s mapou. Keby sme čakali na 'load',
    pomalý alebo nedostupný podklad z geoportálu nechá stránku prázdnu —
    a to sa reálne stáva. */
+/* no-cache = podmienené stiahnutie: keď sa dáta nezmenili, príde 304 a
+   nič sa neťahá; keď zmenili, nedostaneš starú kópiu z prehliadača. */
+const ber=(s,zal)=>{
+  const p=fetch(s,{cache:'no-cache'}).then(r=>r.json());
+  return zal===undefined?p:p.catch(()=>zal);
+};
 const DATA=Promise.all([
-  fetch('komunita.json').then(r=>r.json()).catch(()=>({})),
-  fetch('mestske-casti.geojson').then(r=>r.json()),
-  fetch('zamery.geojson').then(r=>r.json()),
-  fetch('ulice.geojson').then(r=>r.json()).catch(()=>null)]);
+  ber('komunita.json',{}),
+  ber('mestske-casti.geojson'),
+  ber('zamery.geojson'),
+  ber('ulice.geojson',null)]);
 
 let spustene=false;
 async function spusti(){
