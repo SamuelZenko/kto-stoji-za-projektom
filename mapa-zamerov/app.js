@@ -52,7 +52,10 @@ function pridajPodklad(){
    {id:'v-zeleznica',type:'line',source:'osm','source-layer':'železničná sieť',
     paint:{'line-color':'#2C3640','line-width':1,'line-dasharray':[3,2]}},
    {id:'orto',type:'raster',source:'orto',layout:{visibility:'none'}},
-   {id:'mhd',type:'raster',source:'mhd',layout:{visibility:'none'}},
+   /* Trasy liniek maju vrchol tak kazdych 50 az 150 m, takze pri
+      priblizeni na ulicu rezu rovnymi skratkami cez bloky a domy.
+      Na prehlad mesta su v poriadku, blizsie uz nie — preto maxzoom. */
+   {id:'mhd',type:'raster',source:'mhd',maxzoom:15,layout:{visibility:'none'}},
   ].forEach(v=>map.addLayer(v));
 }
 map.addControl(new maplibregl.ScaleControl({maxWidth:110}),'bottom-right');

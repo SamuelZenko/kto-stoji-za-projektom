@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,600&family=Public+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260905h">
+<link rel="stylesheet" href="ui.css?v=20260905i">
 <style>
 /* pridávanie bodu priamo v mape */
 .pridavam #map{cursor:crosshair}
@@ -116,7 +116,7 @@
       <label><input type="checkbox" id="v-ulice" checked> Názvy ulíc</label>
       <label><input type="checkbox" id="v-mc" checked> Názvy mestských častí</label>
       <label><input type="checkbox" id="v-hranice" checked> Hranice mestských častí</label>
-      <label><input type="checkbox" id="v-mhd"> Linky MHD</label>
+      <label><input type="checkbox" id="v-mhd"> Linky MHD <span style="color:var(--tx3)">(len z odstupu)</span></label>
       <label><input type="checkbox" id="v-3d"> 3D budovy <span id="stav-3d" style="color:var(--tx3)"></span></label>
       <label><input type="checkbox" id="v-nazvy" checked> Názvy zámerov</label>
       <label><input type="checkbox" id="v-komunita" checked> Komunitné body <span id="kom-pocet" style="color:var(--tx3)"></span></label>
@@ -126,7 +126,9 @@
       Pravý klik na mapu ponúkne, čo sa dá s miestom urobiť.<br>
       Stlačené koliesko myši alebo <b style="color:var(--tx2)">Shift</b> + ťahanie otáča a nakláňa mapu.<br>
       3D budovy sú z modelu LOD1 2021 — 91 539 budov celej Bratislavy.
-      Sťahujú sa po dlaždiciach podľa výrezu, tak si najprv priblíž mapu.
+      Sťahujú sa po dlaždiciach podľa výrezu, tak si najprv priblíž mapu.<br>
+      Trasy MHD majú vrchol každých 50–150 m, takže zblízka režú cez bloky.
+      Preto sa pri väčšom priblížení skryjú.
     </p>
   </div>
 
@@ -193,6 +195,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260905h"></script>
+<script src="app.js?v=20260905i"></script>
 </body>
 </html>
