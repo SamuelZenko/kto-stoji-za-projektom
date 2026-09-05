@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Doplnenie polôh zámerov, pri ktorých register neuvádza ulicu.">
+<title>Doplniť polohy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#ECEEF0; --card:#FFFFFF; --sunk:#E1E5E8;
+  --ink:#0F151A; --ink2:#39454F; --mu:#5F6E79;
+  --ln:#CBD3D9; --ln2:#B4BEC6;
+  --acc:#B01B52; --acc-bg:#FBE9EF; --ok:#0B6B5E; --ok-bg:#E2F0ED;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0B0F13; --card:#141A20; --sunk:#1C242B;
+    --ink:#E8EEF3; --ink2:#C0CBD4; --mu:#8A98A3;
+    --ln:#2B353D; --ln2:#3A464F; --acc:#FF6F9C; --acc-bg:#2A141C;
+    --ok:#43C6AF; --ok-bg:#102420;}
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+body{font-family:"Public Sans",ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif;
+  color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--acc)}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+h1{font-family:"Newsreader",Georgia,serif;font-size:27px;font-weight:600;margin:0;letter-spacing:-.02em}
+
+header{background:var(--card);border-bottom:1px solid var(--ln);padding:20px 24px;
+  position:sticky;top:0;z-index:5}
+header .vnutro{max-width:1180px;margin:0 auto;display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap}
+header p{margin:5px 0 0;color:var(--mu);font-size:13.5px;max-width:60ch}
+header .odkazy{margin-left:auto;font-size:13px;display:flex;gap:14px}
+.naradie{max-width:1180px;margin:0 auto;display:flex;gap:8px;align-items:center;
+  flex-wrap:wrap;padding-top:14px}
+select,input[type=search],input[type=text]{background:var(--bg);border:1px solid var(--ln);
+  border-radius:3px;color:var(--ink);padding:8px 10px;font-size:14px;font-family:inherit}
+select:focus,input:focus{outline:none;border-color:var(--acc)}
+button{background:var(--acc);color:#fff;border:0;border-radius:3px;padding:9px 16px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+button.duch{background:transparent;color:var(--ink2);border:1px solid var(--ln)}
+button.duch:hover{border-color:var(--acc);color:var(--acc)}
+.stav{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--mu);margin-left:auto}
+.stav b{color:var(--ok)}
+
+main{max-width:1180px;margin:0 auto;padding:20px 24px 80px}
+.navod{background:var(--card);border:1px solid var(--ln);border-left:3px solid var(--acc);
+  padding:14px 18px;margin-bottom:18px;font-size:14px;color:var(--ink2)}
+.navod b{color:var(--ink)}
+.navod ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+
+table{width:100%;border-collapse:collapse;background:var(--card);
+  border:1px solid var(--ln);font-size:14px}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--ln);vertical-align:top}
+th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--mu);background:var(--sunk);
+  position:sticky;top:88px;z-index:2}
+tbody tr:last-child td{border-bottom:0}
+tr.hotovo{background:var(--ok-bg)}
+td.nazov{font-weight:500}
+td.meta{color:var(--mu);font-size:12.5px;white-space:nowrap}
+td.suradnice input{width:190px;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+td.akcie{white-space:nowrap}
+td.akcie a{font-size:12.5px;margin-right:10px}
+.znacka{display:inline-block;font-size:10.5px;padding:2px 6px;border-radius:20px;
+  background:var(--sunk);color:var(--mu);font-family:"IBM Plex Mono",monospace}
+.ok{color:var(--ok);font-family:"IBM Plex Mono",monospace;font-size:12px}
+.chyba{color:var(--acc);font-family:"IBM Plex Mono",monospace;font-size:12px}
+@media (max-width:760px){
+  td.meta,th.meta{display:none}
+  td.suradnice input{width:140px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="vnutro">
+    <div>
+      <h1>Doplniť polohy</h1>
+      <p>Zámery, pri ktorých register neuvádza ulicu, a tak sa nedajú umiestniť na mapu.
+         Tu sa im dá poloha doplniť ručne.</p>
+    </div>
+    <span class="odkazy">
+      <a href="../mapa-zamerov/">späť na mapu</a>
+      <a href="../">príručka</a>
+    </span>
+  </div>
+  <div class="naradie">
+    <select id="mc"><option value="">všetky mestské časti</option></select>
+    <select id="typ"><option value="">všetky účely</option></select>
+    <select id="stavF">
+      <option value="">doplnené aj nedoplnené</option>
+      <option value="ne">len nedoplnené</option>
+      <option value="ano">len doplnené</option>
+    </select>
+    <input type="search" id="q" placeholder="hľadať v názve…">
+    <button id="exp">Stiahnuť polohy.json</button>
+    <button class="duch" id="imp">Načítať súbor</button>
+    <input type="file" id="subor" accept="application/json" hidden>
+    <span class="stav" id="stav">—</span>
+  </div>
+</header>
+
+<main>
+  <div class="navod">
+    <b>Ako na to.</b> Poloha sa ukladá do prehliadača, takže sa dá robiť po častiach
+    a nič sa nestratí. Keď skončíš, stiahni súbor a pošli mi ho — doplní sa do mapy.
+    <ol>
+      <li>Klikni na <b>Hľadať v mapách</b> — otvorí sa Google Maps s názvom projektu a mestskou časťou.</li>
+      <li>Keď nájdeš miesto, klikni naň <b>pravým tlačidlom</b> a vyber prvú položku so súradnicami — skopíruje sa.</li>
+      <li>Vlož ju do políčka <b>súradnice</b>. Formát <span class="mono">48.1440, 17.1077</span> aj s medzerou je v poriadku.</li>
+      <li>Riadok zozelenie. Na konci <b>Stiahnuť polohy.json</b>.</li>
+    </ol>
+  </div>
+
+  <table>
+    <thead><tr>
+      <th style="width:38%">Zámer</th>
+      <th class="meta" style="width:15%">Mestská časť</th>
+      <th class="meta" style="width:14%">Účel</th>
+      <th style="width:19%">Súradnice</th>
+      <th style="width:14%">Nájsť</th>
+    </tr></thead>
+    <tbody id="telo"></tbody>
+  </table>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KLUC='mib-polohy-zamerov';
+let ZOZ=[], POLOHY={};
+
+try{ POLOHY=JSON.parse(localStorage.getItem(KLUC)||'{}'); }catch(e){ POLOHY={}; }
+
+function uloz(){
+  try{ localStorage.setItem(KLUC, JSON.stringify(POLOHY)); }catch(e){}
+  $('#stav').innerHTML='doplnených <b>'+Object.keys(POLOHY).length+'</b> z '+ZOZ.length;
+}
+
+/* Google Maps dáva „48.144000, 17.107700“, niekedy s bodkočiarkou alebo
+   v zátvorkách. Prijmeme čokoľvek, kde sú dve čísla v rozsahu Bratislavy. */
+function rozober(t){
+  const c=(t||'').replace(',',' , ').match(/-?\d+[.,]\d+/g);
+  if(!c||c.length<2) return null;
+  const a=parseFloat(c[0].replace(',','.')), b=parseFloat(c[1].replace(',','.'));
+  let lat=a, lon=b;
+  if(a>16 && a<19 && b>47 && b<49){ lat=b; lon=a; }      // obrátené poradie
+  if(lat<47.9||lat>48.5||lon<16.7||lon>17.5) return null; // mimo Bratislavy
+  return [Math.round(lon*1e6)/1e6, Math.round(lat*1e6)/1e6];
+}
+
+function kresli(){
+  const mc=$('#mc').value, typ=$('#typ').value, st=$('#stavF').value, q=$('#q').value.trim().toLowerCase();
+  const filtr=ZOZ.filter(z=>{
+    if(mc && z.obec!==mc) return false;
+    if(typ && z.typ!==typ) return false;
+    if(st==='ne' && POLOHY[z.id]) return false;
+    if(st==='ano' && !POLOHY[z.id]) return false;
+    if(q && !(z.nazov+' '+z.firma).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  $('#telo').innerHTML=filtr.slice(0,600).map(z=>{
+    const p=POLOHY[z.id];
+    const dotaz=encodeURIComponent(z.nazov.replace(/[„“"]/g,'')+' '+z.obec);
+    return '<tr class="'+(p?'hotovo':'')+'" data-id="'+esc(z.id)+'">'
+      +'<td class="nazov">'+esc(z.nazov)
+        +'<div style="color:var(--mu);font-size:12px;font-weight:400">'+esc(z.firma||'')+'</div></td>'
+      +'<td class="meta">'+esc(z.obec)+'</td>'
+      +'<td class="meta"><span class="znacka">'+esc(z.typ||'—')+'</span></td>'
+      +'<td class="suradnice"><input type="text" placeholder="48.1440, 17.1077" value="'
+        +(p?p[1]+', '+p[0]:'')+'"><div class="hlas"></div></td>'
+      +'<td class="akcie">'
+        +'<a href="https://www.google.com/maps/search/'+dotaz+'" target="_blank" rel="noopener">Hľadať v mapách</a>'
+        +'<a href="https://www.enviroportal.sk/eia/detail/'+esc(z.id)+'" target="_blank" rel="noopener">spis</a>'
+      +'</td></tr>';
+  }).join('')
+   +(filtr.length>600?'<tr><td colspan="5" style="color:var(--mu)">Zobrazených prvých 600 z '
+     +filtr.length+'. Zúž výber filtrom.</td></tr>':'');
+  if(!filtr.length) $('#telo').innerHTML='<tr><td colspan="5" style="color:var(--mu)">Nič nevyhovuje výberu.</td></tr>';
+}
+
+$('#telo').addEventListener('input',e=>{
+  const inp=e.target.closest('input[type=text]'); if(!inp) return;
+  const tr=inp.closest('tr'), id=tr.dataset.id, hlas=tr.querySelector('.hlas');
+  const v=inp.value.trim();
+  if(!v){ delete POLOHY[id]; tr.className=''; hlas.innerHTML=''; uloz(); return; }
+  const s=rozober(v);
+  if(s){ POLOHY[id]=s; tr.className='hotovo';
+         hlas.innerHTML='<span class="ok">uložené</span>'; }
+  else { hlas.innerHTML='<span class="chyba">nerozumiem — čakám dve čísla z Bratislavy</span>'; }
+  uloz();
+});
+
+$('#exp').onclick=()=>{
+  const b=new Blob([JSON.stringify(POLOHY,null,1)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b); a.download='polohy.json'; a.click();
+  URL.revokeObjectURL(a.href);
+};
+$('#imp').onclick=()=>$('#subor').click();
+$('#subor').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ POLOHY=Object.assign(POLOHY, JSON.parse(r.result)); uloz(); kresli(); }
+                 catch(err){ alert('Súbor sa nedá prečítať: '+err); } };
+  r.readAsText(f);
+};
+['mc','typ','q','stavF'].forEach(id=>$('#'+id).addEventListener('input',kresli));
+
+fetch('../mapa-zamerov/bez-polohy.json').then(r=>r.json()).then(z=>{
+  ZOZ=z;
+  const obce=[...new Set(z.map(x=>x.obec).filter(Boolean))].sort();
+  const typy=[...new Set(z.map(x=>x.typ).filter(Boolean))].sort();
+  obce.forEach(o=>$('#mc').insertAdjacentHTML('beforeend','<option>'+esc(o)+'</option>'));
+  typy.forEach(o=>$('#typ').insertAdjacentHTML('beforeend','<option>'+esc(o)+'</option>'));
+  const p=new URLSearchParams(location.search).get('mc');
+  if(p && obce.includes(p)) $('#mc').value=p;
+  uloz(); kresli();
+}).catch(e=>{
+  $('#telo').innerHTML='<tr><td colspan="5">Zoznam sa nepodarilo načítať: '+esc(e)+'</td></tr>';
+});
+</script>
+</body>
+</html>
