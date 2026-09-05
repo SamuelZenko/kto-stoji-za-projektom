@@ -152,9 +152,10 @@ input[type=search]:focus,select:focus{outline:none;border-color:var(--acc)}
     <div id="map"></div>
     <div class="podklady">
       <span class="nadpis">Podklad</span>
-      <label><input type="radio" name="pod" value="ziadny" checked> bez podkladu</label>
+      <label><input type="radio" name="pod" value="mapa" checked> mapa mesta</label>
       <label><input type="radio" name="pod" value="orto"> ortofoto</label>
-      <label><input type="radio" name="pod" value="svetla"> podkladová mapa <span style="color:var(--mu)">(pomalšie)</span></label>
+      <label><input type="radio" name="pod" value="svetla"> s popismi ulíc <span style="color:var(--mu)">(pomalšie)</span></label>
+      <label><input type="radio" name="pod" value="ziadny"> bez podkladu</label>
       <span class="nadpis" style="margin-top:6px">Navrch</span>
       <label><input type="checkbox" id="mhd"> linky MHD</label>
       <label><input type="checkbox" id="hranice" checked> hranice mestských častí</label>
@@ -176,6 +177,9 @@ const EXPORT=(sluzba)=>G+'/'+sluzba+'/MapServer/export?bbox={bbox-epsg-3857}'
 let Z=null, MC=null, TYPY=[];
 let filtr={q:'',mc:'',sk:'',fz:'',pl:'',typ:new Set()};
 const tmavy=()=>window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches;
+const T=tmavy();
+const V_PODKLAD=['pozadie','v-zastavane','v-zelen','v-voda','v-tok','v-budovy',
+                 'v-cesty','v-zeleznica'];
 
 const map=new maplibregl.Map({
   container:'map',
@@ -183,6 +187,10 @@ const map=new maplibregl.Map({
   // demotiles.maplibre.org má Noto Sans a odpovedá správne
   style:{version:8, glyphs:'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
     sources:{
+      // vektorové dlaždice mestského geoportálu — cachované, takže rýchle,
+      // a dávajú budovy, cesty, vodu a zeleň
+      osm:{type:'vector', maxzoom:18, attribution:'Geoportál Bratislava · OSM',
+           tiles:[G+'/Hosted/Podkladov%C3%A1_mapa_OSM_UP/VectorTileServer/tile/{z}/{y}/{x}.pbf']},
       svetla:{type:'raster', tiles:[EXPORT('Svetlozelen%C3%A1_podkladov%C3%A1_mapa')],
               tileSize:512, attribution:'Geoportál Bratislava'},
       orto:{type:'raster', tiles:[G+'/Hosted/Ortofoto/MapServer/tile/{z}/{y}/{x}'],
@@ -193,6 +201,23 @@ const map=new maplibregl.Map({
     // mapa nabehne okamžite. Podkladová mapa sa kreslí dynamicky (0,4 s na
     // dlaždicu) a zapnutá od začiatku zdržiavala všetko ostatné.
     layers:[
+      {id:'pozadie', type:'background',
+       paint:{'background-color':T?'#0B0F13':'#ECEEF0'}},
+      {id:'v-zastavane', type:'fill', source:'osm', 'source-layer':'zastavané územie',
+       paint:{'fill-color':T?'#161D24':'#F4F5F7'}},
+      {id:'v-zelen', type:'fill', source:'osm', 'source-layer':'zeleň',
+       paint:{'fill-color':T?'#16241C':'#E6EFE4'}},
+      {id:'v-voda', type:'fill', source:'osm', 'source-layer':'vodné plochy',
+       paint:{'fill-color':T?'#14212B':'#D9E6EF'}},
+      {id:'v-tok', type:'line', source:'osm', 'source-layer':'vodné toky',
+       paint:{'line-color':T?'#1B2C38':'#CBDDE9','line-width':1.2}},
+      {id:'v-budovy', type:'fill', source:'osm', 'source-layer':'budovy',
+       minzoom:13, paint:{'fill-color':T?'#1E262E':'#DFE4E9'}},
+      {id:'v-cesty', type:'line', source:'osm', 'source-layer':'cestná sieť',
+       paint:{'line-color':T?'#2A343D':'#FFFFFF',
+              'line-width':['interpolate',['linear'],['zoom'],10,0.5,14,1.6,18,5]}},
+      {id:'v-zeleznica', type:'line', source:'osm', 'source-layer':'železničná sieť',
+       paint:{'line-color':T?'#39434C':'#C6CDD4','line-width':1,'line-dasharray':[3,2]}},
       {id:'svetla', type:'raster', source:'svetla', layout:{visibility:'none'}},
       {id:'orto', type:'raster', source:'orto', layout:{visibility:'none'}},
       {id:'mhd', type:'raster', source:'mhd', layout:{visibility:'none'}},
@@ -335,12 +360,15 @@ map.on('load',async()=>{
   // Výplň mestských častí dáva mape tvar aj bez jediného externého podkladu
   map.addSource('hranice',{type:'geojson',data:mc});
   map.addLayer({id:'hranice-v',type:'fill',source:'hranice',
-    paint:{'fill-color':tmavy()?'#141A20':'#FFFFFF','fill-opacity':0.85}});
+    paint:{'fill-color':T?'#141A20':'#FFFFFF','fill-opacity':0}});
   map.addLayer({id:'hranice-c',type:'line',source:'hranice',
     paint:{'line-color':'#8A98A3','line-width':0.8,'line-opacity':0.55}});
 
+  // Zhluky sa majú rozpadať skoro — pri priblížení, kde už vidno jednotlivé
+  // budovy, nemá zmysel držať „6“ na jednej kope. Menší polomer aj nižší
+  // strop než je bežné.
   map.addSource('zamery',{type:'geojson',data:{type:'FeatureCollection',features:[]},
-    cluster:true, clusterRadius:38, clusterMaxZoom:16});
+    cluster:true, clusterRadius:20, clusterMaxZoom:13});
   map.addLayer({id:'zh',type:'circle',source:'zamery',filter:['has','point_count'],
     paint:{'circle-color':'#B01B52',
       'circle-radius':['step',['get','point_count'],13,5,17,15,22,40,28],
@@ -353,6 +381,14 @@ map.on('load',async()=>{
         'zámer','#9AA6AE','posúdené','#5B7C99','povolené','#C67A1E','dokončené','#0B6B5E','#9AA6AE'],
       'circle-radius':['interpolate',['linear'],['zoom'],10,4,14,7,18,11],
       'circle-stroke-width':1.5,'circle-stroke-color':'rgba(255,255,255,.8)'}});
+  // názvy projektov pri väčšom priblížení — tak, ako to má Praha
+  map.addLayer({id:'bod-txt',type:'symbol',source:'zamery',
+    filter:['!',['has','point_count']], minzoom:14,
+    layout:{'text-field':['get','nazov'],'text-size':11,'text-anchor':'left',
+      'text-offset':[0.9,0],'text-max-width':13,'text-font':['Noto Sans Regular'],
+      'text-optional':true,'text-allow-overlap':false},
+    paint:{'text-color':T?'#E8EEF3':'#0F151A',
+      'text-halo-color':T?'#0B0F13':'#FFFFFF','text-halo-width':1.6}});
 
   map.addSource('nezname',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
   map.addLayer({id:'nez',type:'circle',source:'nezname',
@@ -397,11 +433,14 @@ $('#typy').addEventListener('click',e=>{
   obnov();});
 $('#zrus').onclick=()=>{filtr.typ.clear(); obnov();};
 document.querySelectorAll('input[name=pod]').forEach(r=>r.onchange=()=>{
+  const v=r.value;
   ['svetla','orto'].forEach(l=>map.setLayoutProperty(l,'visibility',
-    r.value===l?'visible':'none'));
-  // pod fotkou nemá zmysel biela výplň mestských častí
+    v===l?'visible':'none'));
+  V_PODKLAD.forEach(l=>{ if(map.getLayer(l))
+    map.setLayoutProperty(l,'visibility', v==='mapa'?'visible':'none'); });
+  // výplň mestských častí má zmysel len tam, kde pod ňou nič nie je
   if(map.getLayer('hranice-v'))
-    map.setPaintProperty('hranice-v','fill-opacity', r.value==='ziadny'?0.85:0);
+    map.setPaintProperty('hranice-v','fill-opacity', v==='ziadny'?0.85:0);
 });
 $('#mhd').onchange=e=>map.setLayoutProperty('mhd','visibility',e.target.checked?'visible':'none');
 $('#hranice').onchange=e=>map.setLayoutProperty('hranice-c','visibility',e.target.checked?'visible':'none');
