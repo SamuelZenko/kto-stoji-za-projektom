@@ -652,14 +652,17 @@ prep('v-mhd','mhd'); prep('v-nazvy','bod-txt');
    Súbor je veľký, tak ho ťaháme až keď si vrstvu zapneš. Keď ešte
    nie je vyexportovaný, prepínač to povie a nič sa nerozbije. */
 let budovy3d='nenacitane';
+/* plochý pôdorys budov z podkladu by sa s 3D telesami zdvojoval */
+const ploche=v=>{ if(map.getLayer('v-budovy'))
+  map.setLayoutProperty('v-budovy','visibility',v?'visible':'none'); };
 $('#v-3d').onchange=async e=>{
   if(!e.target.checked){
     if(map.getLayer('bud3d')) map.setLayoutProperty('bud3d','visibility','none');
-    return;
+    ploche(true); return;
   }
   if(budovy3d==='chyba'){ e.target.checked=false; return; }
   if(budovy3d==='hotove'){
-    map.setLayoutProperty('bud3d','visibility','visible');
+    map.setLayoutProperty('bud3d','visibility','visible'); ploche(false);
     if(map.getPitch()<20) map.easeTo({pitch:52});
     return;
   }
@@ -673,14 +676,17 @@ $('#v-3d').onchange=async e=>{
   map.addSource('bud3d',{type:'geojson',data:g});
   map.addLayer({id:'bud3d',type:'fill-extrusion',source:'bud3d',minzoom:13,
     paint:{
-      /* farba podľa výšky — nízka zástavba tmavšia, veže svetlejšie */
-      'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','vyska'],9],
-        3,'#243440', 12,'#2E4252', 25,'#3A5468', 60,'#4C6C86', 100,'#5E86A4'],
-      'fill-extrusion-height':['coalesce',['get','vyska'],9],
+      /* farba podľa výšky — bežná zástavba splýva s podkladom,
+         výškové budovy vystúpia; ide o to, aby bolo vidieť, čo prečnieva */
+      'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','v'],9],
+        3,'#1B2732', 12,'#23323F', 25,'#2C4051', 45,'#3B5670', 70,'#52789B'],
+      'fill-extrusion-height':['coalesce',['get','v'],9],
       'fill-extrusion-base':0,
-      'fill-extrusion-opacity':.82},
+      'fill-extrusion-opacity':.94},
   }, map.getLayer('ulice-txt')?'ulice-txt':undefined);
-  budovy3d='hotove';
+  /* mäkšie svetlo, nech telesá nesvietia nad tmavým podkladom */
+  map.setLight({anchor:'viewport',color:'#dce7f2',intensity:.32,position:[1.4,205,32]});
+  budovy3d='hotove'; ploche(false);
   $('#stav-3d').textContent='('+cis(g.features.length)+')';
   if(map.getPitch()<20) map.easeTo({pitch:52});
 };
