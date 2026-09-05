@@ -71,6 +71,18 @@ label{font-size:13px;color:var(--tx2)}
 </header>
 
 <main>
+  <div class="karta" id="karta-moje" style="display:none">
+    <h2>Body, ktoré čakajú u teba</h2>
+    <p>Pridal si ich priamo v mape. Server na zbieranie zatiaľ nebeží, takže sú
+       uložené v tomto prehliadači a <strong>vidíš ich len ty</strong>.</p>
+    <div id="moje-zoznam" style="margin:12px 0"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="tl hl" id="moje-export">Stiahnuť ako JSON</button>
+      <button class="tl" id="moje-csv">Stiahnuť ako CSV do hárku</button>
+      <button class="tl" id="moje-zmaz">Vymazať</button>
+    </div>
+  </div>
+
   <div class="karta">
     <h2>Ako to funguje</h2>
     <ol>
@@ -95,7 +107,9 @@ label{font-size:13px;color:var(--tx2)}
       <tr><td>typ</td><td>bývanie, polyfunkcia, vybavenosť…</td></tr>
       <tr><td>faza</td><td>zámer / posúdené / povolené / dokončené</td></tr>
       <tr><td>popis</td><td>pár viet o projekte</td></tr>
-      <tr><td>autor</td><td>kto to pridal, prípadne ateliér</td></tr>
+      <tr><td>investor</td><td>developer alebo objednávateľ</td></tr>
+      <tr><td>architekt</td><td>ateliér — v registri tento údaj nie je, komunita je jediný zdroj</td></tr>
+      <tr><td>autor</td><td>kto to pridal</td></tr>
       <tr><td>obrazok</td><td>odkaz na obrázok (musí byť verejne dostupný)</td></tr>
       <tr><td>odkaz</td><td>stránka projektu alebo súťaže</td></tr>
       <tr><td>schvalene</td><td>vypĺňa správca — <span class="mono">áno</span> zobrazí bod na mape</td></tr>
@@ -175,6 +189,47 @@ $('#skus').onclick=async()=>{
   }
 };
 stav();
+
+/* ---- body, ktore uzivatel pridal priamo v mape ---- */
+const KM='mib-moje-body';
+const POLIA=['nazov','suradnice','typ','faza','popis','investor','architekt',
+             'autor','obrazok','odkaz'];
+function moje(){ try{ return JSON.parse(localStorage.getItem(KM)||'[]'); }catch(e){ return []; } }
+/* v mape sa uklada suradnice:[lng,lat] — do harku ide poradie "lat, lon" ako z Google Maps */
+const gps=x=>Array.isArray(x.suradnice)
+  ? (+x.suradnice[1]).toFixed(6)+', '+(+x.suradnice[0]).toFixed(6) : '';
+function stiahni(nazov,typ,obsah){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([obsah],{type:typ}));
+  a.download=nazov; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+function kresliMoje(){
+  const b=moje();
+  if(!b.length){ $('#karta-moje').style.display='none'; return; }
+  $('#karta-moje').style.display='';
+  $('#moje-zoznam').innerHTML='<table><tr><th>názov</th><th>súradnice</th>'
+    +'<th>účel</th><th>pridané</th></tr>'
+    +b.map(x=>'<tr><td style="font-family:inherit;white-space:normal">'
+      +(x.nazov||'—').replace(/</g,'&lt;')+'</td><td>'
+      +(gps(x)||'—')+'</td><td>'
+      +(x.typ||'—')+'</td><td>'+(x.kedy||'').slice(0,10)+'</td></tr>').join('')
+    +'</table>';
+}
+$('#moje-export').onclick=()=>stiahni('moje-body.json','application/json',
+  JSON.stringify(moje(),null,2));
+$('#moje-csv').onclick=()=>{
+  const c=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
+  const r=[POLIA.concat('schvalene').join(',')].concat(moje().map(x=>[
+    x.nazov, gps(x), x.typ, x.faza, x.popis, x.investor, x.architekt,
+    x.autor, x.obrazok, x.odkaz, ''].map(c).join(',')));
+  stiahni('moje-body.csv','text/csv;charset=utf-8','﻿'+r.join('\r\n'));
+};
+$('#moje-zmaz').onclick=()=>{
+  if(moje().length && confirm('Naozaj vymazať '+moje().length+' bodov? Nedá sa to vrátiť.')){
+    localStorage.removeItem(KM); kresliMoje();
+  }
+};
+kresliMoje();
 </script>
 </body>
 </html>
