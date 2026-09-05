@@ -35,7 +35,6 @@ function pridajPodklad(){
   map.addSource('orto',{type:'raster',tileSize:256,maxzoom:19,
     attribution:'Ortofoto — Hlavné mesto SR Bratislava',
     tiles:[G+'/Hosted/Ortofoto/MapServer/tile/{z}/{y}/{x}']});
-  map.addSource('mhd',{type:'raster',tiles:[EXPORT('doprava/Linky_MHD')],tileSize:512});
   [{id:'v-zastavane',type:'fill',source:'osm','source-layer':'zastavané územie',
     paint:{'fill-color':'#131C24'}},
    {id:'v-zelen',type:'fill',source:'osm','source-layer':'zeleň',
@@ -52,10 +51,6 @@ function pridajPodklad(){
    {id:'v-zeleznica',type:'line',source:'osm','source-layer':'železničná sieť',
     paint:{'line-color':'#2C3640','line-width':1,'line-dasharray':[3,2]}},
    {id:'orto',type:'raster',source:'orto',layout:{visibility:'none'}},
-   /* Trasy liniek maju vrchol tak kazdych 50 az 150 m, takze pri
-      priblizeni na ulicu rezu rovnymi skratkami cez bloky a domy.
-      Na prehlad mesta su v poriadku, blizsie uz nie — preto maxzoom. */
-   {id:'mhd',type:'raster',source:'mhd',maxzoom:15,layout:{visibility:'none'}},
   ].forEach(v=>map.addLayer(v));
 }
 map.addControl(new maplibregl.ScaleControl({maxWidth:110}),'bottom-right');
@@ -655,7 +650,45 @@ document.querySelectorAll('input[name=pod]').forEach(r=>r.onchange=()=>{
 const prep=(id,...vrstvy)=>$('#'+id).onchange=e=>vrstvy.forEach(v=>{
   if(map.getLayer(v)) map.setLayoutProperty(v,'visibility',e.target.checked?'visible':'none');});
 prep('v-ulice','ulice-txt'); prep('v-hranice','hranice-c'); prep('v-mc','mc-txt');
-prep('v-mhd','mhd'); prep('v-nazvy','bod-txt');
+prep('v-nazvy','bod-txt');
+
+/* ---------- linky MHD ----------
+   Sluzba doprava/Linky_MHD na geoportali ma vrchol kazdych 50 az 150 m
+   a 36 zo 154 liniek nema geometriu vobec — zblizka z nej vychadzali
+   rovne skratky cez bloky. Trasy su teraz z OpenStreetMap, teda z toho
+   isteho zdroja ako ulice v podklade, takze sadnu na cestu presne. */
+let mhdStav='ne';
+$('#v-mhd').onchange=async e=>{
+  if(!e.target.checked){
+    if(map.getLayer('mhd-v')) map.setLayoutProperty('mhd-v','visibility','none');
+    return;
+  }
+  if(mhdStav==='hotove'){
+    map.setLayoutProperty('mhd-v','visibility','visible'); return;
+  }
+  if(mhdStav==='chyba'){ e.target.checked=false; return; }
+  $('#stav-mhd').textContent='(sťahujem…)';
+  let g;
+  try{ g=await (await fetch('mhd.geojson',{cache:'force-cache'})).json(); }
+  catch(err){
+    mhdStav='chyba'; e.target.checked=false;
+    $('#stav-mhd').textContent='(nedá sa načítať)'; return;
+  }
+  map.addSource('mhd',{type:'geojson',data:g});
+  map.addLayer({id:'mhd-v',type:'line',source:'mhd',
+    layout:{'line-cap':'round','line-join':'round',
+      'line-sort-key':['get','r']},          // električka nakoniec, nech je vrchu
+    paint:{
+      'line-color':['match',['get','r'],3,'#E8B44A',2,'#4FA3D9','#6F8095'],
+      'line-opacity':['match',['get','r'],3,.95,2,.85,.5],
+      'line-width':['interpolate',['linear'],['zoom'],
+        10,['match',['get','r'],3,1.6,2,1.1,.6],
+        14,['match',['get','r'],3,3,2,2.2,1.2],
+        18,['match',['get','r'],3,7,2,5,2.6]]},
+  }, map.getLayer('ulice-txt')?'ulice-txt':undefined);
+  mhdStav='hotove';
+  $('#stav-mhd').textContent='('+cis(g.features.length)+')';
+};
 
 /* ---------- 3D budovy ----------
    91 539 budov celej Bratislavy sa v jednom súbore stiahnuť nedá, tak
