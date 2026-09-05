@@ -82,8 +82,9 @@ td.akcie a{font-size:12.5px;margin-right:10px}
   <div class="vnutro">
     <div>
       <h1>Doplniť polohy</h1>
-      <p>Zámery, pri ktorých register neuvádza ulicu, a tak sa nedajú umiestniť na mapu.
-         Tu sa im dá poloha doplniť ručne.</p>
+      <p>Všetkých 1 189 bratislavských zámerov. Pri 246 polohu poznáme z názvu ulice,
+         pri zvyšku ju register neuvádza — tu sa dá doplniť ručne, prípadne aj opraviť
+         tú existujúcu.</p>
     </div>
     <span class="odkazy">
       <a href="../mapa-zamerov/">späť na mapu</a>
@@ -94,9 +95,9 @@ td.akcie a{font-size:12.5px;margin-right:10px}
     <select id="mc"><option value="">všetky mestské časti</option></select>
     <select id="typ"><option value="">všetky účely</option></select>
     <select id="stavF">
-      <option value="">doplnené aj nedoplnené</option>
-      <option value="ne">len nedoplnené</option>
-      <option value="ano">len doplnené</option>
+      <option value="ne">len bez polohy</option>
+      <option value="">všetky zámery</option>
+      <option value="ano">len s polohou</option>
     </select>
     <input type="search" id="q" placeholder="hľadať v názve…">
     <button id="exp">Stiahnuť polohy.json</button>
@@ -122,9 +123,10 @@ td.akcie a{font-size:12.5px;margin-right:10px}
   <details class="navod" id="onharku">
     <summary style="cursor:pointer"><b>Radšej v Google hárku?</b> Dá sa — a spáruje sa s touto stránkou.</summary>
     <ol>
-      <li>Stiahni <a href="zamery-bez-polohy.csv" download>zámery-bez-polohy.csv</a> — 943 riadkov, stĺpce
-          <span class="mono">suradnice</span> a <span class="mono">poznamka</span> sú prázdne na vyplnenie,
-          k tomu hotové odkazy do máp a na spis.</li>
+      <li>Stiahni <a href="zamery.csv" download>zámery.csv</a> — <b>všetkých 1 189 zámerov</b>.
+          Pri 246 je poloha už vyplnená, pri zvyšku je v stĺpci <span class="mono">poloha</span>
+          napísané <span class="mono">CHÝBA</span> a sú zoradené navrch. K tomu hotové odkazy
+          do máp a na spis.</li>
       <li>V Google Sheets <b>Súbor → Importovať → Nahrať</b>. Oddeľovač je bodkočiarka.</li>
       <li>Vyplňte súradnice — pokojne viacerí naraz, na to je hárok dobrý.</li>
       <li>Potom <b>Súbor → Zdieľať → Publikovať na webe</b>, vyberte hárok a formát
@@ -175,24 +177,28 @@ function rozober(t){
 
 function kresli(){
   const mc=$('#mc').value, typ=$('#typ').value, st=$('#stavF').value, q=$('#q').value.trim().toLowerCase();
+  // „má polohu“ = buď ju register poznal, alebo si ju doplnil tu
+  const ma=z=>!!(POLOHY[z.id]||z.ma);
   const filtr=ZOZ.filter(z=>{
     if(mc && z.obec!==mc) return false;
     if(typ && z.typ!==typ) return false;
-    if(st==='ne' && POLOHY[z.id]) return false;
-    if(st==='ano' && !POLOHY[z.id]) return false;
+    if(st==='ne' && ma(z)) return false;
+    if(st==='ano' && !ma(z)) return false;
     if(q && !(z.nazov+' '+z.firma).toLowerCase().includes(q)) return false;
     return true;
   });
   $('#telo').innerHTML=filtr.slice(0,600).map(z=>{
     const p=POLOHY[z.id];
+    const hodnota=p?(p[1]+', '+p[0]):(z.sur||'');
     const dotaz=encodeURIComponent(z.nazov.replace(/[„“"]/g,'')+' '+z.obec);
-    return '<tr class="'+(p?'hotovo':'')+'" data-id="'+esc(z.id)+'">'
+    return '<tr class="'+(ma(z)?'hotovo':'')+'" data-id="'+esc(z.id)+'">'
       +'<td class="nazov">'+esc(z.nazov)
         +'<div style="color:var(--mu);font-size:12px;font-weight:400">'+esc(z.firma||'')+'</div></td>'
       +'<td class="meta">'+esc(z.obec)+'</td>'
       +'<td class="meta"><span class="znacka">'+esc(z.typ||'—')+'</span></td>'
       +'<td class="suradnice"><input type="text" placeholder="48.1440, 17.1077" value="'
-        +(p?p[1]+', '+p[0]:'')+'"><div class="hlas"></div></td>'
+        +esc(hodnota)+'"><div class="hlas">'
+        +(!p&&z.sur?'<span class="ok">z registra</span>':'')+'</div></td>'
       +'<td class="akcie">'
         +'<a href="https://www.google.com/maps/search/'+dotaz+'" target="_blank" rel="noopener">Hľadať v mapách</a>'
         +'<a href="https://www.enviroportal.sk/eia/detail/'+esc(z.id)+'" target="_blank" rel="noopener">spis</a>'
