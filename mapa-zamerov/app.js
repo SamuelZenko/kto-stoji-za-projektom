@@ -655,31 +655,38 @@ prep('v-ulice','ulice-txt'); prep('v-hranice','hranice-c'); prep('v-mc','mc-txt'
 prep('v-mhd','mhd'); prep('v-nazvy','bod-txt');
 
 /* ---------- 3D budovy ----------
-   Súbor je veľký, tak ho ťaháme až keď si vrstvu zapneš. Keď ešte
-   nie je vyexportovaný, prepínač to povie a nič sa nerozbije. */
+   91 539 budov celej Bratislavy sa v jednom súbore stiahnuť nedá, tak
+   sú rozsekané do mriežky asi 1,5 × 1,7 km. Mapa si ťahá len dlaždice,
+   na ktoré sa práve pozeráš, a raz stiahnuté si drží. */
+const BUD_ZOOM=13.5;
 let budovy3d='nenacitane';
+const BUD={index:null, su:new Set(), mam:new Map(), bezi:false};
 /* plochý pôdorys budov z podkladu by sa s 3D telesami zdvojoval */
 const ploche=v=>{ if(map.getLayer('v-budovy'))
   map.setLayoutProperty('v-budovy','visibility',v?'visible':'none'); };
+
 $('#v-3d').onchange=async e=>{
   if(!e.target.checked){
     if(map.getLayer('bud3d')) map.setLayoutProperty('bud3d','visibility','none');
-    ploche(true); return;
+    ploche(true); $('#stav-3d').textContent=''; return;
   }
   if(budovy3d==='chyba'){ e.target.checked=false; return; }
   if(budovy3d==='hotove'){
     map.setLayoutProperty('bud3d','visibility','visible'); ploche(false);
-    kBudovam(); return;
+    if(map.getPitch()<20) map.easeTo({pitch:55});
+    dotiahniBudovy(); return;
   }
-  $('#stav-3d').textContent='(sťahujem…)';
-  let g;
-  try{ g=await (await fetch('budovy3d.geojson',{cache:'no-cache'})).json(); }
-  catch(err){
+  $('#stav-3d').textContent='(pripravujem…)';
+  try{
+    BUD.index=await (await fetch('budovy/index.json',{cache:'no-cache'})).json();
+  }catch(err){
     budovy3d='chyba'; e.target.checked=false;
     $('#stav-3d').textContent='(nedá sa načítať)';
     hlaska('3D budovy sa nepodarilo načítať: '+(err.message||err)); return;
   }
-  map.addSource('bud3d',{type:'geojson',data:g});
+  BUD.index.bunky.forEach(([x,y])=>BUD.su.add(x+'_'+y));
+  map.addSource('bud3d',{type:'geojson',
+    data:{type:'FeatureCollection',features:[]}});
   map.addLayer({id:'bud3d',type:'fill-extrusion',source:'bud3d',minzoom:13,
     paint:{
       /* farba podľa výšky — bežná zástavba splýva s podkladom,
@@ -693,35 +700,45 @@ $('#v-3d').onchange=async e=>{
   /* mäkšie svetlo, nech telesá nesvietia nad tmavým podkladom */
   map.setLight({anchor:'viewport',color:'#dce7f2',intensity:.32,position:[1.4,205,32]});
   budovy3d='hotove'; ploche(false);
-  $('#stav-3d').textContent='('+cis(g.features.length)+')';
-  ROZSAH_3D=rozsahBodov(g);
-  kBudovam();
+  if(map.getPitch()<20) map.easeTo({pitch:55});
+  dotiahniBudovy();
 };
-/* Model pokrýva len časť mesta. Keď sa pozeráš inam, po zapnutí by si
-   nevidel nič a mysleI by si, že je to pokazené — tak tam preletíme. */
-let ROZSAH_3D=null;
-function rozsahBodov(g){
-  let x1=180,y1=90,x2=-180,y2=-90;
-  g.features.forEach(f=>{
-    const c=f.geometry.type==='Polygon'?f.geometry.coordinates
-                                       :f.geometry.coordinates.flat();
-    c[0].forEach(p=>{
-      if(p[0]<x1)x1=p[0]; if(p[0]>x2)x2=p[0];
-      if(p[1]<y1)y1=p[1]; if(p[1]>y2)y2=p[1];});
-  });
-  return [[x1,y1],[x2,y2]];
-}
-function kBudovam(){
-  if(!ROZSAH_3D){ if(map.getPitch()<20) map.easeTo({pitch:55}); return; }
-  const s=map.getCenter(), [[x1,y1],[x2,y2]]=ROZSAH_3D;
-  const vnutri = s.lng>x1 && s.lng<x2 && s.lat>y1 && s.lat<y2;
-  if(vnutri && map.getZoom()>=14){
-    if(map.getPitch()<20) map.easeTo({pitch:55});
+
+async function dotiahniBudovy(){
+  if(budovy3d!=='hotove' || !$('#v-3d').checked || BUD.bezi) return;
+  if(map.getZoom()<BUD_ZOOM){
+    /* nič nesťahujeme, ale keď už niečo máme, nech svieti počet a nie výzva */
+    if(BUD.mam.size) ukazPocet();
+    else $('#stav-3d').textContent='(priblíž si mapu)';
     return;
   }
-  map.fitBounds(ROZSAH_3D,{padding:{top:60,bottom:80,left:360,right:60},
-    pitch:55, bearing:-24, duration:1400});
+  const i=BUD.index, b=map.getBounds();
+  const chcem=[];
+  for(let x=Math.floor(b.getWest()/i.krokX); x<=Math.floor(b.getEast()/i.krokX); x++)
+    for(let y=Math.floor(b.getSouth()/i.krokY); y<=Math.floor(b.getNorth()/i.krokY); y++){
+      const k=x+'_'+y;
+      if(BUD.su.has(k) && !BUD.mam.has(k)) chcem.push(k);
+    }
+  if(!chcem.length){ ukazPocet(); return; }
+  BUD.bezi=true;
+  $('#stav-3d').textContent='(sťahujem '+chcem.length+'…)';
+  await Promise.all(chcem.map(async k=>{
+    try{
+      const g=await (await fetch('budovy/'+k+'.json',{cache:'force-cache'})).json();
+      BUD.mam.set(k, g.features);
+    }catch(err){ BUD.mam.set(k, []); }
+  }));
+  const vsetko=[];
+  BUD.mam.forEach(f=>{ for(const x of f) vsetko.push(x); });
+  map.getSource('bud3d').setData({type:'FeatureCollection',features:vsetko});
+  BUD.bezi=false;
+  ukazPocet();
 }
+function ukazPocet(){
+  let n=0; BUD.mam.forEach(f=>n+=f.length);
+  $('#stav-3d').textContent=n?'('+cis(n)+')':'';
+}
+map.on('moveend',dotiahniBudovy);
 prep('v-komunita','kom','kom-txt','moj','moj-txt');
 
 $('#tl-plus').onclick=()=>map.zoomIn();
