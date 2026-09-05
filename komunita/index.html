@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Ako pridať vlastný zámer do mapy — komunitný nástroj pre architektov.">
+<title>Pridať zámer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,600&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{--mapa:#0B1117;--panel:#111A22;--karta:#17222C;--karta2:#1E2B36;
+  --ln:rgba(255,255,255,.08);--ln2:rgba(255,255,255,.16);
+  --tx:#F4F7FA;--tx2:#94A3B3;--tx3:#6B7A8A;--ac:#D92F69;--r:8px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--mapa)}
+body{font-family:"Public Sans",ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif;
+  color:var(--tx);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--ac)}
+h1{font-family:"Newsreader",Georgia,serif;font-size:30px;font-weight:600;margin:0;letter-spacing:-.02em}
+h2{font-size:18px;font-weight:700;margin:0 0 10px;letter-spacing:-.01em}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.9em}
+
+header{background:var(--panel);border-bottom:1px solid var(--ln);padding:22px 24px}
+header .v{max-width:820px;margin:0 auto;display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap}
+header p{margin:6px 0 0;color:var(--tx2);font-size:14px;max-width:62ch}
+header nav{margin-left:auto;display:flex;gap:8px}
+.tl{display:inline-flex;align-items:center;gap:7px;background:var(--karta);
+  border:1px solid var(--ln);color:var(--tx);border-radius:var(--r);
+  padding:9px 15px;font-size:13.5px;font-weight:500;cursor:pointer;text-decoration:none}
+.tl:hover{background:var(--karta2);border-color:var(--ln2)}
+.tl.hl{background:var(--ac);border-color:var(--ac);color:#fff}
+
+main{max-width:820px;margin:0 auto;padding:26px 24px 90px;display:flex;
+  flex-direction:column;gap:22px}
+.karta{background:var(--panel);border:1px solid var(--ln);border-radius:var(--r);padding:20px 22px}
+.karta p{margin:0 0 10px;color:var(--tx2)}
+.karta p:last-child{margin-bottom:0}
+.karta strong{color:var(--tx)}
+ol,ul{margin:10px 0 0;padding-left:20px;color:var(--tx2);display:flex;flex-direction:column;gap:6px}
+li strong{color:var(--tx)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--ln);vertical-align:top}
+th{color:var(--tx3);font-size:12px;font-weight:600}
+td:first-child{font-family:ui-monospace,Menlo,monospace;color:var(--tx);white-space:nowrap}
+td{color:var(--tx2)}
+input[type=url]{width:100%;background:var(--karta);border:1px solid var(--ln);
+  border-radius:var(--r);color:var(--tx);padding:10px 12px;font-size:13.5px;margin-top:6px}
+input:focus{outline:none;border-color:var(--ac)}
+label{font-size:13px;color:var(--tx2)}
+.stav{font-size:13px;color:var(--tx3);margin-top:10px}
+.stav b{color:#4E9E86}
+.upoz{border-left:3px solid var(--ac);padding-left:14px;color:var(--tx2);font-size:14px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="v">
+    <div>
+      <h1>Pridať zámer</h1>
+      <p>Mapa vie okrem registra ukázať aj to, čo pridá komunita — projekty, ktoré
+         posudzovaním neprešli, štúdie, súťažné návrhy. Každý záznam schvaľuje správca.</p>
+    </div>
+    <nav>
+      <a class="tl hl" id="tl-form" href="#">Otvoriť formulár</a>
+      <a class="tl" href="../mapa-zamerov/">Späť na mapu</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="karta">
+    <h2>Ako to funguje</h2>
+    <ol>
+      <li>Ktokoľvek vyplní <strong>formulár</strong> — názov, miesto, popis, obrázok.</li>
+      <li>Odpoveď pristane v hárku, kde ju <strong>správca prejde</strong> a v stĺpci
+          <span class="mono">schvalene</span> napíše <span class="mono">áno</span>.</li>
+      <li>Mapa berie <strong>iba schválené riadky</strong>. Nič sa neprogramuje,
+          schvaľovanie je jeden stĺpec.</li>
+    </ol>
+    <p style="margin-top:12px">Komunitné body sú na mape <strong>fialové</strong> a v detaile
+       majú napísané, že nejde o údaj z registra. To je zámerné — dôvera v mapu stojí na tom,
+       že je vidieť, odkiaľ ktorý údaj je.</p>
+  </div>
+
+  <div class="karta">
+    <h2>Čo má formulár zisťovať</h2>
+    <p>Stĺpce v hárku musia začínať týmito názvami. Poradie nie je dôležité.</p>
+    <table>
+      <tr><th>stĺpec</th><th>čo doň patrí</th></tr>
+      <tr><td>nazov</td><td>názov projektu — povinné</td></tr>
+      <tr><td>suradnice</td><td>z Google Maps, napr. <span class="mono">48.1440, 17.1077</span> — povinné</td></tr>
+      <tr><td>typ</td><td>bývanie, polyfunkcia, vybavenosť…</td></tr>
+      <tr><td>faza</td><td>zámer / posúdené / povolené / dokončené</td></tr>
+      <tr><td>popis</td><td>pár viet o projekte</td></tr>
+      <tr><td>autor</td><td>kto to pridal, prípadne ateliér</td></tr>
+      <tr><td>obrazok</td><td>odkaz na obrázok (musí byť verejne dostupný)</td></tr>
+      <tr><td>odkaz</td><td>stránka projektu alebo súťaže</td></tr>
+      <tr><td>schvalene</td><td>vypĺňa správca — <span class="mono">áno</span> zobrazí bod na mape</td></tr>
+    </table>
+  </div>
+
+  <div class="karta">
+    <h2>Nastavenie</h2>
+    <p>Toto je pre správcu. Stačí raz.</p>
+    <ol>
+      <li>V Google Forms vytvor formulár s otázkami podľa tabuľky vyššie.</li>
+      <li>V odpovediach otvor hárok a pridaj stĺpec <span class="mono">schvalene</span>.</li>
+      <li>Hárok publikuj: <strong>Súbor → Zdieľať → Publikovať na webe</strong>, formát
+          <strong>CSV</strong>.</li>
+      <li>Oba odkazy vlož sem — uložia sa v prehliadači a mapa ich hneď použije.</li>
+    </ol>
+    <div style="margin-top:14px">
+      <label>Odkaz na formulár (pre ľudí)</label>
+      <input type="url" id="i-form" placeholder="https://docs.google.com/forms/…/viewform">
+    </div>
+    <div style="margin-top:10px">
+      <label>Odkaz na publikovaný hárok (CSV)</label>
+      <input type="url" id="i-harok" placeholder="https://docs.google.com/spreadsheets/…/pub?output=csv">
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+      <button class="tl hl" id="uloz">Uložiť</button>
+      <button class="tl" id="skus">Skúsiť načítať</button>
+      <span class="stav" id="stav"></span>
+    </div>
+    <p class="upoz" style="margin-top:16px">Nastavenie sa ukladá do tohto prehliadača.
+       Keď mi tie dva odkazy pošleš, zapíšem ich natrvalo do
+       <span class="mono">komunita.json</span> a budú platiť pre všetkých.</p>
+  </div>
+
+  <div class="karta">
+    <h2>Prečo takto a nie inak</h2>
+    <p>Stránka beží ako statické súbory, bez servera a bez databázy — preto je zadarmo,
+       rýchla a nedá sa pokaziť. Formulár a hárok robia presne to, čo by robil backend:
+       zbierajú, ukladajú a dajú sa moderovať. A hlavne <strong>vy zostávate vlastníkmi
+       dát</strong>; keď to raz prerastie, hárok sa dá vyexportovať a nasadiť inam.</p>
+    <p>Jediná vec, s ktorou treba počítať: publikovaný hárok je čitateľný pre kohokoľvek
+       s odkazom. Preto doň nepatria e-maily ani nič, čo nemá byť verejné.</p>
+  </div>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const KF='mib-komunita-formular', KH='mib-komunita-harok';
+async function stav(){
+  let k={};
+  try{ k=await (await fetch('../mapa-zamerov/komunita.json')).json(); }catch(e){}
+  $('#i-form').value=localStorage.getItem(KF)||k.formular||'';
+  $('#i-harok').value=localStorage.getItem(KH)||k.harok||'';
+  const f=$('#i-form').value;
+  $('#tl-form').href=f||'#';
+  if(!f){ $('#tl-form').textContent='Formulár zatiaľ nie je'; $('#tl-form').classList.remove('hl'); }
+}
+$('#uloz').onclick=()=>{
+  const f=$('#i-form').value.trim(), h=$('#i-harok').value.trim();
+  f?localStorage.setItem(KF,f):localStorage.removeItem(KF);
+  h?localStorage.setItem(KH,h):localStorage.removeItem(KH);
+  $('#stav').innerHTML='<b>Uložené.</b> Otvor mapu a zapni Vrstvy → Komunitné body.';
+  stav();
+};
+$('#skus').onclick=async()=>{
+  const h=$('#i-harok').value.trim();
+  if(!h){ $('#stav').textContent='Najprv vlož odkaz na hárok.'; return; }
+  $('#stav').textContent='skúšam…';
+  try{
+    const t=await (await fetch(h)).text();
+    const r1=t.split('\n')[0].toLowerCase();
+    const ma=['nazov','suradnice','schval'].filter(x=>r1.includes(x));
+    $('#stav').innerHTML=t.trim().split('\n').length-1+' riadkov, nájdené stĺpce: '
+      +(ma.join(', ')||'žiadne z povinných — skontroluj názvy');
+  }catch(e){
+    $('#stav').textContent='Nedá sa prečítať. Musí byť publikovaný ako CSV, nie len zdieľaný.';
+  }
+};
+stav();
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "_popis": "Komunitné body. `formular` je odkaz na Google formulár, cez ktorý ktokoľvek pošle zámer. `harok` je ten istý formulár publikovaný ako CSV (Súbor → Zdieľať → Publikovať na webe → CSV). Mapa berie len riadky, kde je v stĺpci `schvalene` hodnota ano/áno/x/true — schvaľovanie je teda obyčajný stĺpec v hárku, nič sa nemusí programovať.",
+  "_stlpce": ["nazov", "suradnice", "typ", "faza", "popis", "autor", "obrazok", "odkaz", "schvalene"],
+  "formular": "",
+  "harok": ""
+}
