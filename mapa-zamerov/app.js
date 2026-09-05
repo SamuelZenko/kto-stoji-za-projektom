@@ -647,6 +647,43 @@ const prep=(id,...vrstvy)=>$('#'+id).onchange=e=>vrstvy.forEach(v=>{
   if(map.getLayer(v)) map.setLayoutProperty(v,'visibility',e.target.checked?'visible':'none');});
 prep('v-ulice','ulice-txt'); prep('v-hranice','hranice-c'); prep('v-mc','mc-txt');
 prep('v-mhd','mhd'); prep('v-nazvy','bod-txt');
+
+/* ---------- 3D budovy ----------
+   Súbor je veľký, tak ho ťaháme až keď si vrstvu zapneš. Keď ešte
+   nie je vyexportovaný, prepínač to povie a nič sa nerozbije. */
+let budovy3d='nenacitane';
+$('#v-3d').onchange=async e=>{
+  if(!e.target.checked){
+    if(map.getLayer('bud3d')) map.setLayoutProperty('bud3d','visibility','none');
+    return;
+  }
+  if(budovy3d==='chyba'){ e.target.checked=false; return; }
+  if(budovy3d==='hotove'){
+    map.setLayoutProperty('bud3d','visibility','visible');
+    if(map.getPitch()<20) map.easeTo({pitch:52});
+    return;
+  }
+  $('#stav-3d').textContent='(sťahujem…)';
+  let g;
+  try{ g=await (await fetch('budovy3d.geojson',{cache:'no-cache'})).json(); }
+  catch(err){
+    budovy3d='chyba'; e.target.checked=false;
+    $('#stav-3d').textContent='(zatiaľ nie sú)'; return;
+  }
+  map.addSource('bud3d',{type:'geojson',data:g});
+  map.addLayer({id:'bud3d',type:'fill-extrusion',source:'bud3d',minzoom:13,
+    paint:{
+      /* farba podľa výšky — nízka zástavba tmavšia, veže svetlejšie */
+      'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','vyska'],9],
+        3,'#243440', 12,'#2E4252', 25,'#3A5468', 60,'#4C6C86', 100,'#5E86A4'],
+      'fill-extrusion-height':['coalesce',['get','vyska'],9],
+      'fill-extrusion-base':0,
+      'fill-extrusion-opacity':.82},
+  }, map.getLayer('ulice-txt')?'ulice-txt':undefined);
+  budovy3d='hotove';
+  $('#stav-3d').textContent='('+cis(g.features.length)+')';
+  if(map.getPitch()<20) map.easeTo({pitch:52});
+};
 prep('v-komunita','kom','kom-txt','moj','moj-txt');
 
 $('#tl-plus').onclick=()=>map.zoomIn();
@@ -688,10 +725,6 @@ function tahadloSirky({tahadlo, sirku, daj, kluc, zakl, min, max, smer}){
   window.addEventListener('pointercancel',koniec);
   t.addEventListener('dblclick',()=>{nastav(zakl); zapamataj();});
 }
-tahadloSirky({
-  tahadlo:'#tahadlo', kluc:'mib-sirka-panela', zakl:326, min:250, max:640, smer:1,
-  sirku:w=>{$('#ovladanie').style.width=w+'px';},
-  daj:()=>$('#ovladanie').offsetWidth});
 tahadloSirky({
   tahadlo:'#tahadlo-d', kluc:'mib-sirka-detailu', zakl:448, min:360, max:820, smer:-1,
   sirku:w=>document.documentElement.style.setProperty('--detail-w',w+'px'),

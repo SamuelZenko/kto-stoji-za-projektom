@@ -49,13 +49,6 @@ button,input,select{font-family:inherit}
   box-shadow:var(--tien);display:flex;z-index:4}
 .ovl-vnutro{flex:1;min-width:0;min-height:0;padding:18px;overflow-y:auto;
   display:flex;flex-direction:column;gap:15px}
-/* ťahadlo na šírku panela */
-.tahadlo{width:10px;flex:none;cursor:col-resize;position:relative;
-  border-radius:0 var(--r) var(--r) 0;border-left:1px solid transparent}
-.tahadlo:hover,.tahadlo.ide{background:var(--karta2);border-left-color:var(--ln)}
-.tahadlo::after{content:"";position:absolute;left:3.5px;top:50%;transform:translateY(-50%);
-  width:3px;height:38px;border-radius:2px;background:var(--ln2)}
-.tahadlo:hover::after,.tahadlo.ide::after{background:var(--ac)}
 body.tiaham{cursor:col-resize;user-select:none}
 .hladanie{position:relative}
 .hladanie input{width:100%;background:var(--karta);border:1px solid var(--ln);
@@ -306,9 +299,7 @@ body.tiaham .tahadlo-d{transition:background .15s}
   .lista{padding:0 14px;gap:12px}
   .lista .pod,.znacka .kto{display:none}
   .lista nav{gap:14px}
-  /* na mobile je panel cez celú šírku, ťahadlo nemá čo meniť */
-  .ovladanie{left:12px;right:12px;top:12px;width:auto!important;max-height:44vh}
-  .tahadlo{display:none}
+  .ovladanie{left:12px;right:12px;top:12px;width:auto;max-height:44vh}
   .spodok{left:12px;right:12px;bottom:12px;max-width:none}
   body:has(.detail.on) .spodok{max-width:none}
   .legenda{gap:12px;padding:11px 13px}
