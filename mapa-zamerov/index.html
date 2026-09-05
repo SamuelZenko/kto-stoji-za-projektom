@@ -10,7 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,600&family=Public+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
-<link rel="stylesheet" href="ui.css">
+<!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
+<link rel="stylesheet" href="ui.css?v=20260905d">
 <style>
 /* pridávanie bodu priamo v mape */
 .pridavam #map{cursor:crosshair}
@@ -124,7 +125,8 @@
        border-top:1px solid var(--ln);padding-top:12px">
       Pravý klik na mapu ponúkne, čo sa dá s miestom urobiť.<br>
       Stlačené koliesko myši alebo <b style="color:var(--tx2)">Shift</b> + ťahanie otáča a nakláňa mapu.<br>
-      3D budovy zatiaľ pokrývajú len historické centrum.
+      3D budovy zatiaľ pokrývajú len centrum, asi 1,5 × 2 km na oboch
+      brehoch — zapnutie ťa tam prenesie.
     </p>
   </div>
 
@@ -191,6 +193,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js"></script>
+<script src="app.js?v=20260905d"></script>
 </body>
 </html>

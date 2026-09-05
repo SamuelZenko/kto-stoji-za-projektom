@@ -663,8 +663,7 @@ $('#v-3d').onchange=async e=>{
   if(budovy3d==='chyba'){ e.target.checked=false; return; }
   if(budovy3d==='hotove'){
     map.setLayoutProperty('bud3d','visibility','visible'); ploche(false);
-    if(map.getPitch()<20) map.easeTo({pitch:52});
-    return;
+    kBudovam(); return;
   }
   $('#stav-3d').textContent='(sťahujem…)';
   let g;
@@ -688,8 +687,34 @@ $('#v-3d').onchange=async e=>{
   map.setLight({anchor:'viewport',color:'#dce7f2',intensity:.32,position:[1.4,205,32]});
   budovy3d='hotove'; ploche(false);
   $('#stav-3d').textContent='('+cis(g.features.length)+')';
-  if(map.getPitch()<20) map.easeTo({pitch:52});
+  ROZSAH_3D=rozsahBodov(g);
+  kBudovam();
 };
+/* Model pokrýva len časť mesta. Keď sa pozeráš inam, po zapnutí by si
+   nevidel nič a mysleI by si, že je to pokazené — tak tam preletíme. */
+let ROZSAH_3D=null;
+function rozsahBodov(g){
+  let x1=180,y1=90,x2=-180,y2=-90;
+  g.features.forEach(f=>{
+    const c=f.geometry.type==='Polygon'?f.geometry.coordinates
+                                       :f.geometry.coordinates.flat();
+    c[0].forEach(p=>{
+      if(p[0]<x1)x1=p[0]; if(p[0]>x2)x2=p[0];
+      if(p[1]<y1)y1=p[1]; if(p[1]>y2)y2=p[1];});
+  });
+  return [[x1,y1],[x2,y2]];
+}
+function kBudovam(){
+  if(!ROZSAH_3D){ if(map.getPitch()<20) map.easeTo({pitch:55}); return; }
+  const s=map.getCenter(), [[x1,y1],[x2,y2]]=ROZSAH_3D;
+  const vnutri = s.lng>x1 && s.lng<x2 && s.lat>y1 && s.lat<y2;
+  if(vnutri && map.getZoom()>=14){
+    if(map.getPitch()<20) map.easeTo({pitch:55});
+    return;
+  }
+  map.fitBounds(ROZSAH_3D,{padding:{top:60,bottom:80,left:360,right:60},
+    pitch:55, bearing:-24, duration:1400});
+}
 prep('v-komunita','kom','kom-txt','moj','moj-txt');
 
 $('#tl-plus').onclick=()=>map.zoomIn();
