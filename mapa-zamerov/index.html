@@ -152,9 +152,9 @@ input[type=search]:focus,select:focus{outline:none;border-color:var(--acc)}
     <div id="map"></div>
     <div class="podklady">
       <span class="nadpis">Podklad</span>
-      <label><input type="radio" name="pod" value="svetla" checked> podkladová mapa</label>
+      <label><input type="radio" name="pod" value="ziadny" checked> bez podkladu</label>
       <label><input type="radio" name="pod" value="orto"> ortofoto</label>
-      <label><input type="radio" name="pod" value="ziadny"> bez podkladu</label>
+      <label><input type="radio" name="pod" value="svetla"> podkladová mapa <span style="color:var(--mu)">(pomalšie)</span></label>
       <span class="nadpis" style="margin-top:6px">Navrch</span>
       <label><input type="checkbox" id="mhd"> linky MHD</label>
       <label><input type="checkbox" id="hranice" checked> hranice mestských častí</label>
@@ -175,10 +175,13 @@ const EXPORT=(sluzba)=>G+'/'+sluzba+'/MapServer/export?bbox={bbox-epsg-3857}'
 
 let Z=null, MC=null, TYPY=[];
 let filtr={q:'',mc:'',sk:'',fz:'',pl:'',typ:new Set()};
+const tmavy=()=>window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches;
 
 const map=new maplibregl.Map({
   container:'map',
-  style:{version:8, glyphs:'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+  // fonts.openmaptiles.org vracia HTML namiesto fontu, takže popisky mlčia —
+  // demotiles.maplibre.org má Noto Sans a odpovedá správne
+  style:{version:8, glyphs:'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
     sources:{
       svetla:{type:'raster', tiles:[EXPORT('Svetlozelen%C3%A1_podkladov%C3%A1_mapa')],
               tileSize:512, attribution:'Geoportál Bratislava'},
@@ -186,8 +189,11 @@ const map=new maplibregl.Map({
             tileSize:256, maxzoom:19, attribution:'Ortofoto — Hlavné mesto SR Bratislava'},
       mhd:{type:'raster', tiles:[EXPORT('doprava/Linky_MHD')], tileSize:512},
     },
+    // Podklady sú vypnuté — MapLibre skryté vrstvy vôbec nesťahuje, takže
+    // mapa nabehne okamžite. Podkladová mapa sa kreslí dynamicky (0,4 s na
+    // dlaždicu) a zapnutá od začiatku zdržiavala všetko ostatné.
     layers:[
-      {id:'svetla', type:'raster', source:'svetla', layout:{visibility:'visible'}},
+      {id:'svetla', type:'raster', source:'svetla', layout:{visibility:'none'}},
       {id:'orto', type:'raster', source:'orto', layout:{visibility:'none'}},
       {id:'mhd', type:'raster', source:'mhd', layout:{visibility:'none'}},
     ]},
@@ -307,9 +313,16 @@ function ukazNezname(obec){
 /* ---------- štart ---------- */
 const TAZISKA={};
 map.on('load',async()=>{
-  const [mc,z]=await Promise.all([
-    fetch('mestske-casti.geojson').then(r=>r.json()),
-    fetch('zamery.geojson').then(r=>r.json())]);
+  $('#pocty').textContent='načítavam dáta…';
+  let mc,z;
+  try{
+    [mc,z]=await Promise.all([
+      fetch('mestske-casti.geojson').then(r=>r.json()),
+      fetch('zamery.geojson').then(r=>r.json())]);
+  }catch(e){
+    $('#pocty').innerHTML='<b style="color:var(--acc)">Dáta sa nenačítali</b><br>'+esc(e);
+    return;
+  }
   MC=mc; Z=z;
   mc.features.forEach(f=>{
     const a=f.properties||{}, nz=a.NAZOV_ZUJ||a.MC_LABEL||''; if(!nz||!f.geometry) return;
@@ -319,7 +332,10 @@ map.on('load',async()=>{
     TAZISKA[nz]=[kr.reduce((s,c)=>s+c[0],0)/kr.length, kr.reduce((s,c)=>s+c[1],0)/kr.length];
   });
 
+  // Výplň mestských častí dáva mape tvar aj bez jediného externého podkladu
   map.addSource('hranice',{type:'geojson',data:mc});
+  map.addLayer({id:'hranice-v',type:'fill',source:'hranice',
+    paint:{'fill-color':tmavy()?'#141A20':'#FFFFFF','fill-opacity':0.85}});
   map.addLayer({id:'hranice-c',type:'line',source:'hranice',
     paint:{'line-color':'#8A98A3','line-width':0.8,'line-opacity':0.55}});
 
@@ -382,7 +398,11 @@ $('#typy').addEventListener('click',e=>{
 $('#zrus').onclick=()=>{filtr.typ.clear(); obnov();};
 document.querySelectorAll('input[name=pod]').forEach(r=>r.onchange=()=>{
   ['svetla','orto'].forEach(l=>map.setLayoutProperty(l,'visibility',
-    r.value===l?'visible':'none'));});
+    r.value===l?'visible':'none'));
+  // pod fotkou nemá zmysel biela výplň mestských častí
+  if(map.getLayer('hranice-v'))
+    map.setPaintProperty('hranice-v','fill-opacity', r.value==='ziadny'?0.85:0);
+});
 $('#mhd').onchange=e=>map.setLayoutProperty('mhd','visibility',e.target.checked?'visible':'none');
 $('#hranice').onchange=e=>map.setLayoutProperty('hranice-c','visibility',e.target.checked?'visible':'none');
 </script>

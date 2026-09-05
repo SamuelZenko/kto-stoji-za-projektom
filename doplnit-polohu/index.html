@@ -101,6 +101,7 @@ td.akcie a{font-size:12.5px;margin-right:10px}
     <input type="search" id="q" placeholder="hľadať v názve…">
     <button id="exp">Stiahnuť polohy.json</button>
     <button class="duch" id="imp">Načítať súbor</button>
+    <button class="duch" id="harok">Google hárok…</button>
     <input type="file" id="subor" accept="application/json" hidden>
     <span class="stav" id="stav">—</span>
   </div>
@@ -117,6 +118,23 @@ td.akcie a{font-size:12.5px;margin-right:10px}
       <li>Riadok zozelenie. Na konci <b>Stiahnuť polohy.json</b>.</li>
     </ol>
   </div>
+
+  <details class="navod" id="onharku">
+    <summary style="cursor:pointer"><b>Radšej v Google hárku?</b> Dá sa — a spáruje sa s touto stránkou.</summary>
+    <ol>
+      <li>Stiahni <a href="zamery-bez-polohy.csv" download>zámery-bez-polohy.csv</a> — 943 riadkov, stĺpce
+          <span class="mono">suradnice</span> a <span class="mono">poznamka</span> sú prázdne na vyplnenie,
+          k tomu hotové odkazy do máp a na spis.</li>
+      <li>V Google Sheets <b>Súbor → Importovať → Nahrať</b>. Oddeľovač je bodkočiarka.</li>
+      <li>Vyplňte súradnice — pokojne viacerí naraz, na to je hárok dobrý.</li>
+      <li>Potom <b>Súbor → Zdieľať → Publikovať na webe</b>, vyberte hárok a formát
+          <b>CSV</b>, a sem vložte vzniknutý odkaz cez tlačidlo <b>Google hárok…</b>.</li>
+      <li>Stránka si ho zapamätá a pri každom otvorení z neho načíta doplnené polohy.</li>
+    </ol>
+    <p style="margin:8px 0 0;color:var(--mu);font-size:13px">
+      Hárok musí byť publikovaný ako CSV — obyčajný odkaz na zdieľanie prehliadač
+      neprečíta. Publikovaný hárok je verejne čitateľný pre kohokoľvek s odkazom.</p>
+  </details>
 
   <table>
     <thead><tr>
@@ -213,6 +231,53 @@ $('#subor').onchange=e=>{
 };
 ['mc','typ','q','stavF'].forEach(id=>$('#'+id).addEventListener('input',kresli));
 
+/* ---------- párovanie s Google hárkom ----------
+   Publikovaný hárok vracia obyčajné CSV, takže sa dá čítať priamo.
+   Berieme z neho stĺpce `id` a `suradnice`; zvyšok nás nezaujíma. */
+const KLUC_H='mib-harok-url';
+function csvRiadky(t){
+  const von=[]; let r=[], p='', v=false;
+  for(let i=0;i<t.length;i++){
+    const c=t[i];
+    if(v){ if(c==='"'){ if(t[i+1]==='"'){p+='"';i++;} else v=false; } else p+=c; }
+    else if(c==='"') v=true;
+    else if(c===','||c===';'){ r.push(p); p=''; }
+    else if(c==='\n'){ r.push(p); von.push(r); r=[]; p=''; }
+    else if(c!=='\r') p+=c;
+  }
+  if(p||r.length){ r.push(p); von.push(r); }
+  return von;
+}
+async function nacitajHarok(url, ticho){
+  if(!url) return;
+  try{
+    const t=await (await fetch(url)).text();
+    const r=csvRiadky(t.replace(/^﻿/,''));
+    if(!r.length) throw new Error('prázdny hárok');
+    const hl=r[0].map(x=>x.trim().toLowerCase());
+    const iId=hl.indexOf('id'), iS=hl.indexOf('suradnice');
+    if(iId<0||iS<0) throw new Error('chýba stĺpec id alebo suradnice');
+    let n=0;
+    r.slice(1).forEach(x=>{
+      const id=(x[iId]||'').trim(), s=rozober(x[iS]||'');
+      if(id&&s){ POLOHY[id]=s; n++; }
+    });
+    uloz(); kresli();
+    if(!ticho) alert('Z hárku načítaných '+n+' polôh.');
+  }catch(e){
+    if(!ticho) alert('Hárok sa nepodarilo prečítať: '+e.message
+      +'\n\nMusí byť publikovaný cez Súbor → Zdieľať → Publikovať na webe, formát CSV.');
+  }
+}
+$('#harok').onclick=()=>{
+  const bolo=localStorage.getItem(KLUC_H)||'';
+  const u=prompt('Vlož odkaz na publikovaný Google hárok (formát CSV):', bolo);
+  if(u===null) return;
+  if(!u.trim()){ localStorage.removeItem(KLUC_H); return; }
+  localStorage.setItem(KLUC_H,u.trim());
+  nacitajHarok(u.trim());
+};
+
 fetch('../mapa-zamerov/bez-polohy.json').then(r=>r.json()).then(z=>{
   ZOZ=z;
   const obce=[...new Set(z.map(x=>x.obec).filter(Boolean))].sort();
@@ -222,6 +287,8 @@ fetch('../mapa-zamerov/bez-polohy.json').then(r=>r.json()).then(z=>{
   const p=new URLSearchParams(location.search).get('mc');
   if(p && obce.includes(p)) $('#mc').value=p;
   uloz(); kresli();
+  const h=localStorage.getItem(KLUC_H);
+  if(h) nacitajHarok(h, true);      // spárovaný hárok sa načíta ticho
 }).catch(e=>{
   $('#telo').innerHTML='<tr><td colspan="5">Zoznam sa nepodarilo načítať: '+esc(e)+'</td></tr>';
 });
