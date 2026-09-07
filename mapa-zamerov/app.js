@@ -215,8 +215,7 @@ function ukaz(p,z){
       +riadok('Typológia', esc(p.typ||''))
       +riadokStavu(p)
       +riadok('Povoľuje', esc(p.urad||''))
-      +riadok('Poloha', p.presnost==='presná'?(esc(p.ulica||'presná'))
-        :'<span class="v chyba">nie je známa</span>', true)
+      +riadokPolohy(p)
       +'<div class="r" id="r-vyska" hidden><span class="k">Výšková regulácia</span><span class="v"></span></div>'
       +riadok('Aktualizované', esc(p.zmena||''))
     +'</div>'
@@ -258,6 +257,17 @@ function riadokStavu(p){
   return riadok('Stav', '<span class="v"><span class="farba" style="background:'
     +(FARBA[p.faza]||'#8B98A3')+'"></span>'+esc(p.faza||'')
     +'<span class="pozn-stav">'+pozn+'</span></span>', true);
+}
+/* Odkiaľ je poloha: parcely z textu zámeru sú najpresnejšie (ťažisko
+   pozemku), ulica je len priemer adries celej ulice. */
+function riadokPolohy(p){
+  if(p.presnost!=='presná') return riadok('Poloha', '<span class="v chyba">nie je známa</span>', true);
+  const parc=pole(p,'parcely')||[];
+  if(p.zdroj_polohy==='parcela' && parc.length)
+    return riadok('Poloha', '<span class="v">parcely '+esc(parc.join(', '))+(p.ku?' · k. ú. '+esc(p.ku):'')
+      +'<span class="pozn-stav">ťažisko pozemkov uvedených v zámere, overené v katastri</span></span>', true);
+  return riadok('Poloha', '<span class="v">'+esc(p.ulica||'presná')
+    +'<span class="pozn-stav">'+(p.ulica?'stred ulice podľa adresných bodov — nie konkrétny pozemok':'z prvého zberu, bez uvedenej ulice')+'</span></span>', true);
 }
 /* Register vedie každé konanie zvlášť — etapy, bloky, zmeny. V mape je
    projekt raz a ostatné konania sú tu. */

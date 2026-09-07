@@ -11,7 +11,7 @@
   th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#5c6b7a;text-align:left;
      border-bottom:2px solid #c9d2dc;padding-bottom:6px}
   th.n,td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-  col.c1{width:40%}col.c2{width:15%}col.c3{width:11%}col.c4{width:11%}col.c5{width:9%}col.c6{width:14%}
+  col.c1{width:40%}col.c2{width:14%}col.c3{width:11%}col.c4{width:11%}col.c5{width:9%}col.c6{width:15%}
   tr.faza td{background:#eef3f8;font-weight:700;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;
      color:#22364d;border-bottom:0;padding:9px 10px 6px}
   tr.faza td span{font-weight:400;text-transform:none;letter-spacing:0;color:#4a5a6b;margin-left:8px}
@@ -21,7 +21,8 @@
   tr.sum td{background:#dfe7f0;color:#1f2f41;font-weight:700;border:0;padding:9px 10px}
   tr.sum td.n{font-size:15px}
   tr.sum td small{font-weight:400;opacity:.8}
-  tr.hotovo td{background:#f3f7f3}
+  tr.hotovo td{background:#f1f7f2}
+  tr.hotovo td:first-child::before{content:"✓ ";color:#1e6b3a;font-weight:700}
   tr.ne td{color:#6b7885}
   tr.ne td.n{color:#8a95a0}
   .poz{font-size:12px;color:#5c6b7a;display:block;margin-top:1px}
@@ -33,10 +34,12 @@
   .stav .v{font-size:20px;font-weight:700}
   .stav .v small{font-size:13px;font-weight:400;color:#5c6b7a}
   .pata{margin-top:12px;font-size:11.5px;color:#7a8794}
+  .ok{color:#1e6b3a;font-weight:600}
 </style></head><body><div class="list">
 
 <h1>Mapa Bratislava zajtra — čo treba doplniť prvýkrát a koľko to stojí</h1>
-<p class="pod">Odhad k 7. 9. 2026, postavený na meraní dát z 4. 9. 2026. Hodiny sú rozsah od–do. Dve rôzne veci: <b>kostra z registra</b> (jednorazovo, potom automat) a <b>redakčná vrstva</b> ako Praha zítra (trvalá práca s vlastníkom).</p>
+<p class="pod">Stav k 7. 9. 2026 večer. Zelené riadky sú hotové a nasadené; pri nich sú skutočné čísla, nie odhad.
+Dve rôzne veci: <b>kostra z registra</b> (jednorazovo, potom automat — hotová) a <b>redakčná vrstva</b> ako Praha zítra (trvalá práca s vlastníkom — čaká).</p>
 
 <table>
 <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"><col class="c6"></colgroup>
@@ -50,47 +53,50 @@
 <tbody>
 
 <tr class="blok"><td colspan="6">A · Kostra z registra EIA <span>veľké projekty nad zákonným prahom — jednorazovo, potom beží samo</span></td></tr>
-<tr class="faza"><td colspan="6">1 · Čistenie <span>najprv, inak všetko ďalšie stavia na zlom základe</span></td></tr>
-<tr><td>Vyhodiť body mimo Bratislavy<span class="poz">Pezinok, Modra, Senec… prepadli cez zhodný názov ulice</span></td><td class="n">23</td><td class="n">0,5</td><td class="n">—</td><td class="n">—</td><td></td></tr>
-<tr><td>Plány a koncepcie von z bodov<span class="poz">územné plány, PHSR — nie sú stavby</span></td><td class="n">130</td><td class="n">1</td><td class="n">—</td><td class="n">—</td><td></td></tr>
-<tr><td>Líniové stavby do vlastnej vrstvy<span class="poz">doprava, technická infraštruktúra — bod je zavádzajúci</span></td><td class="n">145</td><td class="n">1–2</td><td class="n">—</td><td class="n">—</td><td></td></tr>
-<tr><td>Zlúčiť duplicitné záznamy<span class="poz">116 záznamov = 50 projektov (Zuckermandel 4×, Čulenova 3×)</span></td><td class="n">116 → 50</td><td class="n">3–4</td><td class="n">1</td><td class="n">—</td><td><b>860 stavieb</b> namiesto 1 189 bodov</td></tr>
+<tr class="faza"><td colspan="6">1 · Čistenie <span>hotové 7. 9.</span></td></tr>
+<tr class="hotovo"><td>Body mimo Bratislavy von<span class="poz">Pezinok, Modra, Senec… prepadli cez zhodný názov ulice</span></td><td class="n">23</td><td class="n">0,5</td><td class="n">—</td><td class="n">—</td><td></td></tr>
+<tr class="hotovo"><td>Plány a koncepcie von z bodov<span class="poz">územné plány, PHSR — nie sú stavby; uložené bokom</span></td><td class="n">129</td><td class="n">0,5</td><td class="n">—</td><td class="n">—</td><td></td></tr>
+<tr class="hotovo"><td>Líniové stavby do vlastnej vrstvy<span class="poz">doprava, technická infraštruktúra — zapínateľná vrstva, oranžový prstenec</span></td><td class="n">126</td><td class="n">1</td><td class="n">—</td><td class="n">—</td><td></td></tr>
+<tr class="hotovo"><td>Zlúčiť duplicitné konania<span class="poz">ten istý názov + IČO = jeden projekt; ostatné konania sú v karte</span></td><td class="n">49</td><td class="n">1</td><td class="n">—</td><td class="n">—</td><td><b>988 projektov = 862 stavieb</b> namiesto 1 189 bodov</td></tr>
 
-<tr class="faza"><td colspan="6">2 · Poloha <span>jediné, čo register nemá — dnes je 79 % bodov len pri ťažisku mestskej časti</span></td></tr>
-<tr><td>Automat: parcela z PDF → kataster → bod<span class="poz">zmerané na vzorke: dnes trafí 28 %, po doladení 45–60 %</span></td><td class="n">~680 bez polohy</td><td class="n">17–26</td><td class="n">—</td><td class="n">1 noc</td><td>300–400 polôh zadarmo</td></tr>
-<tr><td>Ručne zvyšok, developerské prednostne<span class="poz">2–3 min na bod, dá sa rozdeliť medzi ľudí</span></td><td class="n">270–370</td><td class="n">—</td><td class="n">9–19</td><td class="n">—</td><td></td></tr>
-<tr><td>Skontrolovať dnešné „presné" body<span class="poz">sú to priemery celej ulice, nie parcely</span></td><td class="n">~180</td><td class="n">—</td><td class="n">3</td><td class="n">—</td><td><b>60–70 %</b> stavieb na správnom mieste</td></tr>
+<tr class="faza"><td colspan="6">2 · Poloha <span>jediné, čo register nemá</span></td></tr>
+<tr class="hotovo"><td>Automat: parcela z textu zámeru → kataster → ťažisko pozemku<span class="poz">test 33 z 50 (66 %); celý beh 689 stavieb → 349 polôh (51 %), každá overená proti hranici MČ</span></td><td class="n">689</td><td class="n">4</td><td class="n">—</td><td class="n">3 h</td><td class="ok">+349 presných polôh</td></tr>
+<tr class="hotovo"><td>Skontrolovať pôvodné „presné" body<span class="poz">vrstva adresných bodov pokrýva celé Slovensko — 47 bodov ležalo mimo mesta (Bajkalská v Prešove), 22 malo ulicu z inej MČ; ulice znovu geokódované v správnej MČ</span></td><td class="n">187</td><td class="n">1,5</td><td class="n">—</td><td class="n">—</td><td>69 bodov vrátených medzi približné, 147 ostáva ako „stred ulice"</td></tr>
+<tr><td>Ručne zvyšok, developerské prednostne<span class="poz">2–3 min na bod v stránke Doplniť polohy; 224 z nich sú developerské</span></td><td class="n">366</td><td class="n">—</td><td class="n">12–18</td><td class="n">—</td><td>→ 100 % stavieb na mieste</td></tr>
 
-<tr class="faza"><td colspan="6">3 · Obsah karty <span>aby mapa nehovorila viac, než vie doložiť</span></td></tr>
-<tr><td>Fáza z úradnej tabule označiť ako neúplnú<span class="poz">CUET pokrýva len 9 zo 17 MČ — Ružinov má doložených 54 z 323, Záhorská Bystrica 0 z 25; nie preto, že sa tam nestavia</span></td><td class="n">177</td><td class="n">0,5</td><td class="n">—</td><td class="n">—</td><td>„povolené" sa neukáže ako istota tam, kde MČ nepublikuje</td></tr>
-<tr><td>Developerská skupina len ako doložená indícia<span class="poz">80 zo 150 dnes stojí na adrese veľkej kancelárskej budovy</span></td><td class="n">150</td><td class="n">1–2</td><td class="n">—</td><td class="n">—</td><td>„sídli na adrese X", nie „stavia X"</td></tr>
-<tr><td>Komerčné názvy projektov<span class="poz">automat cez ochranné známky, ručne známe projekty</span></td><td class="n">100–200</td><td class="n">3–4</td><td class="n">3–7</td><td class="n">1 noc</td><td>River Park namiesto „komplex CPR, blok B"</td></tr>
-<tr><td>Dorenderovať náhľady výkresov zo zvyšných spisov</td><td class="n">392</td><td class="n">—</td><td class="n">—</td><td class="n">1 h</td><td>výkres pri ~55 % stavieb</td></tr>
+<tr class="faza"><td colspan="6">3 · Obsah karty a vrstvy <span>aby mapa nehovorila viac, než vie doložiť</span></td></tr>
+<tr class="hotovo"><td>Fáza s uvedeným zdrojom<span class="poz">doložené vyhláškou 142; kde MČ na CUET nepublikuje (8 zo 17), karta to povie natvrdo; farba fázy pri riadku</span></td><td class="n">988</td><td class="n">1</td><td class="n">—</td><td class="n">—</td><td></td></tr>
+<tr class="hotovo"><td>Developerská skupina len ako doložená<span class="poz">doložených 13 (IČO alebo značka v názve firmy), 118 len zhoda sídla → „sídli na adrese skupiny X" + štítok indícia</span></td><td class="n">131</td><td class="n">1</td><td class="n">—</td><td class="n">—</td><td></td></tr>
+<tr class="hotovo"><td>Náhľady výkresov zo všetkých spisov, otočené podľa písma<span class="poz">381 zámerov s galériou (bolo 290), 1 038 obrázkov, 97 strán otočených; render s limitom 2 min na dokument</span></td><td class="n">1 038</td><td class="n">2</td><td class="n">—</td><td class="n">40 min</td><td></td></tr>
+<tr class="hotovo"><td>Výšková regulácia + žiadosti o zmenu ÚPN<span class="poz">3 829 plôch v 5 hladinách, povolená výška v karte každého presného bodu; 89 žiadostí s kartou</span></td><td class="n">3 918</td><td class="n">2</td><td class="n">—</td><td class="n">—</td><td></td></tr>
+<tr><td>Komerčné názvy projektov<span class="poz">automat nejde — TMview vie hľadať len znenie známky, nie majiteľa. Mechanizmus je hotový (nazvy-obchodne.json, mapa ukáže obchodný názov a pod ním úradný), zoznam sa plní rukou</span></td><td class="n">100–200</td><td class="n">—</td><td class="n">3–7</td><td class="n">—</td><td>zatiaľ 1 overený: River Park</td></tr>
 <tr><td>Komunitný zber: Google formulár + hárok + napojenie<span class="poz">formulár založíš ty (30 min), schvaľovanie je stĺpec v hárku</span></td><td class="n">—</td><td class="n">2–3</td><td class="n">0,5</td><td class="n">—</td><td>ľudia môžu pridávať body</td></tr>
 
-<tr class="sum"><td>Kostra spolu</td><td class="n">860 stavieb</td><td class="n">29–43 h</td><td class="n">17–31 h</td><td class="n">2 noci</td><td><small>46–74 h ľudskej práce, potom 10 min mesačne</small></td></tr>
+<tr class="sum"><td>Kostra — zostáva</td><td class="n">862 stavieb</td><td class="n">2–3 h</td><td class="n">16–26 h</td><td class="n">—</td><td><small>minuté 7. 9.: ~15 h práce + 4 h stroja; potom 10 min mesačne</small></td></tr>
 
 <tr class="blok"><td colspan="6">B · Redakčná vrstva <span>čo register nevidí: menšie bytovky, školy, parky, rekonštrukcie — takto to robí Praha zítra (IPR + CAMP, „od investorů či projektantů")</span></td></tr>
-<tr class="hotovo"><td>B1 · Zmerať, koľko projektov chýba — <b>z verejných zdrojov sa nedá</b><span class="poz">úradné tabule (CUET): 8 zo 17 MČ nepublikuje nič, Petržalka vrátane; za 2 roky len 14 skutočných povolení. Vzorka: 5 z 11 povolených stavieb v EIA nie je</span></td><td class="n">11 overených</td><td class="n">2,5 ✓</td><td class="n">—</td><td class="n">—</td><td>pracovný odhad <b>200–400</b> chýbajúcich, presné číslo dá až riadok nižšie</td></tr>
+<tr class="hotovo"><td>B1 · Zmerať, koľko projektov chýba — <b>z verejných zdrojov sa nedá</b><span class="poz">úradné tabule (CUET): 8 zo 17 MČ nepublikuje nič, Petržalka vrátane; za 2 roky len 14 skutočných povolení. Vzorka: 5 z 11 povolených stavieb v EIA nie je</span></td><td class="n">11 overených</td><td class="n">2,5</td><td class="n">—</td><td class="n">—</td><td>pracovný odhad <b>200–400</b> chýbajúcich, presné číslo dá až riadok nižšie</td></tr>
 <tr><td>Vypýtať zoznam záväzných stanovísk hlavného mesta k investičnej činnosti (2023–2026)<span class="poz">jediný centrálny zoznam stavieb všetkých 17 MČ; stĺpce: názov, žiadateľ + IČO, MČ / ulica / parcela, druh, funkcia, plocha, dátum</span></td><td class="n">—</td><td class="n">—</td><td class="n">0,5</td><td class="n">—</td><td>jeden mail na sekciu územného rozvoja</td></tr>
 <tr><td>Spárovať zoznam s registrom EIA<span class="poz">vyhodiť rodinné domy a drobné stavby, zlúčiť duplicity, párovať podľa IČO, názvu, ulice</span></td><td class="n">N</td><td class="n">2</td><td class="n">—</td><td class="n">—</td><td><b>N − A = koľko chýba</b>, a ku každému rovno adresa = poloha</td></tr>
 <tr><td>Vlastné investície mesta a mestských častí<span class="poz">školy, škôlky, parky, revitalizácie — zoznam má MIB a magistrát interne</span></td><td class="n">?</td><td class="n">—</td><td class="n">1</td><td class="n">—</td><td>jeden mail, nie programovanie</td></tr>
 <tr><td>Spracovať doplnené projekty do pražskej kvality<span class="poz">poloha ako plocha, obrázok, anotácia, stav — 15–20 min na projekt</span></td><td class="n">200–400</td><td class="n">—</td><td class="n">50–130</td><td class="n">—</td><td>karta ako v Prahe</td></tr>
 <tr><td>Komunitné a investorské príspevky<span class="poz">formulár ako v Prahe: investor pošle projekt, editor schváli</span></td><td class="n">10–20 mesačne</td><td class="n">—</td><td class="n">3–6 mesačne</td><td class="n">—</td><td><b>trvalo</b> — potrebuje vlastníka</td></tr>
 
-<tr class="sum"><td>Redakčná vrstva spolu</td><td class="n">+ 200–400 projektov</td><td class="n">2 h</td><td class="n">50–130 h</td><td class="n">—</td><td><small>50–130 h na začiatok + 3–6 h mesačne navždy; 2,5 h merania už minuté</small></td></tr>
+<tr class="sum"><td>Redakčná vrstva spolu</td><td class="n">+ 200–400 projektov</td><td class="n">2 h</td><td class="n">50–130 h</td><td class="n">—</td><td><small>50–130 h na začiatok + 3–6 h mesačne navždy</small></td></tr>
 
 <tr class="faza"><td colspan="6">Neodporúčam robiť ručne <span>nechať komunite a developerom</span></td></tr>
 <tr class="ne"><td>Vizualizácie z webov developerov<span class="poz">register ich má pri 6 %; polovica projektov verejnú nemá; autorské práva — mesto ich bez súhlasu použiť nesmie</span></td><td class="n">~500</td><td class="n">—</td><td class="n">45–70</td><td class="n">—</td><td>developer nahrá sám cez komunitné rozhranie</td></tr>
-<tr class="ne"><td>Overiť „posúdené" nad ortofotom, či sa reálne stavia<span class="poz">30–60 s na bod, ale až keď je poloha správne</span></td><td class="n">585</td><td class="n">—</td><td class="n">5–8</td><td class="n">—</td><td>komunita: „už sa kope / dokončené"</td></tr>
+<tr class="ne"><td>Overiť „posúdené" nad ortofotom, či sa reálne stavia<span class="poz">30–60 s na bod — teraz už možné, poloha je pri 58 % stavieb</span></td><td class="n">585</td><td class="n">—</td><td class="n">5–8</td><td class="n">—</td><td>komunita: „už sa kope / dokončené"</td></tr>
 
 </tbody></table>
 
 <div class="stav">
-  <div><b>Dnes</b><div class="v">1 189 <small>bodov, 246 s polohou, vrátane plánov a diaľnic</small></div></div>
-  <div><b>Po kostre (A)</b><div class="v">860 <small>veľkých stavieb, z toho 585 developerských, ~250 živých</small></div></div>
-  <div><b>Po redakčnej vrstve (B)</b><div class="v">860 + 200–400 <small>pracovný odhad z 11 vzoriek; presne dá zoznam záväzných stanovísk</small></div></div>
+  <div><b>Ráno 7. 9.</b><div class="v">1 189 <small>bodov, 246 „presných" — z toho 47 mimo Bratislavy</small></div></div>
+  <div><b>Večer 7. 9.</b><div class="v">862 <small>stavieb, <b>496 presných (58 %)</b>, z toho 349 z parciel; 381 s galériou</small></div></div>
+  <div><b>Zostáva ručne</b><div class="v">366 <small>bodov bez polohy (224 developerských) ≈ 12–18 h klikania</small></div></div>
   <div><b>Praha zítra</b><div class="v">1 215 <small>projektov pre 1,3 mil. ľudí, redakčne, bez registra</small></div></div>
 </div>
-<p class="pata">Zdroje čísel: register EIA (Enviroportál), CUET, RPO, mestský geoportál; vzorka 18 spisov na meranie automatu na parcely; praha.camp/praha-zitra; CUET — 399 dokumentov zo všetkých 17 MČ. Register EIA je spoľahlivý (úradné podania), ale nie úplný — stavby pod prahom rádovo 10 000 m² podlahovej plochy alebo 100 parkovacích miest v ňom nie sú. Vrstva na dosah navyše: geoportál <i>Zámery 2022 verejné</i> — 89 žiadostí o zmenu územného plánu s navrhovanou funkciou a výškou (nie je to register výstavby).</p>
+<p class="pata">Zdroje čísel: register EIA (Enviroportál), CUET — 399 dokumentov zo všetkých 17 MČ, RPO, mestský geoportál (adresné body, kataster C a E, výšková regulácia, žiadosti o zmenu ÚPN); praha.camp/praha-zitra.
+Register EIA je spoľahlivý (úradné podania), ale nie úplný — stavby pod prahom rádovo 10 000 m² podlahovej plochy alebo 100 parkovacích miest v ňom nie sú.
+Automat na parcely: z 689 stavieb 349 OK, 208 bez parcely v texte, 83 skenov bez textu (OCR by pridalo odhadom 30–40), 35 parciel v katastri nenájdených, 14 mimo udanej MČ.</p>
 </div></body></html>
