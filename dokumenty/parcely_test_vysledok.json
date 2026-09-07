@@ -1,0 +1,846 @@
+[
+ {
+  "id": "polyfunkcny-komplex-hinohara-park-1-etapa",
+  "nazov": "Polyfunkčný komplex HINOHARA PARK – 1. etapa",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "15293/57"
+  ],
+  "ku": "Nivy",
+  "bod": [
+   17.144138,
+   48.155007
+  ],
+  "dok": "A_zamer_EIA_Polyfunkcny_komplex_HINOHARA_PARK_1_et"
+ },
+ {
+  "id": "obytny-subor-rakyta-zapad-bratislava",
+  "nazov": "Obytný súbor Rakyta Západ, Bratislava",
+  "obec": "Bratislava - Devínska Nová Ves",
+  "stav": "parcela sa v katastri nenasla",
+  "parcely": [
+   "3946/3",
+   "3945/15",
+   "3977/13",
+   "3982/1",
+   "3982/2",
+   "3944",
+   "3972",
+   "3973"
+  ],
+  "ku": "Devín",
+  "bod": null,
+  "dok": "I_Svetlotechnika.pdf"
+ },
+ {
+  "id": "polianky-studios",
+  "nazov": "POLIANKY STUDIOS",
+  "obec": "Bratislava - Dúbravka",
+  "stav": "OK",
+  "parcely": [
+   "2635/1",
+   "2635/2",
+   "2636",
+   "2638",
+   "2639/3",
+   "2640/1",
+   "2712/4",
+   "2554/3"
+  ],
+  "ku": "Dúbravka",
+  "bod": [
+   17.055205,
+   48.178824
+  ],
+  "dok": "zamer_POLIANKY STUDIOS.pdf"
+ },
+ {
+  "id": "mirabella-residence",
+  "nazov": "MIRABELLA RESIDENCE",
+  "obec": "Bratislava - Nové Mesto",
+  "stav": "OK",
+  "parcely": [
+   "4846",
+   "4847",
+   "4848/1",
+   "4849",
+   "4853/2",
+   "4853/1",
+   "4854/7",
+   "4853/3"
+  ],
+  "ku": null,
+  "bod": [
+   17.119937,
+   48.17083
+  ],
+  "dok": "J_príloha6_ svetlotechnika"
+ },
+ {
+  "id": "komercny-park-letisko-bratislava-",
+  "nazov": "Komerčný park Letisko Bratislava",
+  "obec": "Bratislava - Vrakuňa",
+  "stav": "OK",
+  "parcely": [
+   "4001/1",
+   "4001/2"
+  ],
+  "ku": null,
+  "bod": [
+   17.204687,
+   48.158832
+  ],
+  "dok": "7. Roptylova studia.pdf"
+ },
+ {
+  "id": "eset-campus",
+  "nazov": "ESET Campus",
+  "obec": "Bratislava - Karlova Ves",
+  "stav": "bod mimo udanej MC",
+  "parcely": [
+   "2596/1",
+   "2596/2",
+   "2596/3",
+   "2596/4",
+   "2597/1",
+   "2597/2",
+   "2597/3",
+   "2598/1"
+  ],
+  "ku": "Staré Mesto",
+  "bod": null,
+  "dok": "správa o hodnotení navrhovanej činnosti.pdf"
+ },
+ {
+  "id": "mobilne-zariadenie-na-termicku-desorpciu-kontaminovanych-materialov",
+  "nazov": "Mobilné zariadenie na termickú desorpciu kontaminovaných materiálov",
+  "obec": "Bratislava - Nové Mesto",
+  "stav": "OK",
+  "parcely": [
+   "13569/88"
+  ],
+  "ku": null,
+  "bod": [
+   17.150046,
+   48.182076
+  ],
+  "dok": "Zámer"
+ },
+ {
+  "id": "southbank-bratislava",
+  "nazov": "SOUTHBANK Bratislava",
+  "obec": "Bratislava - Petržalka",
+  "stav": "parcela v texte nie je",
+  "parcely": [],
+  "ku": null,
+  "bod": null,
+  "dok": "informácia pre verejnosť zámer.pdf"
+ },
+ {
+  "id": "modernizacia-vyhrevne-zeleznicna-vo-vrakuni",
+  "nazov": "Modernizácia výhrevne Železničná vo Vrakuni",
+  "obec": "Bratislava - Vrakuňa",
+  "stav": "OK",
+  "parcely": [
+   "889/17",
+   "889/19",
+   "889/21",
+   "889/24",
+   "3392/1",
+   "3392/8",
+   "3392/9",
+   "3392/10"
+  ],
+  "ku": null,
+  "bod": [
+   17.209465,
+   48.147906
+  ],
+  "dok": "Prílohy_k_Ozna´meniu o zmene_EIA_Moderniza´cia vy´"
+ },
+ {
+  "id": "polyfunkcny-blok-vlarska",
+  "nazov": "Polyfunkčný blok Vlárska",
+  "obec": "Bratislava - Nové Mesto",
+  "stav": "OK",
+  "parcely": [
+   "19474/1",
+   "22306",
+   "19470/236",
+   "19470/7",
+   "19476/23",
+   "19476/1"
+  ],
+  "ku": "Vinohrady",
+  "bod": [
+   17.09004,
+   48.169352
+  ],
+  "dok": "A_text_ZAMER_EIA_Polyfunkcny_blok_Vlarska_022026.p"
+ },
+ {
+  "id": "obchodny-areal-ama-centrum-bratislava-bory-",
+  "nazov": "Obchodný areál AMA centrum Bratislava-Bory",
+  "obec": "Bratislava - Devínska Nová Ves",
+  "stav": "parcela sa v katastri nenasla",
+  "parcely": [
+   "2810/459",
+   "2810/460",
+   "2810/554",
+   "4513/723",
+   "4513/724",
+   "4513/725",
+   "4513/726",
+   "4513/727"
+  ],
+  "ku": "Devín",
+  "bod": null,
+  "dok": "251128 RETAIL BORY Oznámenie o zmene EIA.pdf"
+ },
+ {
+  "id": "-na-rinzloch-",
+  "nazov": "\"Na Rinzloch\"",
+  "obec": "Bratislava - Rača",
+  "stav": "OK",
+  "parcely": [
+   "1683/29",
+   "1683/837",
+   "1683/838",
+   "1683/808",
+   "1683/102",
+   "1683/99",
+   "1665/3",
+   "1665/1"
+  ],
+  "ku": null,
+  "bod": [
+   17.144779,
+   48.205475
+  ],
+  "dok": "E_priloha_3_Akusticka_studia_Na Rinzloch_EIA_10202"
+ },
+ {
+  "id": "revitalizacia-transformacia-casti-brownfieldu-palma",
+  "nazov": "Revitalizácia a transformácia časti brownfieldu PALMA",
+  "obec": "Bratislava - Nové Mesto",
+  "stav": "parcela v texte nie je",
+  "parcely": [],
+  "ku": null,
+  "bod": null,
+  "dok": "info pre verejnosť.pdf"
+ },
+ {
+  "id": "dubravska-oaza-dostavba-",
+  "nazov": "Dúbravská oáza - dostavba",
+  "obec": "Bratislava - Dúbravka",
+  "stav": "parcela v texte nie je",
+  "parcely": [],
+  "ku": null,
+  "bod": null,
+  "dok": "D_priloha_c2_Sprievodna_sprava.pdf"
+ },
+ {
+  "id": "polyfunkcy-subor-stavieb-klingerka-2-stavba-c-5-objekt-so-206-polyfunk",
+  "nazov": "POLYFUNKČÝ SÚBOR STAVIEB KLINGERKA 2 (stavba č. 5 objekt SO 206) a POLYFUNKČNÝ SÚBOR STAVIEB KLINGERKA 3 (stavba č. 5 objekty SO 301 a SO 302)",
+  "obec": "Bratislava - Staré Mesto",
+  "stav": "bod mimo udanej MC",
+  "parcely": [
+   "9255/1",
+   "21798",
+   "9254/18",
+   "9253/5",
+   "9254/1",
+   "9254/6",
+   "21796/1",
+   "21797"
+  ],
+  "ku": "Nivy",
+  "bod": null,
+  "dok": "Oznamenie o zmene navrhovanej činnosti_ KLG2_KLG3."
+ },
+ {
+  "id": "obchodne-centrum-bosakova-",
+  "nazov": "Obchodné centrum Bosákova",
+  "obec": "Bratislava - Petržalka",
+  "stav": "OK",
+  "parcely": [
+   "5206/16",
+   "5206/46",
+   "5206/63",
+   "5206/62"
+  ],
+  "ku": "Petržalka",
+  "bod": [
+   17.117352,
+   48.128742
+  ],
+  "dok": "podnet.pdf"
+ },
+ {
+  "id": "rusovce-sever",
+  "nazov": "RUSOVCE SEVER",
+  "obec": "Bratislava - Rusovce",
+  "stav": "OK",
+  "parcely": [
+   "1208/8",
+   "1208/20",
+   "1208/15",
+   "1208/6",
+   "1208/11"
+  ],
+  "ku": null,
+  "bod": [
+   17.14798,
+   48.062467
+  ],
+  "dok": "Prílohy k zámeru_RUSOVCE SEVER.pdf"
+ },
+ {
+  "id": "bytovy-dom-lemon",
+  "nazov": "Bytový dom Lemon",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "9361/5",
+   "9361/17"
+  ],
+  "ku": "Nivy",
+  "bod": [
+   17.141608,
+   48.145947
+  ],
+  "dok": "Zámer_Bytový dom Lemon.pdf"
+ },
+ {
+  "id": "polyfunkcny-komplex-harmincova-",
+  "nazov": "Polyfunkčný komplex Harmincova",
+  "obec": "Bratislava - Dúbravka",
+  "stav": "parcela v texte nie je",
+  "parcely": [],
+  "ku": null,
+  "bod": null,
+  "dok": "J_príloha_6_inžinierskogeologická_štúdia.pdf"
+ },
+ {
+  "id": "polyfunkcny-objekt-chalupkova-r1",
+  "nazov": "Polyfunkčný objekt Chalupkova R1",
+  "obec": "Bratislava - Staré Mesto",
+  "stav": "OK",
+  "parcely": [
+   "9118/12",
+   "9118/13",
+   "9118/20",
+   "9118/28",
+   "9118/34",
+   "9120/59",
+   "9120/83",
+   "21789/22"
+  ],
+  "ku": "Staré Mesto",
+  "bod": [
+   17.129648,
+   48.145302
+  ],
+  "dok": "Doplnujúce informácie_PO Chalupkova R1.pdf"
+ },
+ {
+  "id": "vybudovanie-elektrickych-pripojok-pre-plavidla-vo-vymedzenom-uzemi-pri",
+  "nazov": "Vybudovanie elektrických prípojok pre plavidlá vo vymedzenom území prístavov",
+  "obec": "Bratislava - Staré Mesto",
+  "stav": "bod mimo udanej MC",
+  "parcely": [
+   "3867/52"
+  ],
+  "ku": "Nivy",
+  "bod": null,
+  "dok": "Oznámenie_Prístavy_2025.pdf"
+ },
+ {
+  "id": "logisticke-centrum-podunajske-biskupice-bratislava",
+  "nazov": "Logistické centrum Podunajské Biskupice - Bratislava",
+  "obec": "Bratislava - Podunajské Biskupice",
+  "stav": "OK",
+  "parcely": [
+   "6191/22",
+   "6191/86",
+   "6191/87",
+   "6191/88",
+   "6191/126",
+   "6191/143",
+   "6191/85",
+   "6191/9"
+  ],
+  "ku": "Podunajské Biskupice",
+  "bod": [
+   17.201709,
+   48.117179
+  ],
+  "dok": "Zámer EIA_ Logistické centrum Podunajské Biskupice"
+ },
+ {
+  "id": "polyfunkcny-subor-vajnorska",
+  "nazov": "Polyfunkčný súbor Vajnorská",
+  "obec": "Bratislava - Nové Mesto",
+  "stav": "OK",
+  "parcely": [
+   "13460/1",
+   "13460/14",
+   "13460/15",
+   "13460/16",
+   "13460/17",
+   "13460/19",
+   "13460/20"
+  ],
+  "ku": "Nové Mesto",
+  "bod": [
+   17.143469,
+   48.176459
+  ],
+  "dok": "správa o hodnotení navrhovanej činnosti.pdf"
+ },
+ {
+  "id": "administrativna-budova-twin-city-objekt-c34",
+  "nazov": "Administratívna budova TWIN CITY - objekt C34",
+  "obec": "Bratislava - Staré Mesto",
+  "stav": "OK",
+  "parcely": [
+   "9118/12",
+   "9118/13",
+   "9118/35",
+   "9120/80",
+   "21798/22",
+   "21789/23",
+   "9118/20",
+   "9118/22"
+  ],
+  "ku": "Staré Mesto",
+  "bod": [
+   17.129593,
+   48.145302
+  ],
+  "dok": "Oznamenie_o_zmene_Administrativna_budova_Twin_City"
+ },
+ {
+  "id": "bory-byvanie-4b-obytny-subor-bory-susedske-dvory-",
+  "nazov": "Bory Bývanie 4B / Obytný súbor \"Bory Susedské Dvory\"",
+  "obec": "Bratislava - Devínska Nová Ves",
+  "stav": "parcela sa v katastri nenasla",
+  "parcely": [
+   "2810/114",
+   "2810/357",
+   "2810/385",
+   "2810/386",
+   "2810/360",
+   "2810/441",
+   "2810/443",
+   "2810/444"
+  ],
+  "ku": "Devín",
+  "bod": null,
+  "dok": "právopl. záväzné stanovisko Bory Bývanie 4B Obytný"
+ },
+ {
+  "id": "polyfunkcna-stavba-nova-bottova-1",
+  "nazov": "Polyfunkčná stavba Nová Bottova",
+  "obec": "Bratislava - Staré Mesto",
+  "stav": "OK",
+  "parcely": [
+   "9110/1",
+   "9110/41",
+   "9110/17",
+   "9110/42",
+   "9104/4",
+   "9110/16",
+   "9110/43",
+   "9110/44"
+  ],
+  "ku": "Staré Mesto",
+  "bod": [
+   17.127521,
+   48.145234
+  ],
+  "dok": "NOVÁ BOTTOVA_oznámenie o zmene navrhovanej činnost"
+ },
+ {
+  "id": "areal-volneho-casu-zlate-piesky-v-bratislave",
+  "nazov": "AREÁL VOĽNÉHO ČASU ZLATÉ PIESKY V BRATISLAVE",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "4357/29"
+  ],
+  "ku": null,
+  "bod": [
+   17.182242,
+   48.187977
+  ],
+  "dok": "K_Priloha_6_dopravno_kapacitne_posudenie.pdf"
+ },
+ {
+  "id": "polyfunkcny-subor-r66-racianska-bratislava",
+  "nazov": "Polyfunkčný súbor R66 - Račianska, Bratislava",
+  "obec": "Bratislava - Nové Mesto",
+  "stav": "OK",
+  "parcely": [
+   "13080/2",
+   "13080/7",
+   "13077/6",
+   "13077/9"
+  ],
+  "ku": "Nové Mesto",
+  "bod": [
+   17.129781,
+   48.178786
+  ],
+  "dok": "správa o hodnotení navrhovanej činnosti.pdf"
+ },
+ {
+  "id": "nova-univerzitna-nemocnica-bratislava-v-lokalite-razsochy",
+  "nazov": "Nová Univerzitná nemocnica Bratislava v lokalite Rázsochy",
+  "obec": "Bratislava - Lamač",
+  "stav": "parcela v texte nie je",
+  "parcely": [],
+  "ku": null,
+  "bod": null,
+  "dok": "informácia pre verejnosť.pdf"
+ },
+ {
+  "id": "fizz-park-polyfunkcny-komplex",
+  "nazov": "FIZZ PARK - POLYFUNKČNÝ KOMPLEX",
+  "obec": "Bratislava - Petržalka",
+  "stav": "OK",
+  "parcely": [
+   "3694/29",
+   "3694/119",
+   "3694/490",
+   "3694/475",
+   "3694/491",
+   "3694/51"
+  ],
+  "ku": "Petržalka",
+  "bod": [
+   17.091448,
+   48.118634
+  ],
+  "dok": "Prílohy k zámeru navrhovanej činnosti FIZZ PARK_po"
+ },
+ {
+  "id": "horucovod-dubravka-nejedleho-agatova-",
+  "nazov": "Horúcovod Dúbravka (Nejedlého - Agátová)",
+  "obec": "Bratislava - Dúbravka",
+  "stav": "parcela v texte nie je",
+  "parcely": [],
+  "ku": null,
+  "bod": null,
+  "dok": "Zámer - Horúcovod Dúbravka.pdf"
+ },
+ {
+  "id": "forum-business-center-ii-",
+  "nazov": "Forum Business Center II.",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "15312/1",
+   "15321/1"
+  ],
+  "ku": "Nivy",
+  "bod": [
+   17.147887,
+   48.146944
+  ],
+  "dok": "oznámenie o zmene navrhovanej činnosti.pdf"
+ },
+ {
+  "id": "polyfunkcny-subor-agatova-",
+  "nazov": "Polyfunkčný súbor Agátová",
+  "obec": "Bratislava - Dúbravka",
+  "stav": "OK",
+  "parcely": [
+   "3400/136",
+   "3400/78"
+  ],
+  "ku": "Dúbravka",
+  "bod": [
+   17.037593,
+   48.194759
+  ],
+  "dok": "K_Agatova-svetlotechnika.pdf"
+ },
+ {
+  "id": "bytovy-subor-hrube-luky-agatova-bratislava--1",
+  "nazov": "Bytový súbor Hrubé Lúky – Agátová, Bratislava",
+  "obec": "Bratislava - Dúbravka",
+  "stav": "OK",
+  "parcely": [
+   "3442/86",
+   "3442/57",
+   "3442/7",
+   "3442/11",
+   "3442/90",
+   "3442/87",
+   "3423/20",
+   "3442/88"
+  ],
+  "ku": "Dúbravka",
+  "bod": [
+   17.037381,
+   48.20033
+  ],
+  "dok": "zámer navrhovanej činnosti.pdf"
+ },
+ {
+  "id": "ubytovacie-zariadenie-zelene-sady-trnavka",
+  "nazov": "UBYTOVACIE ZARIADENIE ZELENÉ SADY TRNÁVKA",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "15850/109",
+   "15850/178",
+   "15850/179",
+   "15850/240",
+   "15850/110"
+  ],
+  "ku": "Trnávka",
+  "bod": [
+   17.194894,
+   48.172641
+  ],
+  "dok": "Doplnenie doplňujúcich informácií - aktualizácia h"
+ },
+ {
+  "id": "logisticke-centrum-4-kvadrant-bratislava",
+  "nazov": "Logistické centrum 4. kvadrant, Bratislava",
+  "obec": "Bratislava - Vrakuňa",
+  "stav": "parcela v texte nie je",
+  "parcely": [],
+  "ku": null,
+  "bod": null,
+  "dok": "P8_22oe00229 RS Logisticky park 4kvadrant (1)_(Roz"
+ },
+ {
+  "id": "spojena-skola-felix-bory",
+  "nazov": "SPOJENÁ ŠKOLA FELIX - BORY",
+  "obec": "Bratislava - Lamač",
+  "stav": "parcela v texte nie je",
+  "parcely": [],
+  "ku": null,
+  "bod": null,
+  "dok": "Priloha_2 BORY_Felix_hluk_EIA_exped_1.pdf"
+ },
+ {
+  "id": "kampus-zdravia-sportu-bratislava-petrzalka",
+  "nazov": "Kampus zdravia a športu, Bratislava - Petržalka",
+  "obec": "Bratislava - Petržalka",
+  "stav": "sken bez textu",
+  "parcely": [],
+  "ku": null,
+  "bod": null,
+  "dok": "Doplňujúce informácie Kampus ZaS Petržalka.pdf"
+ },
+ {
+  "id": "novy-majerhof",
+  "nazov": "NOVÝ MAJERHOF",
+  "obec": "Bratislava - Vrakuňa",
+  "stav": "OK",
+  "parcely": [
+   "3412"
+  ],
+  "ku": "Vrakuňa",
+  "bod": [
+   17.212037,
+   48.150805
+  ],
+  "dok": "A_Zamer_EIA_Novy_Majerhof_.pdf"
+ },
+ {
+  "id": "aston-2-022",
+  "nazov": "ASTON 2.022",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "15296/4",
+   "15299/46",
+   "15301/1",
+   "22190/1",
+   "22190/13"
+  ],
+  "ku": "Nivy",
+  "bod": [
+   17.146453,
+   48.152651
+  ],
+  "dok": "Zámer_24_2006_ASTON_23062023_final.pdf"
+ },
+ {
+  "id": "multifunkcny-komplex-za-stanicou-lake-station",
+  "nazov": "Multifunkčný komplex Za stanicou - Lake Station",
+  "obec": "Bratislava - Nové Mesto",
+  "stav": "OK",
+  "parcely": [
+   "15115/18",
+   "1510/3"
+  ],
+  "ku": null,
+  "bod": [
+   17.146055,
+   48.173036
+  ],
+  "dok": "RŠ_2024_Za stanicou_23012024_bez podpisu.pdf"
+ },
+ {
+  "id": "bytovy-dom-sky-park-tower-",
+  "nazov": "Bytový dom Sky Park Tower",
+  "obec": "Bratislava - Staré Mesto",
+  "stav": "parcela v texte nie je",
+  "parcely": [],
+  "ku": null,
+  "bod": null,
+  "dok": "oznámenie o zmene navrhovanej činnosti.pdf"
+ },
+ {
+  "id": "polyfunkcny-komplex-ehq",
+  "nazov": "Polyfunkčný komplex EHQ",
+  "obec": "Bratislava - Staré Mesto",
+  "stav": "OK",
+  "parcely": [
+   "9134/1",
+   "9134/13",
+   "9134/68"
+  ],
+  "ku": "Staré Mesto",
+  "bod": [
+   17.12741,
+   48.143551
+  ],
+  "dok": "Prílohy k Doplnujucim inf EHQ.pdf"
+ },
+ {
+  "id": "revitalizacia-obnova-brownfieldu-v-sanovanom-uzemi-terminalu-bratislav",
+  "nazov": "Revitalizácia a obnova brownfieldu v sanovanom území terminálu, Bratislava – Rača",
+  "obec": "Bratislava - Vajnory",
+  "stav": "bod mimo udanej MC",
+  "parcely": [
+   "3282/132",
+   "3282/23",
+   "3201/1",
+   "2757"
+  ],
+  "ku": "Rača",
+  "bod": null,
+  "dok": "Za´mer_EIA_ALTO_Revitaliza´cia a obnova brownfield"
+ },
+ {
+  "id": "polyfunkcny-objekt-avion-rekonstrukcia-dostavba-nadstavba-pristavba",
+  "nazov": "POLYFUNKČNÝ OBJEKT AVION - rekonštrukcia-dostavba nadstavba, prístavba",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "14803/43",
+   "14803/44",
+   "14803/45",
+   "44",
+   "45"
+  ],
+  "ku": "Trnávka",
+  "bod": [
+   17.174395,
+   48.167325
+  ],
+  "dok": "oznámenie o zmene_text.pdf"
+ },
+ {
+  "id": "nove-centrum-ruzinova-polyfunkcny-bytovy-dom",
+  "nazov": "Nové centrum Ružinova – Polyfunkčný bytový dom",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "1099/1",
+   "1099/2",
+   "1099/19",
+   "1099/24",
+   "1099/25",
+   "1099/26",
+   "1099/27",
+   "1099/28"
+  ],
+  "ku": null,
+  "bod": [
+   17.164224,
+   48.155245
+  ],
+  "dok": "I_priloha4_rozptylova_studia_redigovane.pdf"
+ },
+ {
+  "id": "city-site-bratislava",
+  "nazov": "CITY SITE - Bratislava",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "4964/17",
+   "5018/90"
+  ],
+  "ku": null,
+  "bod": [
+   17.184522,
+   48.129974
+  ],
+  "dok": "Prílohy.pdf"
+ },
+ {
+  "id": "-polyfunkcny-objekt-jga",
+  "nazov": "Polyfunkčný objekt JGA",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "11242/1",
+   "21949/119",
+   "21928/1",
+   "11150/1",
+   "11150/5"
+  ],
+  "ku": "Nivy",
+  "bod": [
+   17.136565,
+   48.157898
+  ],
+  "dok": "Oznamenie o zmene cˇinnosti_EIA_Polyfunkcˇny´ obje"
+ },
+ {
+  "id": "sprinklerove-stabilne-hasiace-zariadenie",
+  "nazov": "Sprinklerove stabilné hasiace zariadenie",
+  "obec": "Bratislava - Ružinov",
+  "stav": "OK",
+  "parcely": [
+   "17057/2"
+  ],
+  "ku": "Trnávka",
+  "bod": [
+   17.175678,
+   48.182967
+  ],
+  "dok": "Podklady"
+ },
+ {
+  "id": "hroznovy-sad-bratislava-m-c-raca",
+  "nazov": "Hroznový sad Bratislava, m. č. Rača",
+  "obec": "Bratislava - Rača",
+  "stav": "OK",
+  "parcely": [
+   "1683/24",
+   "1683/25",
+   "1683/346",
+   "1683/706",
+   "1683/707",
+   "1683/806",
+   "1680/9",
+   "1848/3"
+  ],
+  "ku": "Rača",
+  "bod": [
+   17.1442,
+   48.204992
+  ],
+  "dok": "Za´mer_Hroznovy´ sad_Racˇa_final.pdf"
+ }
+]

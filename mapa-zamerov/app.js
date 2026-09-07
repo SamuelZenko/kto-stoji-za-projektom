@@ -75,7 +75,7 @@ function vyhovuje(p,bez){
   if(filtr.pl==='2' && !(p.nahlady&&p.nahlady.length)) return false;
   if(filtr.pl==='3' && p.presnost!=='presná') return false;
   if(filtr.q){
-    const h=(p.nazov+' '+p.firma+' '+p.ico+' '+(p.skupina||'')+' '+p.obec).toLowerCase();
+    const h=(p.nazov+' '+(p.nazov_obch||'')+' '+p.firma+' '+p.ico+' '+(p.skupina||'')+' '+p.obec).toLowerCase();
     if(!h.includes(filtr.q)) return false;
   }
   return true;
@@ -204,7 +204,8 @@ function ukaz(p,z){
      '<button class="zavri" onclick="zavriDetail()">×</button>'
     +'<div class="stitky"><span class="stitok">'+esc((p.typ||'—').toUpperCase())+'</span>'
       +'<span class="stitok b">'+esc((p.faza||'—').toUpperCase())+'</span></div>'
-    +'<h2>'+esc(p.nazov)+'</h2>'
+    +'<h2>'+esc(p.nazov_obch||p.nazov)+'</h2>'
+    +(p.nazov_obch?'<div class="uradny">v registri: '+esc(p.nazov)+'</div>':'')
     +'<div class="miesto">◉ '+esc(p.obec)
       +'<button class="na-mape" onclick="naMape(\''+esc(p.id)+'\')">⤢ Zobraziť na mape</button></div>'
     +'<div class="udaje">'
@@ -498,17 +499,21 @@ const DATA=Promise.all([
   ber('komunita.json',{}),
   ber('mestske-casti.geojson'),
   ber('zamery.geojson'),
-  ber('ulice.geojson',null)]);
+  ber('ulice.geojson',null),
+  ber('nazvy-obchodne.json',{})]);
 
 let spustene=false;
 async function spusti(){
   if(spustene) return; spustene=true;
-  let mc,z,ul;
+  let mc,z,ul,naz;
   try{ pridajPodklad(); }
   catch(e){ console.warn('podklad sa nepridal:',e.message); }
-  try{ [KONFIG,mc,z,ul]=await DATA; }
+  try{ [KONFIG,mc,z,ul,naz]=await DATA; }
   catch(e){ $('#c-spolu').textContent='Dáta sa nenačítali'; spustene=false; return; }
   Z=z;
+  /* komerčné názvy sú ručný zoznam — register ich nepozná a ochranné
+     známky sa podľa majiteľa hľadať nedajú, tak sa dopĺňajú rukou */
+  z.features.forEach(f=>{ const n=naz&&naz[f.properties.id]; if(n&&typeof n==='string') f.properties.nazov_obch=n; });
   mc.features.forEach(f=>{
     const a=f.properties||{}, nz=a.NAZOV_ZUJ||a.MC_LABEL||''; if(!nz||!f.geometry) return;
     const g=f.geometry;
@@ -560,7 +565,7 @@ async function spusti(){
       'circle-stroke-color':['case',['==',['get','lin'],1],'#C08A4A','rgba(11,17,23,.85)']}});
   map.addLayer({id:'bod-txt',type:'symbol',source:'zamery',
     filter:['!',['has','point_count']],minzoom:14.5,
-    layout:{'text-field':['get','nazov'],'text-size':11,'text-anchor':'left',
+    layout:{'text-field':['coalesce',['get','nazov_obch'],['get','nazov']],'text-size':11,'text-anchor':'left',
       'text-offset':[.9,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
       'text-optional':true},
     paint:{'text-color':'#DCE4EC','text-halo-color':'#0B1117','text-halo-width':1.5}});
