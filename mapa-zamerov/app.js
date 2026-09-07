@@ -17,6 +17,15 @@ let farbitPodla='faza';
 
 let Z=null, TYPY=[], TAZISKA={}, KONFIG={}, vsetkyTypy=false;
 let filtr={q:'',mc:'',sk:'',pl:'',typ:new Set(),faza:new Set()};
+/* Doprava a technická infraštruktúra sú líniové stavby — bod pre diaľnicu
+   zavádza. V dátach majú príznak `lin` a do mapy idú len na vyžiadanie. */
+let ukazLiniove=false;
+/* Mestské časti, ktoré svoje vyhlášky dávajú na centrálnu úradnú tabuľu
+   (CUET). Pri ostatných nemá zmysel tvrdiť „bez povolenia" — len tam
+   nepublikujú. Zistené prechodom všetkých 17 MČ, 7. 9. 2026. */
+const TABULA_MC=new Set(['Ružinov','Nové Mesto','Dúbravka','Staré Mesto','Rača','Vajnory',
+  'Devín','Podunajské Biskupice','Čunovo']);
+const VYSKY={1:11,2:16,3:21,4:30,5:46};   // hladiny výškovej regulácie → metre
 
 /* Štartovací štýl je zámerne prázdny — len pozadie. Podklad z geoportálu
    sa pridáva až potom (pridajPodklad). Keď je geoportál pomalý alebo
@@ -57,6 +66,7 @@ map.addControl(new maplibregl.ScaleControl({maxWidth:110}),'bottom-right');
 
 /* ---------- filtrovanie ---------- */
 function vyhovuje(p,bez){
+  if(p.lin && !ukazLiniove) return false;
   if(bez!=='typ' && filtr.typ.size && !filtr.typ.has(p.typ||'Iné')) return false;
   if(bez!=='faza' && filtr.faza.size && !filtr.faza.has(p.faza)) return false;
   if(bez!=='mc' && filtr.mc && p.obec!==filtr.mc) return false;
@@ -199,15 +209,17 @@ function ukaz(p,z){
       +'<button class="na-mape" onclick="naMape(\''+esc(p.id)+'\')">⤢ Zobraziť na mape</button></div>'
     +'<div class="udaje">'
       +riadok('Investor', p.firma?esc(p.firma)+(p.ico?' · IČO '+esc(p.ico):''):null)
-      +riadok('Skupina', p.skupina?esc(p.skupina):null)
+      +riadokSkupiny(p)
       +riadok('Architekt', null)
       +riadok('Typológia', esc(p.typ||''))
-      +riadok('Stav', esc(p.faza||''))
+      +riadokStavu(p)
       +riadok('Povoľuje', esc(p.urad||''))
       +riadok('Poloha', p.presnost==='presná'?(esc(p.ulica||'presná'))
         :'<span class="v chyba">nie je známa</span>', true)
+      +'<div class="r" id="r-vyska" hidden><span class="k">Výšková regulácia</span><span class="v"></span></div>'
       +riadok('Aktualizované', esc(p.zmena||''))
     +'</div>'
+    +dalsieKonania(p)
     +'<div class="zalozky">'
       +'<button data-z="v" '+(GAL.length?'':'disabled')+'>VIZUALIZÁCIE</button>'
       +'<button data-z="d" '+(plany.length?'':'disabled')+'>DOKUMENTY ('+plany.length+')</button>'
@@ -219,6 +231,39 @@ function ukaz(p,z){
   $('#detail').querySelectorAll('.zalozky button').forEach(b=>b.onclick=()=>{
     aktivnaZal=b.dataset.z; kresliZalozku(p);});
   kresliZalozku(p);
+  doplnVysku(p);
+}
+/* Skupina je doložená len vtedy, keď firma nesie značku alebo je to známe
+   IČO. Samotná zhoda sídla je indícia — na jednej adrese sedia aj cudzie
+   firmy — a karta to musí povedať, nie tvrdiť „stavia X". */
+function riadokSkupiny(p){
+  if(!p.skupina) return riadok('Skupina', null);
+  if(p.sk_ist==='dolozena') return riadok('Skupina', esc(p.skupina));
+  return riadok('Skupina', '<span class="v">sídli na adrese skupiny '+esc(p.skupina)
+    +' <i class="ind" title="Len zhoda sídla firmy so sídlom skupiny. '
+    +'Nie je to doložené vlastníctvom ani značkou.">indícia</i></span>', true);
+}
+/* Fáza je doložená vyhláškou len tam, kde mestská časť publikuje na
+   centrálnej úradnej tabuli. Inde ostáva len stav z registra EIA, ktorý
+   hovorí o posudzovaní, nie o stavbe. */
+function riadokStavu(p){
+  const mc=(p.obec||'').replace(/^Bratislava\s*[-–]\s*/,'');
+  let pozn;
+  if(p.faza_zdroj==='tabula') pozn='doložené vyhláškou'+(p.doklad?': '+esc(p.doklad):'');
+  else if(!TABULA_MC.has(mc)) pozn='podľa registra EIA — MČ '+esc(mc)+' na úradnú tabuľu CUET nepublikuje, '
+    +'skutočné povolenie sa odtiaľ zistiť nedá';
+  else pozn='podľa registra EIA — na úradnej tabuli sa vyhláška nenašla';
+  return riadok('Stav', '<span class="v">'+esc(p.faza||'')
+    +'<span class="pozn-stav">'+pozn+'</span></span>', true);
+}
+/* Register vedie každé konanie zvlášť — etapy, bloky, zmeny. V mape je
+   projekt raz a ostatné konania sú tu. */
+function dalsieKonania(p){
+  const d=pole(p,'dalsie')||[]; if(!d.length) return '';
+  return '<div class="dalsie"><p class="st">ĎALŠIE KONANIA K PROJEKTU ('+d.length+')</p>'
+    +d.map(x=>'<a href="https://www.enviroportal.sk/eia/detail/'+esc(x.id)+'" target="_blank" rel="noopener">'
+      +'<span class="f">'+esc(x.faza||'')+'</span>'+esc(x.nazov)+'<span class="z">'+esc(x.zmena||'')+'</span></a>').join('')
+    +'</div>';
 }
 function riadok(k,v,surove){
   return '<div class="r"><span class="k">'+k+'</span>'
@@ -510,7 +555,9 @@ async function spusti(){
     paint:{'circle-color':['match',['get','faza'],'zámer','#D6165A','posúdené','#3B82D9',
         'povolené','#12A67A','dokončené','#7FC4EA','#8B98A3'],
       'circle-radius':['interpolate',['linear'],['zoom'],10,4.5,14,7,18,11],
-      'circle-stroke-width':1.5,'circle-stroke-color':'rgba(11,17,23,.85)'}});
+      /* líniové stavby majú svetlý prstenec, nech sa dajú od budov rozoznať */
+      'circle-stroke-width':['case',['==',['get','lin'],1],2.5,1.5],
+      'circle-stroke-color':['case',['==',['get','lin'],1],'#C08A4A','rgba(11,17,23,.85)']}});
   map.addLayer({id:'bod-txt',type:'symbol',source:'zamery',
     filter:['!',['has','point_count']],minzoom:14.5,
     layout:{'text-field':['get','nazov'],'text-size':11,'text-anchor':'left',
@@ -550,11 +597,15 @@ async function spusti(){
     .forEach(o=>$('#f-mc').insertAdjacentHTML('beforeend','<option>'+esc(o)+'</option>'));
   [...new Set(z.features.map(f=>f.properties.skupina).filter(Boolean))].sort()
     .forEach(o=>$('#f-sk').insertAdjacentHTML('beforeend','<option>'+esc(o)+'</option>'));
-  const pc={}; z.features.forEach(f=>{const t=f.properties.typ||'Iné'; pc[t]=(pc[t]||0)+1;});
-  TYPY=Object.keys(pc).sort((a,b)=>pc[b]-pc[a]);
+  /* farby typov sa priradia raz zo všetkých, aby sa nepremiešali,
+     keď sa líniové stavby zapnú alebo vypnú */
+  const pcv={}; z.features.forEach(f=>{const t=f.properties.typ||'Iné'; pcv[t]=(pcv[t]||0)+1;});
   const paleta=['#D6165A','#3B82D9','#12A67A','#7FC4EA','#C08A4A','#8B6FD4',
                 '#4E9E86','#B0607F','#5E7F96','#7C8B99','#8B98A3'];
-  TYPY.forEach((t,i)=>BARVA_TYPU[t]=paleta[i%paleta.length]);
+  Object.keys(pcv).sort((a,b)=>pcv[b]-pcv[a]).forEach((t,i)=>BARVA_TYPU[t]=paleta[i%paleta.length]);
+  zostavTypy();
+  const nl=z.features.filter(f=>f.properties.lin).length;
+  $('#stav-lin').textContent='('+cis(nl)+')';
   prefarbi();
 
   obnov(); kresliMoje(); nacitajKomunitu();
@@ -587,6 +638,14 @@ const hliadka=setInterval(()=>{
   catch(e){}
 },700);
 
+/* Zoznam kategórií podľa toho, čo je práve v hre — líniové typy len
+   keď je ich vrstva zapnutá, inak by v paneli svietili s nulou. */
+function zostavTypy(){
+  const pc={};
+  Z.features.forEach(f=>{ const p=f.properties; if(p.lin&&!ukazLiniove) return;
+    const t=p.typ||'Iné'; pc[t]=(pc[t]||0)+1; });
+  TYPY=Object.keys(pc).sort((a,b)=>pc[b]-pc[a]);
+}
 function ukazNezname(obec){
   const z=Z.features.filter(f=>f.properties.obec===obec
     && f.properties.presnost!=='presná' && vyhovuje(f.properties));
@@ -778,6 +837,128 @@ function ukazPocet(){
 }
 map.on('moveend',dotiahniBudovy);
 prep('v-komunita','kom','kom-txt','moj','moj-txt');
+
+/* ---------- líniové stavby (doprava, technická infraštruktúra) ---------- */
+$('#v-liniove').onchange=e=>{
+  ukazLiniove=e.target.checked;
+  $('#legenda-lin').hidden=!ukazLiniove;
+  zostavTypy(); prefarbi(); obnov();
+};
+
+/* ---------- pomocné: bod v polygóne ----------
+   Stačí lúčový test — polygónov je pár tisíc a pýtame sa raz za kliknutie. */
+function vKruhu(pt,ring){
+  let dnu=false;
+  for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+    const [xi,yi]=ring[i],[xj,yj]=ring[j];
+    if((yi>pt[1])!==(yj>pt[1]) && pt[0]<(xj-xi)*(pt[1]-yi)/(yj-yi)+xi) dnu=!dnu;
+  }
+  return dnu;
+}
+function vPolygone(pt,g){
+  const polys=g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[];
+  return polys.some(rings=>vKruhu(pt,rings[0]) && !rings.slice(1).some(r=>vKruhu(pt,r)));
+}
+const vBode=(fc,pt)=>{ const f=fc.features.find(f=>vPolygone(pt,f.geometry)); return f?f.properties:null; };
+/* klik do plochy pod bodom má otvoriť bod, nie plochu */
+const nadBodom=e=>map.queryRenderedFeatures(e.point,{layers:['bod','zh','nez','kom','moj'].filter(l=>map.getLayer(l))}).length>0;
+
+/* ---------- výšková regulácia ----------
+   Územná štúdia výškového zónovania — 3 829 plôch v piatich hladinách
+   (11, 16, 21, 30, 46 m). Statická kópia z geoportálu, vrstva
+   Hosted/Výšková_regulácia, stiahnutá 7. 9. 2026. */
+let VYSKA=null, vyskaSlub=null;
+function nacitajVysku(){
+  if(!vyskaSlub) vyskaSlub=fetch('vyska.geojson',{cache:'force-cache'}).then(r=>r.json())
+    .then(g=>{VYSKA=g; return g;}).catch(e=>{vyskaSlub=null; throw e;});
+  return vyskaSlub;
+}
+const FARBA_VYSKY=['match',['get','v'],1,'#2E4A3A',2,'#3F6B4E',3,'#7A8A3C',4,'#B0742E',5,'#C24A3A','#3D5165'];
+$('#v-vyska').onchange=async e=>{
+  $('#legenda-vyska').hidden=!e.target.checked;
+  if(!e.target.checked){ ['vyska-f','vyska-l'].forEach(l=>map.getLayer(l)&&map.setLayoutProperty(l,'visibility','none')); return; }
+  if(map.getLayer('vyska-f')){ ['vyska-f','vyska-l'].forEach(l=>map.setLayoutProperty(l,'visibility','visible')); return; }
+  $('#stav-vyska').textContent='(sťahujem…)';
+  let g;
+  try{ g=await nacitajVysku(); }
+  catch(err){ e.target.checked=false; $('#legenda-vyska').hidden=true; $('#stav-vyska').textContent='(nedá sa načítať)'; return; }
+  map.addSource('vyska',{type:'geojson',data:g});
+  const pod=map.getLayer('zh-kruh')?'zh-kruh':undefined;
+  map.addLayer({id:'vyska-f',type:'fill',source:'vyska',
+    paint:{'fill-color':FARBA_VYSKY,'fill-opacity':.30}}, pod);
+  map.addLayer({id:'vyska-l',type:'line',source:'vyska',minzoom:12,
+    paint:{'line-color':FARBA_VYSKY,'line-opacity':.55,'line-width':.7}}, pod);
+  $('#stav-vyska').textContent='('+cis(g.features.length)+')';
+  map.on('click','vyska-f',ev=>{
+    if(pridavam||nadBodom(ev)) return;
+    if(map.getLayer('upn-f') && map.queryRenderedFeatures(ev.point,{layers:['upn-f']}).length) return;
+    const p=ev.features[0].properties;
+    new maplibregl.Popup({closeButton:false,maxWidth:'280px'}).setLngLat(ev.lngLat)
+      .setHTML('<b>do '+(VYSKY[p.v]||'?')+' m</b> · '+esc(p.f||'')
+        +(p.i?'<br><span style="opacity:.75">'+esc(p.i)+'</span>':'')
+        +(p.r?'<br><span style="opacity:.75">'+esc(p.r)+'</span>':'')).addTo(map);
+  });
+  map.on('mouseenter','vyska-f',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
+  map.on('mouseleave','vyska-f',()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
+};
+/* Do karty zámeru s presnou polohou doplní, aká výška je na tom mieste
+   povolená. Vrstva sa stiahne až pri prvom takom zámere. */
+async function doplnVysku(p){
+  if(p.presnost!=='presná') return;
+  const f=Z.features.find(x=>x.properties.id===p.id); if(!f) return;
+  let g; try{ g=await nacitajVysku(); }catch(e){ return; }
+  const r=$('#r-vyska'); if(!r) return;          // karta sa medzitým zavrela
+  const v=vBode(g,f.geometry.coordinates); if(!v) return;
+  r.hidden=false;
+  r.querySelector('.v').innerHTML='do <b>'+(VYSKY[v.v]||'?')+' m</b> · '+esc(v.f||'')
+    +(v.i?' <span style="color:var(--tx3)">· '+esc(v.i)+'</span>':'');
+}
+
+/* ---------- žiadosti o zmenu územného plánu ----------
+   Vrstva up/Zamery_2022_verejne z geoportálu — 89 žiadostí o zmeny
+   a doplnky ÚPN s navrhovanou funkciou a výškou. Nie je to register
+   výstavby, ale hovorí, kde sa niečo chystá skôr, než to príde do EIA. */
+const KOD_FUNKCIE={101:'viacpodlažná zástavba obytného územia',102:'málopodlažná zástavba obytného územia',
+  201:'občianska vybavenosť celomestského a nadmestského významu',202:'občianska vybavenosť lokálneho významu',
+  301:'priemyselná výroba',302:'distribučné centrá, sklady, stavebníctvo',
+  501:'zmiešané územia bývania a občianskej vybavenosti',502:'zmiešané územia obchodu a služieb'};
+const funkcia=k=>{ if(!k) return ''; const c=String(k).split(/[,\s]+/).filter(Boolean);
+  return c.map(x=>(KOD_FUNKCIE[x]?x+' · '+KOD_FUNKCIE[x]:x)).join('; '); };
+$('#v-upn').onchange=async e=>{
+  if(!e.target.checked){ ['upn-f','upn-l'].forEach(l=>map.getLayer(l)&&map.setLayoutProperty(l,'visibility','none')); return; }
+  if(map.getLayer('upn-f')){ ['upn-f','upn-l'].forEach(l=>map.setLayoutProperty(l,'visibility','visible')); return; }
+  $('#stav-upn').textContent='(sťahujem…)';
+  let g;
+  try{ g=await (await fetch('upn-ziadosti.geojson',{cache:'force-cache'})).json(); }
+  catch(err){ e.target.checked=false; $('#stav-upn').textContent='(nedá sa načítať)'; return; }
+  map.addSource('upn',{type:'geojson',data:g});
+  const pod=map.getLayer('zh-kruh')?'zh-kruh':undefined;
+  map.addLayer({id:'upn-f',type:'fill',source:'upn',paint:{'fill-color':'#8B6FD4','fill-opacity':.28}}, pod);
+  map.addLayer({id:'upn-l',type:'line',source:'upn',
+    paint:{'line-color':'#B79BEE','line-width':1.6,'line-dasharray':[2,1.5]}}, pod);
+  $('#stav-upn').textContent='('+g.features.length+')';
+  map.on('click','upn-f',ev=>{ if(!pridavam && !nadBodom(ev)) ukazUpn(ev.features[0].properties); });
+  map.on('mouseenter','upn-f',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
+  map.on('mouseleave','upn-f',()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
+};
+function ukazUpn(p){
+  $('#detail').className='detail on'; $('#detail').scrollTop=0;
+  $('#detail').innerHTML='<button class="zavri" onclick="zavriDetail()">×</button>'
+    +'<div class="stitky"><span class="stitok b">ŽIADOSŤ O ZMENU ÚZEMNÉHO PLÁNU</span></div>'
+    +'<h2>Žiadosť č. '+esc(p.c)+'</h2>'
+    +'<div class="miesto">◉ '+esc(p.mc||'')+(p.vym?' · '+(p.vym/10000).toFixed(1)+' ha':'')+'</div>'
+    +'<div class="udaje">'
+      +riadok('Platný ÚPN', funkcia(p.fp)?esc(funkcia(p.fp))+(p.kp?' · kód '+esc(p.kp):''):null)
+      +riadok('Navrhovaná zmena', (funkcia(p.fn)||p.kn)?esc(funkcia(p.fn)||'')+(p.kn?(funkcia(p.fn)?' · ':'')+'kód '+esc(p.kn):''):null)
+      +riadok('Výšková zonácia', p.vys?esc(p.vys):null)
+      +riadok('Brownfield', p.bf?esc(p.bf):null)
+      +riadok('ÚPN zóny', p.upnz?esc(p.upnz):null)
+    +'</div>'
+    +(p.u?'<p class="st">URBANISTICKÉ POŽIADAVKY</p><p class="text">'+esc(p.u).replace(/\n/g,'<br>')+'</p>':'')
+    +(p.d?'<p class="st">DOPRAVNÉ POŽIADAVKY</p><p class="text">'+esc(p.d).replace(/\n/g,'<br>')+'</p>':'')
+    +'<p class="pozn">Zdroj: geoportál Bratislavy, vrstva <i>Zámery 2022 verejné</i> — žiadosti o zmeny '
+    +'a doplnky územného plánu. Nie je to stavebné konanie ani povolenie.</p>';
+}
 
 $('#tl-plus').onclick=()=>map.zoomIn();
 $('#tl-minus').onclick=()=>map.zoomOut();

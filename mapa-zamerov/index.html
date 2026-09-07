@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,600&family=Public+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260905l">
+<link rel="stylesheet" href="ui.css?v=20260907a">
 <style>
 /* pridávanie bodu priamo v mape */
 .pridavam #map{cursor:crosshair}
@@ -103,6 +103,17 @@
       <div class="r"><span class="ciara" style="background:#4FA3D9"></span>trolejbus</div>
       <div class="r"><span class="ciara" style="background:#6F8095"></span>autobus</div>
     </div>
+    <div class="legenda pridavna" id="legenda-lin" hidden>
+      <div class="r"><span class="t prst"></span>doprava a infraštruktúra (bod = miesto konania, nie trasa)</div>
+    </div>
+    <div class="legenda pridavna" id="legenda-vyska" hidden>
+      <span class="nadpis">POVOLENÁ VÝŠKA</span>
+      <div class="r"><span class="plocha" style="background:#2E4A3A"></span>11 m</div>
+      <div class="r"><span class="plocha" style="background:#3F6B4E"></span>16 m</div>
+      <div class="r"><span class="plocha" style="background:#7A8A3C"></span>21 m</div>
+      <div class="r"><span class="plocha" style="background:#B0742E"></span>30 m</div>
+      <div class="r"><span class="plocha" style="background:#C24A3A"></span>46 m</div>
+    </div>
     <div class="legenda pridavna" id="legenda-3d" hidden>
       <span class="nadpis">VÝŠKA BUDOV</span>
       <div class="r"><span class="ciara" style="background:#23323F"></span>do 12 m</div>
@@ -125,6 +136,16 @@
       <label><input type="radio" name="farby" value="typ"> Účelu stavby</label>
     </div>
     <div>
+      <h4>STAVBY</h4>
+      <label><input type="checkbox" id="v-liniove"> Doprava a infraštruktúra <span id="stav-lin" style="color:var(--tx3)"></span></label>
+      <label><input type="checkbox" id="v-komunita" checked> Komunitné body <span id="kom-pocet" style="color:var(--tx3)"></span></label>
+    </div>
+    <div>
+      <h4>ÚZEMNÝ PLÁN</h4>
+      <label><input type="checkbox" id="v-vyska"> Výšková regulácia <span id="stav-vyska" style="color:var(--tx3)"></span></label>
+      <label><input type="checkbox" id="v-upn"> Žiadosti o zmenu ÚPN <span id="stav-upn" style="color:var(--tx3)"></span></label>
+    </div>
+    <div>
       <h4>INFORMÁCIE</h4>
       <label><input type="checkbox" id="v-ulice" checked> Názvy ulíc</label>
       <label><input type="checkbox" id="v-mc" checked> Názvy mestských častí</label>
@@ -132,7 +153,6 @@
       <label><input type="checkbox" id="v-mhd"> Linky MHD <span id="stav-mhd" style="color:var(--tx3)"></span></label>
       <label><input type="checkbox" id="v-3d"> 3D budovy <span id="stav-3d" style="color:var(--tx3)"></span></label>
       <label><input type="checkbox" id="v-nazvy" checked> Názvy zámerov</label>
-      <label><input type="checkbox" id="v-komunita" checked> Komunitné body <span id="kom-pocet" style="color:var(--tx3)"></span></label>
     </div>
     <p style="margin:0;font-size:11.5px;color:var(--tx3);line-height:1.5;
        border-top:1px solid var(--ln);padding-top:12px">
@@ -141,7 +161,9 @@
       3D budovy sú z modelu LOD1 2021 — 91 539 budov celej Bratislavy.
       Sťahujú sa po dlaždiciach podľa výrezu, tak si najprv priblíž mapu.<br>
       Linky MHD sú z OpenStreetMap — električka žltá, trolejbus modrý,
-      autobus sivý.
+      autobus sivý.<br>
+      Výšková regulácia je z územnej štúdie výškového zónovania (5 hladín),
+      žiadosti o zmenu ÚPN z geoportálu — oboje stav k septembru 2026.
     </p>
   </div>
 
@@ -208,6 +230,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260905l"></script>
+<script src="app.js?v=20260907a"></script>
 </body>
 </html>
