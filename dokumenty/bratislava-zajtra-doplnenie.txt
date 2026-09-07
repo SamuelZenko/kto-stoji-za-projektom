@@ -1,0 +1,33 @@
+Čo je „zámer": pojem zo zákona o posudzovaní vplyvov na životné prostredie (EIA). Väčšiu stavbu musí investor pred povolením ohlásiť dokumentom „zámer". Jeden zámer = jeden ohlásený projekt. Nie je to povolenie ani hotová stavba, je to najskorší okamih, keď sa o projekte dozvie verejnosť. Lievik: 18 673 zámerov v celom registri → 2 303 v Bratislavskom kraji → 1 189 bodov na mape.
+
+Čo už funguje: mapa s filtrami (účel, fáza, mestská časť, skupina), karta projektu s odkazom do spisu a galériou výkresov, pridanie bodu klikom do mapy, odkaz na konkrétne miesto, 3D budovy, linky MHD, ortofoto, stránka na dopĺňanie polohy s exportom do CSV. Beží na GitHub Pages, bez servera.
+
+Fáza projektu: zámer → posúdené → povolené → dokončené. Doložená verejnou vyhláškou je len pri 177 z 1 189. Ostatné sú odvodené zo stavu posudzovania, ktorý hovorí o konaní, nie o stavbe. „Posúdené" neznamená, že sa stavia. Komunita by mohla dopĺňať práve toto: „už sa kope", „dokončené".
+
+Developerská skupina: pomenovaná pri 150 z 1 189, v mape priradená len podľa zhody sídla firmy bez druhého potvrdenia. 80 zo 150 stojí na adrese veľkej kancelárskej budovy, kde sídlia aj cudzie firmy. Ukazovať ako indíciu („sídli na rovnakej adrese ako Penta"), nie ako fakt. Nástroj „Kto stojí za projektom" vie k jednému projektu urobiť plnú kontrolu so skóre a dôvodmi, mapa ju zatiaľ nepoužíva. Oprava: 1 až 2 h.
+
+Čo v mape nie je: stavby pod zákonným prahom EIA (menšie projekty, a práve o tých sa často píše), stavebné povolenie ako dokument (nikde sa centrálne neeviduje), vlastník pozemku, konečný vlastník zahraničnej firmy. Toto sú diery, ktoré môže zaplniť komunita, register nie.
+
+Ručná práca a jej rozsah: jednorazovo 35 až 50 h. Z toho 17 až 26 h programovanie (automat na parcely z PDF, zmerané: dnes trafí 28 %, po doladení odhad 45 až 60 % z 943 bodov) a 17 až 26 h klikanie (zvyšných 400 až 520 bodov, 2 až 3 min na bod, dá sa rozdeliť medzi ľudí). Priebežne: asi 5 nových alebo zmenených zámerov mesačne, teda 10 minút mesačne. Odporúčaný prvý krok: 4-hodinový test automatu na 50 projektoch, potom rozhodnutie.
+
+Aktualizácia dát: dáta sú statické zo zberu 4. 9. 2026. Obnova = spustenie skriptov, asi hodina strojového času, nula ľudskej práce. Treba určiť, kto a ako často (návrh: raz mesačne).
+
+Komunitný model, čo treba rozhodnúť:
+• Kde sa ukladajú príspevky. Dnes nikde: bod pridaný v mape ostáva v prehliadači toho, kto ho pridal, a dá sa len exportovať. Najlacnejšia cesta je Google formulár + hárok (napojenie je pripravené, hárok zatiaľ nevznikol, schvaľovanie je obyčajný stĺpec „schválené"). Ak má byť „wikipédia štýl" s históriou úprav a vrátením, treba skutočný server a databázu.
+• Kto je administrátor a koľko času mu to zoberie. Pri 5 nových zámeroch mesačne a odhadom pár desiatkach komunitných úprav je to hodina týždenne.
+• Čo môže komunita meniť: poloha (najcennejšie), fáza, fotky zo stavby, opravy názvu. Čo nie: navrhovateľ, IČO, skupina (to sú úradné údaje alebo heuristika, nie názor).
+• Prihlásenie alebo anonymne. Anonymne = viac príspevkov aj viac vandalizmu.
+• Kto zodpovedá za obsah, keď to bude mať logo mesta.
+
+Porovnanie s Prahou: pražská mapa (IPR / praha.camp) má 1 214 projektov a pri všetkých polohu, lebo ju od investorov vyžadujú. My máme polohu pri 246 z 1 189. Bez doplnenia polôh naša mapa ukazuje hustotu úradných konaní, nie výstavby.
+
+Riziká:
+• Reputačné: 79 % bodov stojí pri ťažisku mestskej časti. Kto to nečíta, uvidí „projekt" na mieste, kde nič nie je. Prerušovaná značka to rieši len čiastočne. Možnosť: ukazovať len presné body a zvyšok ako zoznam, kým sa polohy nedoplnia.
+• Skupiny ako tvrdenie: „toto stavia Penta" bez overenia sa dá právne napadnúť.
+• Aktualizácia: bez určeného človeka mapa za pol roka zastará.
+
+Právny rámec: všetko sú verejné registre čítané tak, ako ich vidí ktokoľvek v prehliadači, s pauzami medzi dopytmi. Katastrálne dáta z licencovaných zdrojov ostávajú interné. Databáza Yimby je chránená právom k databáze (autorský zákon 185/2015), systematicky sa nekopíruje. Satelitné dlaždice Google sa nepoužívajú (podmienky Google Maps). Náhľady z PDF vynechávajú dokumenty s osobnými údajmi (výpisy z LV, plné moci, zmluvy).
+
+Otvorené rozhodnutia: názov a doména, hosting (GitHub Pages stačí, kým nie je server), licencia publikovaných dát (návrh: otvorené dáta CC BY), schválenie vedením pred zverejnením pod hlavičkou mesta.
+
+Ďalšie vrstvy, ktoré sú na dosah: výšková regulácia z geoportálu (3 829 polygónov, hotová služba, dá sa pripojiť naživo a ukázať povolenú výšku pri každom projekte), terén (zatiaľ nie, mestské výškové služby sú vo formáte, ktorý MapLibre nečíta).

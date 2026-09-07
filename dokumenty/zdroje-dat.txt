@@ -1,0 +1,80 @@
+MAPA ZÁMEROV BRATISLAVY — ZDROJE DÁT
+Stav k 7. 9. 2026, zber dát 4. 9. 2026
+Mapa: samuelzenko.github.io/kto-stoji-za-projektom/mapa-zamerov
+
+
+ČO JE „ZÁMER"
+Pojem zo zákona o posudzovaní vplyvov na životné prostredie (EIA, zákon 24/2006 Z. z.). Väčšiu stavbu musí investor pred povolením ohlásiť a predložiť dokument „zámer". Jeden zámer = jeden ohlásený stavebný projekt. Nie je to povolenie ani hotová stavba, je to najskorší okamih, keď sa o projekte dozvie verejnosť.
+
+Lievik dát:
+• 18 673 zámerov v celom registri (celé Slovensko)
+• 2 303 zámerov Bratislavského kraja, stiahnutých do detailu
+• 1 189 bodov na mape
+
+
+ZDROJ 1 — ENVIROPORTÁL (www.enviroportal.sk)
+Čo to je: verejný register EIA, vedie Ministerstvo životného prostredia SR. Čítame ho cez jeho verejné rozhranie (JSON API), bez prihlásenia.
+Čo z neho máme:
+• zoznam projektov, názov, mestská časť, účel stavby
+• navrhovateľ a jeho IČO (má 1 162 z 1 189 zámerov)
+• povoľujúci stavebný úrad, stav konania
+• celý spis: dokumenty, výkresy, situácie (682 zámerov má výkresy)
+• náhľady výkresov (vyrenderované z PDF, 290 zámerov)
+• odkaz na detail zámeru
+Spoľahlivosť: úradné údaje z podania, veľmi dobrá. Čo tam NIE JE: poloha (súradnice) a stavby pod zákonným prahom EIA.
+
+
+ZDROJ 2 — CUET (cuet.slovensko.sk)
+Čo to je: Centrálna úradná elektronická tabuľa. Mestské časti tam zverejňujú verejné vyhlášky, cez ktoré sa doručujú stavebné povolenia a kolaudácie.
+Čo z neho máme:
+• fáza projektu: zámer → posúdené → povolené → dokončené
+Spoľahlivosť: verejnou vyhláškou je doložených len 177 z 1 189 zámerov. Ostatné fázy sú odvodené zo stavu konania v EIA, ktorý hovorí o posudzovaní, nie o stavbe. „Posúdené" neznamená, že sa stavia.
+
+
+ZDROJ 3 — RPO (api.statistics.sk)
+Čo to je: Register právnických osôb, vedie Štatistický úrad SR. Obsahuje históriu názvov a sídiel firiem, konateľov a spoločníkov.
+Čo z neho máme:
+• developerská skupina za účelovou firmou (napr. WOAL, s. r. o. → J&T Real Estate)
+• zhluky firiem so spoločným sídlom (147 adries, na ktorých sídli 2 a viac navrhovateľov)
+Spoľahlivosť: pomenovanú skupinu má 150 z 1 189 zámerov. V mape je priradená len podľa zhody sídla, bez druhého potvrdenia, a 80 zo 150 stojí na adrese veľkej kancelárskej budovy, kde sídlia aj cudzie firmy. Brať ako indíciu, nie ako fakt. Nástroj „Kto stojí za projektom" robí pri jednom projekte plnú kontrolu so skóre a dôvodmi, mapa túto kontrolu zatiaľ nepoužíva.
+
+
+ZDROJ 4 — MESTSKÝ GEOPORTÁL (geoportal.bratislava.sk)
+Čo to je: mapové služby Hlavného mesta SR Bratislavy.
+Čo z neho máme:
+• poloha bodu: z textu zámeru sa vyčíta názov ulice a bod sa položí na priemer adresných bodov tej ulice
+• keď sa ulica nenájde, bod padne na ťažisko mestskej časti
+• hranice mestských častí, názvy ulíc, podkladová mapa, ortofoto
+Spoľahlivosť: TOTO JE NAJSLABŠÍ ČLÁNOK.
+• 246 bodov (21 %) má polohu podľa ulice. Je to priemer celej ulice, nie parcela projektu, na dlhej ulici môže byť stovky metrov mimo.
+• 943 bodov (79 %) je len ťažisko mestskej časti s umelým rozptylom. Tieto body nehovoria, kde stavba stojí. V mape sú označené prerušovanou značkou.
+• Známa chyba: 20 bodov nie je z Bratislavy (Pezinok, Modra, Senec a ďalšie), prepadli tam cez zhodný názov ulice. Opraví sa pri najbližšom prepočte.
+
+
+ZDROJ 5 — 3D MODEL BUDOV LOD1 2021 (interný ArcGIS mesta)
+Čo z neho máme:
+• 91 539 budov celej Bratislavy ako pôdorys a výška, zobrazené v mape ako 3D
+Spoľahlivosť: poloha overená (92 až 94 % adresných bodov padne dovnútra budov). Publikovaná je len výška budovy, nič iné z interného modelu.
+
+
+ZDROJ 6 — OPENSTREETMAP (Overpass API)
+Čo z neho máme:
+• trasy MHD: električka, trolejbus, autobus
+Poznámka: nahradilo službu z geoportálu, ktorá má 36 zo 154 liniek bez geometrie.
+
+
+ČO JE AUTOMATICKÉ A ČO RUČNÉ
+Automaticky, jedným spustením skriptov (asi hodina strojového času, nula ľudskej práce): zoznam projektov, navrhovatelia, spisy, náhľady výkresov, fázy, skupiny.
+Ručne: LEN POLOHA. Enviroportál súradnice nemá. Ide o jednorazovú prácu, projekt sa druhýkrát nepresťahuje. Nových alebo zmenených zámerov pribúda asi 5 mesačne.
+
+
+ČO V MAPE NIE JE
+• stavby pod prahom EIA (menšie projekty)
+• stavebné povolenie ako dokument (nikde sa centrálne neeviduje)
+• vlastník pozemku (katastrálna vrstva mesta má len tvary a čísla parciel)
+• konečný vlastník zahraničnej firmy (na to slúži Register partnerov verejného sektora)
+• komunitné body cez Google formulár: napojenie je pripravené, formulár zatiaľ nevznikol
+
+
+PRÁVNY RÁMEC
+Všetko sú verejné registre čítané tak, ako ich vidí ktokoľvek v prehliadači, s pauzami medzi dopytmi a bez obchádzania ochrán. Katastrálne dáta z licencovaných zdrojov zostávajú interné a v publikovaných dátach nie sú.
