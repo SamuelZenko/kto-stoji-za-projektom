@@ -254,7 +254,9 @@ function riadokStavu(p){
   else if(!TABULA_MC.has(mc)) pozn='podľa registra EIA — MČ '+esc(mc)+' na úradnú tabuľu CUET nepublikuje, '
     +'skutočné povolenie sa odtiaľ zistiť nedá';
   else pozn='podľa registra EIA — na úradnej tabuli sa vyhláška nenašla';
-  return riadok('Stav', '<span class="v">'+esc(p.faza||'')
+  /* bodka má rovnakú farbu ako bod na mape, nech sa dá spárovať s legendou */
+  return riadok('Stav', '<span class="v"><span class="farba" style="background:'
+    +(FARBA[p.faza]||'#8B98A3')+'"></span>'+esc(p.faza||'')
     +'<span class="pozn-stav">'+pozn+'</span></span>', true);
 }
 /* Register vedie každé konanie zvlášť — etapy, bloky, zmeny. V mape je

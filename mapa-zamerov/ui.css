@@ -219,6 +219,8 @@ body.tiaham .tahadlo-d{transition:background .15s}
 .udaje .v.chyba{color:var(--tx3);font-style:italic}
 /* doplnok pod hodnotou — odkiaľ údaj je a čo neznamená */
 .udaje .pozn-stav{display:block;font-size:12px;line-height:1.4;color:var(--tx3);margin-top:3px}
+.udaje .farba{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;
+  vertical-align:-1px;box-shadow:0 0 0 1.5px rgba(11,17,23,.85)}
 .udaje .ind{font-style:normal;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
   color:#C08A4A;border:1px solid rgba(192,138,74,.5);border-radius:4px;padding:1px 6px;
   margin-left:6px;vertical-align:1px;cursor:help}
