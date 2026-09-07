@@ -24,3 +24,6 @@ Po zmene dát treba v `mapa-zamerov/index.html` zvýšiť `?v=` pri `ui.css` a `
 
 HTML odhadu sa dá po úprave vyrenderovať do PNG cez Chrome:
 `chrome --headless=new --window-size=1180,2300 --force-device-scale-factor=2 --screenshot=odhad.png odhad-prve-doplnenie.html`
+
+8. `znamky_upv.py` — ochranné známky developerov z WebRegistrov ÚPV SR podľa majiteľa (415 majiteľov → 861 realitných známok, `znamky_upv.json`). Server vracia 500 bez session cookie a bez plnej sady parametrov z prehliadača.
+9. `znamky_priradenie.py` — priradí známky k projektom podľa slov v názve; do mapy (`nazvy-obchodne.json`) idú len isté zhody, slogany a adresy ostávajú v `nazvy-navrh.csv` na posúdenie.

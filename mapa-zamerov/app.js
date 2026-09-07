@@ -205,7 +205,8 @@ function ukaz(p,z){
     +'<div class="stitky"><span class="stitok">'+esc((p.typ||'—').toUpperCase())+'</span>'
       +'<span class="stitok b">'+esc((p.faza||'—').toUpperCase())+'</span></div>'
     +'<h2>'+esc(p.nazov_obch||p.nazov)+'</h2>'
-    +(p.nazov_obch?'<div class="uradny">v registri: '+esc(p.nazov)+'</div>':'')
+    +(p.nazov_obch?'<div class="uradny">v registri: '+esc(p.nazov)
+        +(p.nazov_zdroj?'<br><span title="'+esc(p.nazov_zdroj)+'">obchodný názov podľa: '+esc(p.nazov_zdroj)+'</span>':'')+'</div>':'')
     +'<div class="miesto">◉ '+esc(p.obec)
       +'<button class="na-mape" onclick="naMape(\''+esc(p.id)+'\')">⤢ Zobraziť na mape</button></div>'
     +'<div class="udaje">'
@@ -525,7 +526,9 @@ async function spusti(){
   Z=z;
   /* komerčné názvy sú ručný zoznam — register ich nepozná a ochranné
      známky sa podľa majiteľa hľadať nedajú, tak sa dopĺňajú rukou */
-  z.features.forEach(f=>{ const n=naz&&naz[f.properties.id]; if(n&&typeof n==='string') f.properties.nazov_obch=n; });
+  z.features.forEach(f=>{ const n=naz&&naz[f.properties.id]; if(!n) return;
+    if(typeof n==='string') f.properties.nazov_obch=n;
+    else if(n.nazov){ f.properties.nazov_obch=n.nazov; f.properties.nazov_zdroj=(n.zdroj||'')+(n.istota?' · istota '+n.istota:''); } });
   mc.features.forEach(f=>{
     const a=f.properties||{}, nz=a.NAZOV_ZUJ||a.MC_LABEL||''; if(!nz||!f.geometry) return;
     const g=f.geometry;

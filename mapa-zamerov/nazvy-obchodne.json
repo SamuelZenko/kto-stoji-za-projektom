@@ -1,5 +1,200 @@
 {
-  "_popis": "Komerčné názvy projektov k ID zámeru z registra EIA. Register vedie úradné názvy („Polyfunkčný blok CPR-A“), ľudia hľadajú River Park. Ochranné známky sa podľa majiteľa strojovo hľadať nedajú (TMview vie len znenie známky), takže zoznam sa dopĺňa rukou — len overené dvojice. Kľúče začínajúce podčiarkovníkom mapa ignoruje.",
-  "polyfunkcny-blok-cpr-bratislava": "River Park",
-  "polyfunkcny-komplex-cpr-blok-cpr-b-polyfunkcny-blok-cpr-c-": "River Park"
+ "_popis": "Komerčné názvy projektov k ID zámeru. Reťazec = ručne overený zápis. Objekt {nazov, zdroj, istota} = z ochrannej známky ÚPV (skript dokumenty/znamky_priradenie.py): istá = slová známky sú v názve projektu, stredná = zhoda v podstatnom slove. Kľúče s podčiarkovníkom mapa ignoruje.",
+ "polyfunkcny-blok-cpr-bratislava": "River Park",
+ "polyfunkcny-komplex-cpr-blok-cpr-b-polyfunkcny-blok-cpr-c-": "River Park",
+ "polyfunkcny-subor-stavieb-klingerka-2-polyfunkcny-subor-stavieb-klinge": {
+  "nazov": "KLINGERKA",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 2304-2016, majiteľ JTRE a.s."
+ },
+ "polyfunkcy-subor-stavieb-klingerka-2-stavba-c-5-objekt-so-206-polyfunk": {
+  "nazov": "KLINGERKA",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 2304-2016, majiteľ JTRE a.s."
+ },
+ "bytovy-dom-fuxova-ul-bratislava-1": {
+  "nazov": "BYTY FUXOVA",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5347-2015, majiteľ JTRE a.s."
+ },
+ "bytovy-dom-fuxova-ul-bratislava": {
+  "nazov": "BYTY FUXOVA",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5347-2015, majiteľ JTRE a.s."
+ },
+ "dostavba-arealu-westend-polyfunkcny-objekt-crossing-dubravska-cesta-br-2": {
+  "nazov": "W WESTEND",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5244-2014, majiteľ JTRE a.s."
+ },
+ "administrativna-budova-panorama-city-v-business-bratislava-landererova": {
+  "nazov": "PANORAMA CITY",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5378-2013, majiteľ JTRE a.s."
+ },
+ "panorama-city-i-etapa": {
+  "nazov": "PANORAMA CITY",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5378-2013, majiteľ JTRE a.s."
+ },
+ "polyfunkcny-subor-panorama-city-ii-etapa-administrativna-budova-panora": {
+  "nazov": "PANORAMA CITY",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5378-2013, majiteľ JTRE a.s."
+ },
+ "dostavba-uzemia-autobusovej-stanice-prestavba-arealu-kablo-bratislava-": {
+  "nazov": "nivy",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 555-2020, majiteľ HB REAVIS Slovakia a. s."
+ },
+ "polyfunkcny-objekt-autobusova-stanica-mlynske-nivy": {
+  "nazov": "STANICA NIVY",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5414-2015, majiteľ HB REAVIS Slovakia a. s."
+ },
+ "polyfunkcna-stavba-twin-city-zmena-stavebnych-objektov": {
+  "nazov": "TWIN CITY",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 683-2005, majiteľ HB Reavis Group a. s."
+ },
+ "twin-city-autobusova-stanica-bratislava": {
+  "nazov": "TWIN CITY",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 683-2005, majiteľ HB Reavis Group a. s."
+ },
+ "forum-business-center-ii-bratislava": {
+  "nazov": "BRATISLAVA BUSINESS CENTER",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 2537-2000, majiteľ HB REAVIS Slovakia a. s."
+ },
+ "southbank-bratislava": {
+  "nazov": "SOUTHBANK",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 3001-2024, majiteľ Penta Real Estate , a. s."
+ },
+ "polyfunkcny-objekt-chalupkova-r1": {
+  "nazov": "Chalupkova",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 2752-2024, majiteľ Penta Real Estate , a. s."
+ },
+ "polyfunkcny-subor-vajnorska": {
+  "nazov": "Vajnorská",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 2337-2024, majiteľ Penta Real Estate , a. s."
+ },
+ "novostavba-administrativnej-budovy-the-mill": {
+  "nazov": "THE MILL",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 524-2019, majiteľ Immocap Mill I s. r. o."
+ },
+ "sport-retail-park-slnecnice-juzne-mesto": {
+  "nazov": "SLNEČNICE",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 1663-2015, majiteľ CRESCO GROUP, a. s."
+ },
+ "polyfunkcny-komplex-ceresne-2": {
+  "nazov": "Čerešne",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 1664-2023, majiteľ ITB Development a.s."
+ },
+ "auto-bavaria-bory": {
+  "nazov": "Bory Bývanie",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 379-2025, majiteľ Bory , a. s."
+ },
+ "bory-byvanie-4a": {
+  "nazov": "Bory Bývanie",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 379-2025, majiteľ Bory , a. s."
+ },
+ "bory-byvanie-4b-obytny-subor-bory-susedske-dvory-": {
+  "nazov": "Bory Bývanie",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 379-2025, majiteľ Bory , a. s."
+ },
+ "bory-mall-expanzia-exterierove-parkovisko-bory-byvanie-6-cast-namestie": {
+  "nazov": "B BORY MALL",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5462-2009, majiteľ Bory Mall s. r. o."
+ },
+ "obchodny-dom-kika-ii-bory-mall-bratislava-lamac": {
+  "nazov": "B BORY MALL",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5462-2009, majiteľ Bory Mall s. r. o."
+ },
+ "omnia-business-center-bratislava": {
+  "nazov": "OMNIA",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5422-2008, majiteľ OMNIA HOLDING, SE"
+ },
+ "omnia-business-center-zmena-2016": {
+  "nazov": "OMNIA",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 5422-2008, majiteľ OMNIA HOLDING, SE"
+ },
+ "novy-istropolis-integracia-funkcnych-zon": {
+  "nazov": "NOVÝ ISTROPOLIS",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 828-2019, majiteľ Trnavské Mýto , a.s."
+ },
+ "novy-istropolis": {
+  "nazov": "NOVÝ ISTROPOLIS",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 828-2019, majiteľ Trnavské Mýto , a.s."
+ },
+ "obytny-subor-rakyta-zapad-bratislava": {
+  "nazov": "Rakyta",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 2884-2021, majiteľ Rakyta Land Development, a.s."
+ },
+ "obytny-subor-rakyta": {
+  "nazov": "Rakyta",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 2884-2021, majiteľ Rakyta Land Development, a.s."
+ },
+ "bratislavske-podhradie-vydrica": {
+  "nazov": "Vydrica",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 710-2019, majiteľ VYDRICA DEVELOPMENT, a.s."
+ },
+ "bytovy-subor-ahoj-sliacska-cesta": {
+  "nazov": "ahoj",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 1397-2023, majiteľ Ahoj , a.s."
+ },
+ "danubia-park-cunovo-1": {
+  "nazov": "DANUBIA",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 1826-2013, majiteľ DANUBIASERVICE , a. s."
+ },
+ "danubia-park-golfove-ihrisko": {
+  "nazov": "DANUBIA",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 1826-2013, majiteľ DANUBIASERVICE , a. s."
+ },
+ "danubia-park-protipovodnove-opatrenia-v-zdrzi-hrusov-upravy-brehu": {
+  "nazov": "DANUBIA",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 1826-2013, majiteľ DANUBIASERVICE , a. s."
+ },
+ "nova-matadorka-revitalizacia-arealu-zavodu-matador-": {
+  "nazov": "Nová Matadorka",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 903-2022, majiteľ OXIO s. r. o."
+ },
+ "obytny-subor-slnecny-vrch-i-bratislava-devinska-nova-ves": {
+  "nazov": "Slnečný vrch",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 209-2025, majiteľ Slnečný vrch , s.r.o."
+ },
+ "polus-tower-3--bratislava-administrativna-budova-millennium-tower-iii": {
+  "nazov": "Polus Towers",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 810-2026, majiteľ POLUS , a.s."
+ },
+ "polyfunkcny-subor-nivi": {
+  "nazov": "NIVI",
+  "istota": "istá",
+  "zdroj": "ochranná známka ÚPV č. 2145-2020, majiteľ NIVI s.r.o."
+ }
 }
