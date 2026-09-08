@@ -74,8 +74,8 @@ label{display:block;font-size:11px;font-weight:500;letter-spacing:.08em;text-tra
 /* rozloženie na gride: panel 3 stĺpce + editor 5 stĺpcov, jedna plocha */
 .rozloz{display:grid;grid-template-columns:calc(3*var(--stl) + 2*var(--okraj)) 1fr;column-gap:var(--okraj);padding:0 var(--okraj);flex:1;min-height:0}
 aside{display:flex;flex-direction:column;min-height:0;border-right:var(--l2);padding-right:var(--okraj);margin-right:calc(-1*var(--okraj))}
-.hlad{padding:20px 0 0;display:flex;flex-direction:column;gap:16px}
-.hlad input[type=search]{height:52px;font-size:20px;padding-left:30px;-webkit-appearance:none;appearance:none;border-bottom:var(--l1);
+.hlad{padding:0;display:flex;flex-direction:column;gap:16px}
+.hlad input[type=search]{height:36px;font-size:18px;padding-left:30px;-webkit-appearance:none;appearance:none;border-bottom:var(--l1);
   background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") 0 center no-repeat}
 .hlad input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
 .chipy{display:flex;flex-wrap:wrap;gap:6px}
@@ -102,26 +102,31 @@ aside{display:flex;flex-direction:column;min-height:0;border-right:var(--l2);pad
 .viac{margin:16px 0;width:100%}
 
 /* editor: 5 stĺpcov, obsah kotvený hore, celky delené 1 px linkou */
-.editor{overflow:auto;min-height:0;padding:20px 0 96px}
-.prazdne{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:20px;color:var(--tx2);text-align:left;margin:0;padding-top:0;height:auto}
-.prazdne h2{margin:0;color:var(--tx);font-weight:400;font-size:clamp(44px,5.2vw,80px);line-height:1;letter-spacing:-.025em;border-top:var(--l1);padding-top:.12em;width:100%}
+.editor{overflow:auto;min-height:0;padding:0 0 96px;scroll-snap-type:y proximity;counter-reset:sekcia}
+.prazdne{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:24px;color:var(--tx2);text-align:left;margin:0;padding-top:36px;height:auto;position:relative}
+.prazdne::before{content:"";position:absolute;left:0;right:0;top:36px;height:1px;background:var(--ciara)}
+.prazdne h2{margin:0;padding-top:32px;color:var(--tx);font-weight:400;font-size:clamp(44px,5.2vw,80px);line-height:1;letter-spacing:-.03em;width:100%}
 .prazdne p{margin:0;font-size:21px;line-height:1.3;max-width:26em;color:var(--tx)}
 .prazdne p b{color:var(--tx);font-weight:500}
 .prazdne p+p{font-size:15px!important;color:var(--tx2)!important;max-width:34em;border-top:var(--l2);padding-top:12px;width:100%}
-.hlava{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:56px;padding:10px 0 0;border-top:var(--l1)}
-.hlava h2{margin:0 0 16px;font-weight:400;font-size:clamp(38px,4vw,60px);line-height:1;letter-spacing:-.025em;flex:1 1 100%;order:-1;max-width:18em}
-.hlava .meta{width:100%;font-size:14px;color:var(--tx2);display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;margin-top:8px;border-top:var(--l2);padding-top:10px}
+/* strana 1 = zámer: mikro-štítky nad linkou, veľký názov, meta dole na linke (ako plagát) */
+.hlava{display:grid;grid-template-columns:auto auto 1fr;grid-template-rows:36px auto 1fr auto;column-gap:20px;align-items:start;align-content:start;margin:0;padding:0 0 24px;border:0;position:relative;min-height:calc(100vh - 124px);scroll-snap-align:start}
+.hlava::before{content:"";position:absolute;left:0;right:0;top:36px;height:1px;background:var(--ciara)}
+.hlava .stitok{grid-row:1;align-self:center}
+.hlava h2{grid-row:2;grid-column:1/-1;margin:32px 0 0;font-weight:400;font-size:clamp(44px,5vw,80px);line-height:1;letter-spacing:-.03em;max-width:14em}
+.hlava .meta{grid-row:4;grid-column:1/-1;align-self:end;width:100%;font-size:15px;color:var(--tx);display:flex;flex-wrap:wrap;gap:6px 24px;align-items:center;margin:56px 0 0;border-top:var(--l1);padding-top:10px}
 .hlava .meta span:empty{display:none}
 .hlava .meta a{color:var(--tx);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.2em}
 .hlava .meta a:hover{color:var(--cervena2)}
-.stitok{display:inline-flex;align-items:center;height:24px;padding:0 8px;border:var(--l1);background:transparent;color:var(--tx);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
-.stitok.red{background:var(--cervena);border-color:var(--cervena);color:var(--biela)}
-.stitok.novy{background:var(--cierna);border-color:var(--cierna);color:var(--biela)}
-/* blok = celok medzi linkami, bez karty; štítok sedí pod linkou, stav vpravo */
-.blok{background:transparent;border:0;padding:0;margin:0 0 64px}
-.blok h3{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin:0 0 28px;padding-top:8px;border-top:var(--l1);
-  font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--tx);line-height:1.2}
-.blok h3 .stav{margin-left:auto;text-transform:none;letter-spacing:0;font-size:14px;font-weight:400;color:var(--tx2);text-align:right;white-space:normal;margin-top:-2px}
+.stitok{display:inline-flex;align-items:center;padding:0;border:0;background:transparent;color:var(--tx);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.stitok.red{color:var(--cervena2)}
+.stitok.novy{color:var(--tx)}
+/* ďalšie strany = celky: číslo nad linkou, samostatný veľký nadpis, pod ním vysvetlenie (stav) a obsah */
+.blok{background:transparent;border:0;padding:64px 0 32px;margin:0;position:relative;min-height:calc(100vh - 124px);scroll-snap-align:start;counter-increment:sekcia}
+.blok::before{content:counter(sekcia,decimal-leading-zero);position:absolute;left:0;top:0;height:36px;display:flex;align-items:center;font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--tx)}
+.blok::after{content:"";position:absolute;left:0;right:0;top:36px;height:1px;background:var(--ciara)}
+.blok h3{display:block;margin:0 0 44px;padding:0;border:0;font-size:clamp(36px,3.8vw,60px);font-weight:400;letter-spacing:-.03em;text-transform:none;line-height:1;color:var(--tx);max-width:14em}
+.blok h3 .stav{display:block;margin:16px 0 0;font-size:18px;font-weight:400;letter-spacing:0;color:var(--tx2);text-align:left;line-height:1.35;max-width:34em}
 .blok h3 .stav.ok{color:var(--tx)}
 .blok h3 .stav.chyba{color:var(--cervena2)}
 .blok h3 .stav:empty{display:none}
@@ -131,6 +136,7 @@ aside{display:flex;flex-direction:column;min-height:0;border-right:var(--l2);pad
 .pomoc.chyba{color:var(--cervena2)}
 .pomoc.ok{color:var(--tx)}
 .poloha-rozloz{display:grid;grid-template-columns:1fr 1fr;gap:var(--okraj)}
+.poloha-rozloz>div,.mriezka>div{min-width:0}
 .poloha-rozloz>div:last-child{display:flex;flex-direction:column;gap:22px}
 .poloha-rozloz>div:last-child>div[style]{margin-top:0!important}
 #mini-mapa{height:400px;overflow:hidden;border:var(--l1);background:var(--plocha);position:relative}
