@@ -70,6 +70,17 @@
   .strom li{margin:5px 0;line-height:1.5}
   .strom b{color:var(--tx);font-weight:600}
   .strom .kam{color:var(--tx3)}
+  /* stavovy riadok — posledny beh a cerstvost zdrojov */
+  .stav{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;background:var(--karta);border:1px solid var(--ln);border-radius:var(--r);padding:12px 18px;margin:0 0 16px;font-size:13.5px}
+  .stav b{font-weight:600}
+  .stav .svetlo{width:10px;height:10px;border-radius:50%;background:var(--tx3);box-shadow:0 0 0 3px rgba(255,255,255,.06);flex:none}
+  .stav.ok .svetlo{background:#12A67A;box-shadow:0 0 0 3px rgba(18,166,122,.22)}
+  .stav.pozor .svetlo{background:#E8B44A;box-shadow:0 0 0 3px rgba(232,180,74,.22)}
+  .stav.chyba .svetlo{background:#D6165A;box-shadow:0 0 0 3px rgba(214,22,90,.22)}
+  .stav .s-pozn{color:var(--tx2)}
+  .stav .s-zdroje{margin-left:auto;color:var(--tx3);font-size:12.5px;display:flex;flex-wrap:wrap;gap:6px 14px}
+  .stav .s-zdroje i{font-style:normal;color:var(--tx2)}
+  .stav .s-zdroje .star i{color:#E8B44A}
   /* prehlad cisel — pocita sa v prehliadaci zo suborov mapy, takze sedi s poslednym behom */
   .prehlad{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 22px}
   .cislo{background:var(--karta);border:1px solid var(--ln);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:2px}
@@ -88,6 +99,13 @@
 <main>
 <h2>Odkiaľ dáta prichádzajú a kde v mape končia</h2>
 <p class="uvod">Každý údaj v mape má zdroj, skript a súbor, cez ktorý prešiel. Čítaj zľava doprava: <b>zdroj → spracovanie → čo z toho vidíš v mape</b>. Každý riadok je jeden zdroj; plná bodka je jeho vlastná vrstva alebo súbor, prázdna bodka to, čím dopĺňa kartu zámeru. Stav k 8. 9. 2026.</p>
+
+<div class="stav" id="stav">
+  <span class="svetlo" id="s-svetlo"></span>
+  <b id="s-text">Zisťujem posledný beh…</b>
+  <span class="s-pozn" id="s-pozn"></span>
+  <span class="s-zdroje" id="s-zdroje"></span>
+</div>
 
 <section class="prehlad" id="prehlad" aria-live="polite">
   <div class="cislo"><b id="p-projekty">…</b><span>projektov v mape<small id="p-projekty-pozn">z registra EIA, bez dopravy a infraštruktúry</small></span></div>
@@ -232,6 +250,27 @@
   const $=id=>document.getElementById(id);
   const cis=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
   const ber=async(s)=>{ try{ return await (await fetch('../mapa-zamerov/'+s,{cache:'no-cache'})).json(); }catch(e){ return null; } };
+  /* stavový riadok: stav.json píše týždenný beh; výsledok posledného behu
+     (prešiel / zlyhal) sa berie z verejného GitHub API, ak odpovie */
+  (async()=>{
+    const el=document.getElementById('stav'), sk=s=>s.split('-').reverse().join('. ');
+    const stav=await ber('stav.json');
+    let run=null;
+    try{ const r=await fetch('https://api.github.com/repos/SamuelZenko/kto-stoji-za-projektom/actions/workflows/tyzdenny.yml/runs?per_page=1',{headers:{Accept:'application/vnd.github+json'}});
+      if(r.ok){ const j=await r.json(); run=(j.workflow_runs||[])[0]||null; } }catch(e){}
+    if(!stav){ $('#s-text').textContent='Stav behu nie je k dispozícii'; return; }
+    const beh=new Date(stav.beh), teraz=new Date(), dni=(teraz-beh)/864e5, lim=stav.interval_dni||7;
+    const pred=dni<1?(Math.round(dni*24)+' h'):(Math.round(dni)+' d');
+    const dalsi=new Date(beh.getTime()+lim*864e5);
+    let tr='ok', txt='✓ Aktuálne', pozn='posledný beh '+beh.toLocaleString('sk-SK',{day:'numeric',month:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})+' (pred '+pred+')';
+    if(run && run.status==='completed' && run.conclusion!=='success'){ tr='chyba'; txt='✗ Posledný beh zlyhal'; pozn+=' — pozri Actions na GitHube'; }
+    else if(run && run.status!=='completed'){ tr='pozor'; txt='● Beh práve prebieha'; }
+    else if(dni>lim+1.5){ tr= dni>2*lim ? 'chyba':'pozor'; txt=dni>2*lim?'✗ Zastarané':'! Mešká'; pozn+=', čakalo sa do '+dalsi.toLocaleDateString('sk-SK'); }
+    else pozn+=' · ďalší '+dalsi.toLocaleDateString('sk-SK',{weekday:'long',day:'numeric',month:'numeric'});
+    el.className='stav '+tr; $('#s-text').textContent=txt; $('#s-pozn').textContent=pozn;
+    const zdr=[['úradné tabule',stav.tabule,10],['OSM staveniská',stav.osm,40],['register EIA',stav.eia,40],['parcely',stav.parcely,40],['ochranné známky',stav.znamky,60]];
+    $('#s-zdroje').innerHTML=zdr.filter(x=>x[1]).map(([n,d,max])=>{ const st=(teraz-new Date(d))/864e5; return '<span class="'+(st>max?'star':'')+'">'+n+' <i>'+sk(d)+'</i></span>'; }).join('');
+  })();
   const [z,osm,tab,naz]=await Promise.all([ber('zamery.geojson'),ber('osm-staveniska.geojson'),ber('tabule-stavby.geojson'),ber('nazvy-obchodne.json')]);
   if(!z){ $('#p-projekty').textContent='—'; return; }
   const P=z.features.map(f=>f.properties);

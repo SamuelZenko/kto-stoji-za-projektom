@@ -58,6 +58,22 @@ if t2 != t:
     open(idx, "w", encoding="utf-8", newline="").write(t2)
     zaznam.append("- verzia mapy `?v=%s`" % nova)
 
+# stav.json — kedy sa co naposledy obnovilo; cita ho stranka Tok dat
+import json
+stav_p = os.path.join(REPO, "mapa-zamerov", "stav.json")
+try:
+    stav = json.load(open(stav_p, encoding="utf-8"))
+except (OSError, ValueError):
+    stav = {}
+stav["beh"] = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+if not BEZ_TABUL:
+    stav["tabule"] = DNES.isoformat()
+if OSM:
+    stav["osm"] = DNES.isoformat()
+stav.setdefault("eia", "2026-09-04"); stav.setdefault("parcely", "2026-09-07"); stav.setdefault("znamky", "2026-09-07")
+stav["interval_dni"] = 7
+json.dump(stav, open(stav_p, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+
 log = os.path.join(TU, "beh_log.md")
 stare = open(log, encoding="utf-8").read() if os.path.exists(log) else "# Behy\n"
 hl, _, telo = stare.partition("\n")
