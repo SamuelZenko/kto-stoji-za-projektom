@@ -64,8 +64,11 @@ ZDROJE = [
     ("Lamač", "alejtech", ["https://www.lamac.sk/samosprava/zverejnovanie/uradna-tabula-stavebneho-uradu"]),
     ("Rusovce", "rusovce", ["https://www.bratislava-rusovce.sk/uradna-tabula"]),
     ("Rača", "raca", ["https://www.raca.sk/uradna-tabula/"]),
-    # Ružinov a Jarovce: weby z tejto siete neodpovedaju (8. 9. 2026) — doplnit
-    # Vajnory: publikuje len na CUET
+    # Jarovce: HTTPS (443) z tejto siete neodpoveda, obycajne HTTP ide; stranka je windows-1250
+    ("Jarovce", "jarovce", ["http://www.jarovce.sk/?page=news"]),
+    # Vajnory: vlastnu tabulu nemaju, publikuju len na CUET
+    ("Vajnory", "cuet", ["Mestská časť Bratislava - Vajnory"]),
+    # Ružinov: server neodpoveda na 80 ani 443 (ani z inej siete) — doplnit, ked ozije
 ]
 STAVEBNE = re.compile(r"stavebn|územn[eé]\s+rozhod|uzemn[eé]\s+rozhod|kolaud|povolen|rozhodnut|"
                       r"oznámenie o začatí|oznamenie o zacati|zmena stavby|dodatočn|umiestnen", re.I)
@@ -113,7 +116,11 @@ def get(u, binarny=False, cas=40):
     try:
         with ur.urlopen(ur.Request(u, headers={"User-Agent": UA, "Accept-Language": "sk"}), timeout=cas, context=CTX) as o:
             d = o.read(16_000_000)
-            return (o.geturl(), d) if binarny else (o.geturl(), d.decode("utf-8", "replace"))
+            if binarny:
+                return o.geturl(), d
+            # stare weby (Jarovce) su vo windows-1250
+            kod = "windows-1250" if re.search(rb"charset=[\"']?windows-1250", d[:4000], re.I) else "utf-8"
+            return o.geturl(), d.decode(kod, "replace")
     except Exception as e:
         return u, (b"" if binarny else "")
 
@@ -241,8 +248,64 @@ def z_raca(u):
     return von
 
 
+def z_jarovce(u):
+    """Bloky „(19.08.2026) VEREJNÁ VYHLÁŠKA" s odkazom na PDF a popisom stavby.
+    Cesty k PDF obsahuju medzery, treba ich zakodovat."""
+    uu, h = get(u)
+    von = []
+    for blok in re.findall(r'<div class="middle-column-box-green">(.*?)</div>\s*(?:<br/?>)?\s*(?=<div class="middle-column-box|</div>)', h, re.S):
+        m = re.search(r'\((\d{2}\.\d{2}\.\d{4})\)\s*([^<]*)', blok)
+        if not m:
+            continue
+        odk = re.findall(r'<a href="([^"]+)">(.*?)</a>', blok, re.S)
+        if not odk:
+            continue
+        href, text = odk[0]
+        pdf = up.urljoin(uu, up.quote(H.unescape(href), safe="/:?=&%"))
+        popis = cist(re.sub(r"<a .*?</a>", "", blok.split("</a>", 1)[1] if "</a>" in blok else ""))
+        nazov = (cist(text) + " " + popis).strip(" -–")
+        von.append({"nazov": nazov[:220], "url": pdf, "datum": datum_iso(m.group(1)), "kategoria": cist(m.group(2)), "pdf": [pdf]})
+    return von
+
+
+def z_cuet(publisher):
+    """CUET pre MC bez vlastnej tabule (Vajnory) — rovnaky dopyt ako v cuet_b1.py."""
+    import http.cookiejar as cj
+    jar = cj.CookieJar(); op = ur.build_opener(ur.HTTPCookieProcessor(jar), ur.HTTPSHandler(context=CTX))
+    von = []
+    for dopyt in ("stavebné povolenie", "územné rozhodnutie", "kolaudačné"):
+        for strana in range(1, 6):
+            p = {"FullText": dopyt, "MainSearchForm": "true", "PublisherName": publisher}
+            if strana > 1:
+                p["page"] = strana
+            try:
+                h = op.open(ur.Request("https://cuet.slovensko.sk/sk/?" + up.urlencode(p), headers={"User-Agent": UA, "Accept-Language": "sk"}), timeout=90).read().decode("utf-8", "replace")
+            except Exception:
+                break
+            n = 0
+            for blok in re.split(r'<div class="resultItem">', h)[1:]:
+                blok = blok.split('<div class="resultItem"')[0]; z = {}
+                for m in re.finditer(r'<div class="metadataDocumentName">(.*?)</div>(.*?)</div>', blok, re.S):
+                    z[cist(m.group(1)).rstrip(":")] = cist(m.group(2))
+                odkaz = re.search(r'href="(/sk/dokument/[^"]+)"', blok)
+                nz = z.get("Názov dokumentu") or ""
+                if not nz:
+                    continue
+                n += 1
+                von.append({"nazov": (nz + " — " + (z.get("Anotácia dokumentu") or ""))[:220], "url": ("https://cuet.slovensko.sk" + odkaz.group(1)) if odkaz else "",
+                            "datum": datum_iso(z.get("Zverejnené od") or ""), "kategoria": "CUET", "pdf": []})
+            if n == 0:
+                break
+            time.sleep(1)
+    videne, cist_v = set(), []
+    for v in von:
+        if v["url"] and v["url"] not in videne:
+            videne.add(v["url"]); cist_v.append(v)
+    return cist_v
+
+
 PARSERY = {"trimel": z_trimel, "rss": z_rss, "uradne": z_rss, "wp-subory": z_wp_subory, "alejtech": z_alejtech,
-           "rusovce": z_rusovce, "raca": z_raca}
+           "rusovce": z_rusovce, "raca": z_raca, "jarovce": z_jarovce, "cuet": z_cuet}
 
 
 # ── zber ────────────────────────────────────────────────────────────
@@ -482,7 +545,9 @@ for kl, z in archiv.items():
         vrstva.append({"type": "Feature", "geometry": {"type": "Point", "coordinates": e["bod"]},
                        "properties": {"n": e.get("stavba") or z["nazov"][:120], "druh": e["druh"], "mc": z["mc"], "datum": z.get("datum", ""),
                                       "stavebnik": e.get("stavebnik", ""), "ico": e.get("ico", ""), "parcely": ", ".join(e.get("parcely", [])[:5]),
-                                      "ku": e.get("ku") or "", "url": (z.get("pdf") or [z["url"]])[0], "detail": z["url"], "id": kl}})
+                                      # verejny odkaz vedie na stranku tabule, nie priamo na PDF — nazvy suborov
+                                      # obcas nesu mena osob („2026-08-18 Dorotovic SZ.pdf")
+                                      "ku": e.get("ku") or "", "url": z["url"], "detail": z["url"], "id": kl}})
 json.dump(archiv, open(ARCHIV, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 json.dump(gj, open(os.path.join(MAPA, "zamery.geojson"), "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 json.dump({"type": "FeatureCollection", "features": vrstva}, open(os.path.join(MAPA, "tabule-stavby.geojson"), "w", encoding="utf-8"),
