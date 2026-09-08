@@ -291,6 +291,22 @@
 </ul></details>
 </div>
 
+<h3 id="nastroj">Zdroje nástroja Kto stojí za projektom — čo z nich ide do mapy</h3>
+<p class="pozn" style="margin:-6px 0 14px;max-width:900px">Nástroj <a href="../#zdroje" style="color:var(--tx2)">Kto stojí za projektom</a> číta deväť zdrojov, ale <b>pri jednom dopyte na jeden projekt</b> — to je iný režim než mapa, ktorá potrebuje hromadné dáta pre 988 zámerov každý týždeň. Preto v schéme vyššie nie sú všetky. Tu je, ktoré áno, ktoré nie a prečo.</p>
+<table>
+<tr><th>zdroj</th><th>v nástroji</th><th>v mape</th><th>prečo</th></tr>
+<tr><td><b>Enviroportál</b> — register EIA</td><td>jeden zámer pri dopyte</td><td><span class="z" style="background:#3B82D9"></span>áno, kostra mapy</td><td>verejné JSON API, hromadný zber 2 303 bratislavských zámerov (= „miestny index zámerov“ nástroja je ten istý zber)</td></tr>
+<tr><td><b>RPO</b> — Register právnických osôb</td><td>vlastnícka reťaz naživo</td><td><span class="z" style="background:#8B6FD4"></span>áno, cez skupiny</td><td>verejné API; do mapy ide len výsledok (<code>skupiny.py</code> → skupina + istota), nie konatelia a spoločníci — mená osôb do verejnej mapy nepatria</td></tr>
+<tr><td><b>ORSR</b> — Obchodný register</td><td>výpis, sesterské firmy</td><td><span class="z" style="background:var(--tx3)"></span>nie</td><td>len HTML po jednej firme s pauzou 3,5 s a ochranou proti robotom; hromadne pre 1 193 navrhovateľov týždenne by to bolo obchádzanie. Nástroj ho číta pri jednom dopyte, mapa berie skupinu z RPO</td></tr>
+<tr><td><b>TMview</b> — známky EUIPO</td><td>majiteľ známky podľa názvu</td><td><span class="z" style="background:#8B6FD4"></span>nahradené WebRegistrami ÚPV</td><td>TMview vie hľadať len podľa názvu známky, nie podľa majiteľa; mapa potrebuje opačný smer (developer → jeho známky), to vedia len WebRegistre ÚPV SR (<code>znamky_upv.py</code>, 861 známok)</td></tr>
+<tr><td><b>Stránky projektov</b></td><td>IČO z pätičky</td><td><span class="z" style="background:#D6165A"></span>ručne cez Redakciu</td><td>každý web je iný, automat nespoľahlivý; vizualizácie sú autorské diela — do mapy ich vkladá redaktor s vedomím, že má právo ich zverejniť</td></tr>
+<tr><td><b>Yimba</b></td><td>developer pri projekte bez EIA — jeden dopyt</td><td><span class="z" style="background:var(--tx3)"></span>nie — práva</td><td>zoznam projektov Yimby je databáza s podstatným vkladom, chránená osobitným právom zhotoviteľa databázy (autorský zákon 185/2015 Z. z.). Systematické preberanie podstatnej časti je zásah aj vtedy, keď sú jednotlivé fakty verejné. Jeden dopyt na jeden projekt je bežné použitie, hromadný zber do verejnej mapy nie. Cesta: dohoda o výmene dát — MIB má, čo oni nemajú</td></tr>
+<tr><td><b>Kataster</b> — mestský geoportál</td><td>parcely pod adresou</td><td><span class="z" style="background:#C08A4A"></span>áno, 349 polôh</td><td>parcely z textu zámeru → ťažisko pozemku; bez vlastníkov, do mapy ide len bod</td></tr>
+<tr><td><b>CUET</b> — centrálna úradná tabuľa</td><td>vyhlášky k firme</td><td><span class="z" style="background:#12A67A"></span>čiastočne</td><td>142 doložených fáz z prvého zberu a Vajnory týždenne; pre ostatné MČ nahradené vlastnými tabuľami (CUET pokrýva len 9 MČ, filter podľa dátumu nefunguje)</td></tr>
+<tr><td><b>Miestny index zámerov</b></td><td>hľadanie podľa firmy</td><td><span class="z" style="background:#3B82D9"></span>to isté</td><td>rovnaký zber z Enviroportálu — nástroj v ňom hľadá firmu, mapa ho kreslí</td></tr>
+</table>
+<p class="pozn">Skratka: do mapy idú zdroje s hromadným verejným prístupom (API alebo export) a bez osobných údajov. Zdroje, ktoré sa dajú čítať len po jednom (ORSR, Yimba, stránky projektov), ostávajú v nástroji na dopyt — z rovnakých dôvodov, prečo nástroj sám radšej odmietne výsledok, než by obchádzal ochranu servera.</p>
+
 <h3 id="urady">Čo chýba: história stavebných úradov</h3>
 <div class="urady">
   <div class="info"><h4>Prečo v mape nie sú všetky povolené stavby</h4>
