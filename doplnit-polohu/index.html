@@ -3,147 +3,126 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <meta name="description" content="Doplnenie polôh zámerov, pri ktorých register neuvádza ulicu.">
 <title>Doplniť polohy</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../spolocne/tuba.css">
 <style>
-:root{
-  --bg:#ECEEF0; --card:#FFFFFF; --sunk:#E1E5E8;
-  --ink:#0F151A; --ink2:#39454F; --mu:#5F6E79;
-  --ln:#CBD3D9; --ln2:#B4BEC6;
-  --acc:#B01B52; --acc-bg:#FBE9EF; --ok:#0B6B5E; --ok-bg:#E2F0ED;
-}
-@media (prefers-color-scheme:dark){
-  :root{--bg:#0B0F13; --card:#141A20; --sunk:#1C242B;
-    --ink:#E8EEF3; --ink2:#C0CBD4; --mu:#8A98A3;
-    --ln:#2B353D; --ln2:#3A464F; --acc:#FF6F9C; --acc-bg:#2A141C;
-    --ok:#43C6AF; --ok-bg:#102420;}
-}
+/* Dizajn systém TU—BA je v spolocne/tuba.css; tu len tabuľka a náradie.
+   --mu používa JS v šablónach riadkov — mapuje sa na tlmený text. */
+:root{--mu:var(--tx3)}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg)}
-body{font-family:"Public Sans",ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif;
-  color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
-a{color:var(--acc)}
-.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
-h1{font-family:"Newsreader",Georgia,serif;font-size:27px;font-weight:600;margin:0;letter-spacing:-.02em}
+.mono{font-family:var(--mono);font-size:.92em}
+main a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.16em}
+main a:hover{color:var(--cervena2)}
+.tb-riadok+.tb-h1{margin-top:.14em}
+.hero .tb-perex{margin-top:20px}
+.tb-riadok a.tb-stitok{text-decoration:underline;text-underline-offset:.2em}
 
-header{background:var(--card);border-bottom:1px solid var(--ln);padding:20px 24px;
-  position:sticky;top:0;z-index:5}
-header .vnutro{max-width:1180px;margin:0 auto;display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap}
-header p{margin:5px 0 0;color:var(--mu);font-size:13.5px;max-width:60ch}
-header .odkazy{margin-left:auto;font-size:13px;display:flex;gap:14px}
-.naradie{max-width:1180px;margin:0 auto;display:flex;gap:8px;align-items:center;
-  flex-wrap:wrap;padding-top:14px}
-select,input[type=search],input[type=text]{background:var(--bg);border:1px solid var(--ln);
-  border-radius:3px;color:var(--ink);padding:8px 10px;font-size:14px;font-family:inherit}
-select:focus,input:focus{outline:none;border-color:var(--acc)}
-button{background:var(--acc);color:#fff;border:0;border-radius:3px;padding:9px 16px;
-  font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-button.duch{background:transparent;color:var(--ink2);border:1px solid var(--ln)}
-button.duch:hover{border-color:var(--acc);color:var(--acc)}
-.stav{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--mu);margin-left:auto}
-.stav b{color:var(--ok)}
+.naradie{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:calc(var(--okraj)*1.4);padding-top:12px;border-top:1px solid var(--ciara2)}
+.naradie .tb-vstup{width:auto;height:36px}
+.naradie input[type=search].tb-vstup{width:220px}
+.naradie .tb-tl{height:36px}
+.stav{font-family:var(--mono);font-size:12.5px;color:var(--tx3);margin-left:auto}
+.stav b{color:var(--tx);font-weight:500}
 
-main{max-width:1180px;margin:0 auto;padding:20px 24px 80px}
-.navod{background:var(--card);border:1px solid var(--ln);border-left:3px solid var(--acc);
-  padding:14px 18px;margin-bottom:18px;font-size:14px;color:var(--ink2)}
-.navod b{color:var(--ink)}
+.navody{margin:calc(var(--okraj)*1.2) 0 calc(var(--okraj)*1.4)}
+.navod{border-top:var(--linka) solid var(--ciara);padding-top:10px;font-size:14px;color:var(--tx2);line-height:1.5}
+.navod b{color:var(--tx);font-weight:500}
 .navod ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.navod summary{cursor:pointer}
+.navod .tb-pozn{margin:8px 0 0}
 
-table{width:100%;border-collapse:collapse;background:var(--card);
-  border:1px solid var(--ln);font-size:14px}
-th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--ln);vertical-align:top}
-th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;
-  text-transform:uppercase;color:var(--mu);background:var(--sunk);
-  position:sticky;top:88px;z-index:2}
-tbody tr:last-child td{border-bottom:0}
-tr.hotovo{background:var(--ok-bg)}
-td.nazov{font-weight:500}
-td.meta{color:var(--mu);font-size:12.5px;white-space:nowrap}
-td.suradnice input{width:190px;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+.tb-tab{border-top:0}
+.tb-tab th{position:sticky;top:56px;background:var(--papier);z-index:2;padding:10px 12px 8px 8px}
+.tb-tab td{padding:10px 12px 10px 8px}
+tr.hotovo td{background:var(--plocha)}
+td.nazov{font-weight:500;position:relative;padding-left:22px}
+td.nazov::before{content:"";position:absolute;left:6px;top:17px;width:8px;height:8px;border-radius:50%;border:1.5px solid var(--ciara2);background:transparent}
+tr.hotovo td.nazov::before{background:var(--cierna);border-color:var(--cierna)}
+td.meta{color:var(--tx3);font-size:12.5px;white-space:nowrap}
+td.suradnice input.tb-vstup{width:190px;height:32px;font-family:var(--mono);font-size:12.5px}
 td.akcie{white-space:nowrap}
-td.akcie a{font-size:12.5px;margin-right:10px}
-.znacka{display:inline-block;font-size:10.5px;padding:2px 6px;border-radius:20px;
-  background:var(--sunk);color:var(--mu);font-family:"IBM Plex Mono",monospace}
-.ok{color:var(--ok);font-family:"IBM Plex Mono",monospace;font-size:12px}
-.chyba{color:var(--acc);font-family:"IBM Plex Mono",monospace;font-size:12px}
+td.akcie a{font-size:12.5px;margin-right:12px}
+.znacka{display:inline-flex;align-items:center;height:20px;padding:0 7px;background:var(--plocha);color:var(--tx2);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.ok{color:var(--tx);font-family:var(--mono);font-size:12px}
+.chyba{color:var(--cervena2);font-family:var(--mono);font-size:12px}
 @media (max-width:760px){
   td.meta,th.meta{display:none}
-  td.suradnice input{width:140px}
+  td.suradnice input.tb-vstup{width:140px}
+  .stav{margin-left:0}
 }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="vnutro">
-    <div>
-      <h1>Doplniť polohy</h1>
-      <p>Všetkých 1 189 bratislavských zámerov. Pri 246 polohu poznáme z názvu ulice,
-         pri zvyšku ju register neuvádza — tu sa dá doplniť ručne, prípadne aj opraviť
-         tú existujúcu.</p>
-    </div>
-    <span class="odkazy">
-      <a href="../mapa-zamerov/">späť na mapu</a>
-      <a href="../">príručka</a>
-    </span>
+<header class="tb-lista">
+  <a class="tb-znacka" href="../mapa-zamerov/">Zámery<span class="l"></span>Bratislavy</a>
+  <nav><a href="../mapa-zamerov/">Mapa</a><a href="../redakcia/">Doplniť polohy a obrázky</a><a href="../tok-dat/">Tok dát</a></nav>
+  <div class="tb-vpravo"><span class="tb-stitok">Metropolitný inštitút Bratislavy</span></div>
+</header>
+
+<main class="tb-strana">
+  <div class="hero">
+    <div class="tb-riadok"><span class="tb-stitok">Záloha · Google hárok</span><a class="tb-stitok tlm" href="../">Príručka</a></div>
+    <h1 class="tb-h1">Doplniť polohy</h1>
+    <p class="tb-perex">Všetkých 1 189 bratislavských zámerov. Pri 246 polohu poznáme z názvu ulice,
+       pri zvyšku ju register neuvádza — tu sa dá doplniť ručne, prípadne aj opraviť
+       tú existujúcu.</p>
   </div>
   <div class="naradie">
-    <select id="mc"><option value="">všetky mestské časti</option></select>
-    <select id="typ"><option value="">všetky účely</option></select>
-    <select id="stavF">
+    <select class="tb-vstup" id="mc"><option value="">všetky mestské časti</option></select>
+    <select class="tb-vstup" id="typ"><option value="">všetky účely</option></select>
+    <select class="tb-vstup" id="stavF">
       <option value="ne">len bez polohy</option>
       <option value="">všetky zámery</option>
       <option value="ano">len s polohou</option>
     </select>
-    <input type="search" id="q" placeholder="hľadať v názve…">
-    <button id="exp">Stiahnuť polohy.json</button>
-    <button class="duch" id="imp">Načítať súbor</button>
-    <button class="duch" id="harok">Google hárok…</button>
+    <input class="tb-vstup" type="search" id="q" placeholder="hľadať v názve…">
+    <button class="tb-tl hl" id="exp">Stiahnuť polohy.json</button>
+    <button class="tb-tl" id="imp">Načítať súbor</button>
+    <button class="tb-tl" id="harok">Google hárok…</button>
     <input type="file" id="subor" accept="application/json" hidden>
     <span class="stav" id="stav">—</span>
   </div>
-</header>
 
-<main>
-  <div class="navod" style="border-left-color:var(--ok)">
-    <b>Od 8. 9. 2026 je na to pohodlnejšia appka:</b> <a href="../redakcia/">Redakcia</a> —
-    poloha klikom do mapy alebo vložením odkazu, obrázky pretiahnutím, uloženie priamo do mapy
-    bez hárku. Táto stránka ostáva ako záloha pre prácu v Google hárku.
+  <div class="navody tb-grid">
+    <div class="navod tb-s3">
+      <b>Od 8. 9. 2026 je na to pohodlnejšia appka:</b> <a href="../redakcia/">Redakcia</a> —
+      poloha klikom do mapy alebo vložením odkazu, obrázky pretiahnutím, uloženie priamo do mapy
+      bez hárku. Táto stránka ostáva ako záloha pre prácu v Google hárku.
+    </div>
+    <div class="navod tb-s5">
+      <b>Ako na to.</b> Poloha sa ukladá do prehliadača, takže sa dá robiť po častiach
+      a nič sa nestratí. Keď skončíš, stiahni súbor a pošli mi ho — doplní sa do mapy.
+      <ol>
+        <li>Klikni na <b>Hľadať v mapách</b> — otvorí sa Google Maps s názvom projektu a mestskou časťou.</li>
+        <li>Keď nájdeš miesto, klikni naň <b>pravým tlačidlom</b> a vyber prvú položku so súradnicami — skopíruje sa.</li>
+        <li>Vlož ju do políčka <b>súradnice</b>. Formát <span class="mono">48.1440, 17.1077</span> aj s medzerou je v poriadku.</li>
+        <li>Riadok zozelenie. Na konci <b>Stiahnuť polohy.json</b>.</li>
+      </ol>
+    </div>
+
+    <details class="navod tb-s8" id="onharku">
+      <summary><b>Radšej v Google hárku?</b> Dá sa — a spáruje sa s touto stránkou.</summary>
+      <ol>
+        <li>Stiahni <a href="zamery.csv" download>zámery.csv</a> — <b>všetkých 1 189 zámerov</b>.
+            Pri 246 je poloha už vyplnená, pri zvyšku je v stĺpci <span class="mono">poloha</span>
+            napísané <span class="mono">CHÝBA</span> a sú zoradené navrch. K tomu hotové odkazy
+            do máp a na spis.</li>
+        <li>V Google Sheets <b>Súbor → Importovať → Nahrať</b>. Oddeľovač je bodkočiarka.</li>
+        <li>Vyplňte súradnice — pokojne viacerí naraz, na to je hárok dobrý.</li>
+        <li>Potom <b>Súbor → Zdieľať → Publikovať na webe</b>, vyberte hárok a formát
+            <b>CSV</b>, a sem vložte vzniknutý odkaz cez tlačidlo <b>Google hárok…</b>.</li>
+        <li>Stránka si ho zapamätá a pri každom otvorení z neho načíta doplnené polohy.</li>
+      </ol>
+      <p class="tb-pozn">
+        Hárok musí byť publikovaný ako CSV — obyčajný odkaz na zdieľanie prehliadač
+        neprečíta. Publikovaný hárok je verejne čitateľný pre kohokoľvek s odkazom.</p>
+    </details>
   </div>
-  <div class="navod">
-    <b>Ako na to.</b> Poloha sa ukladá do prehliadača, takže sa dá robiť po častiach
-    a nič sa nestratí. Keď skončíš, stiahni súbor a pošli mi ho — doplní sa do mapy.
-    <ol>
-      <li>Klikni na <b>Hľadať v mapách</b> — otvorí sa Google Maps s názvom projektu a mestskou časťou.</li>
-      <li>Keď nájdeš miesto, klikni naň <b>pravým tlačidlom</b> a vyber prvú položku so súradnicami — skopíruje sa.</li>
-      <li>Vlož ju do políčka <b>súradnice</b>. Formát <span class="mono">48.1440, 17.1077</span> aj s medzerou je v poriadku.</li>
-      <li>Riadok zozelenie. Na konci <b>Stiahnuť polohy.json</b>.</li>
-    </ol>
-  </div>
 
-  <details class="navod" id="onharku">
-    <summary style="cursor:pointer"><b>Radšej v Google hárku?</b> Dá sa — a spáruje sa s touto stránkou.</summary>
-    <ol>
-      <li>Stiahni <a href="zamery.csv" download>zámery.csv</a> — <b>všetkých 1 189 zámerov</b>.
-          Pri 246 je poloha už vyplnená, pri zvyšku je v stĺpci <span class="mono">poloha</span>
-          napísané <span class="mono">CHÝBA</span> a sú zoradené navrch. K tomu hotové odkazy
-          do máp a na spis.</li>
-      <li>V Google Sheets <b>Súbor → Importovať → Nahrať</b>. Oddeľovač je bodkočiarka.</li>
-      <li>Vyplňte súradnice — pokojne viacerí naraz, na to je hárok dobrý.</li>
-      <li>Potom <b>Súbor → Zdieľať → Publikovať na webe</b>, vyberte hárok a formát
-          <b>CSV</b>, a sem vložte vzniknutý odkaz cez tlačidlo <b>Google hárok…</b>.</li>
-      <li>Stránka si ho zapamätá a pri každom otvorení z neho načíta doplnené polohy.</li>
-    </ol>
-    <p style="margin:8px 0 0;color:var(--mu);font-size:13px">
-      Hárok musí byť publikovaný ako CSV — obyčajný odkaz na zdieľanie prehliadač
-      neprečíta. Publikovaný hárok je verejne čitateľný pre kohokoľvek s odkazom.</p>
-  </details>
-
-  <table>
+  <table class="tb-tab">
     <thead><tr>
       <th style="width:38%">Zámer</th>
       <th class="meta" style="width:15%">Mestská časť</th>

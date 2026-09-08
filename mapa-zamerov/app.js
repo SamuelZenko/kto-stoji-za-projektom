@@ -4,9 +4,13 @@ const $=s=>document.querySelector(s);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cis=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
 const sklon=n=>n===1?'zámer':(n<5?'zámery':'zámerov');
-const FAZY=[['zámer','#D6165A'],['posúdené','#3B82D9'],['povolené','#12A67A'],
-            ['dokončené','#7FC4EA']];
+/* Fázy podľa dizajn systému TU—BA: význam nesie výplň, nie dúha —
+   zámer červená (akcent), posúdené čierna, povolené biela s obrysom,
+   dokončené warm grey. Obrys je vždy čierny. */
+const FAZY=[['zámer','#F3716D'],['posúdené','#000000'],['povolené','#FFFFFF'],
+            ['dokončené','#B4B4B0']];
 const FARBA=Object.fromEntries(FAZY);
+const SIVA='#8A8A86';
 const G='https://geoportal.bratislava.sk/hSite/rest/services';
 const EXPORT=s=>G+'/'+s+'/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857'
   +'&imageSR=3857&size=512,512&format=png32&transparent=true&f=image';
@@ -35,7 +39,7 @@ const map=new maplibregl.Map({
   container:'map', attributionControl:{compact:true},
   style:{version:8, glyphs:'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
     sources:{},
-    layers:[{id:'pozadie',type:'background',paint:{'background-color':'#0B1117'}}]},
+    layers:[{id:'pozadie',type:'background',paint:{'background-color':'#EDEDEA'}}]},
   center:DOMOV.center, zoom:DOMOV.zoom, minZoom:8, maxZoom:19,
 });
 function pridajPodklad(){
@@ -44,21 +48,22 @@ function pridajPodklad(){
   map.addSource('orto',{type:'raster',tileSize:256,maxzoom:19,
     attribution:'Ortofoto — Hlavné mesto SR Bratislava',
     tiles:[G+'/Hosted/Ortofoto/MapServer/tile/{z}/{y}/{x}']});
+  /* svetlý podklad v tónoch warm grey — mapa je papier, body sú tlač */
   [{id:'v-zastavane',type:'fill',source:'osm','source-layer':'zastavané územie',
-    paint:{'fill-color':'#131C24'}},
+    paint:{'fill-color':'#E6E6E2'}},
    {id:'v-zelen',type:'fill',source:'osm','source-layer':'zeleň',
-    paint:{'fill-color':'#10201A'}},
+    paint:{'fill-color':'#E1E4DD'}},
    {id:'v-voda',type:'fill',source:'osm','source-layer':'vodné plochy',
-    paint:{'fill-color':'#0E1D28'}},
+    paint:{'fill-color':'#D2D6D4'}},
    {id:'v-tok',type:'line',source:'osm','source-layer':'vodné toky',
-    paint:{'line-color':'#152734','line-width':1.3}},
+    paint:{'line-color':'#D2D6D4','line-width':1.3}},
    {id:'v-budovy',type:'fill',source:'osm','source-layer':'budovy',minzoom:13,
-    paint:{'fill-color':'#1A2530'}},
+    paint:{'fill-color':'#DADAD6'}},
    {id:'v-cesty',type:'line',source:'osm','source-layer':'cestná sieť',
-    paint:{'line-color':'#252F39',
-      'line-width':['interpolate',['linear'],['zoom'],10,.5,14,1.8,18,6]}},
+    paint:{'line-color':'#FFFFFF',
+      'line-width':['interpolate',['linear'],['zoom'],10,.6,14,2,18,7]}},
    {id:'v-zeleznica',type:'line',source:'osm','source-layer':'železničná sieť',
-    paint:{'line-color':'#2C3640','line-width':1,'line-dasharray':[3,2]}},
+    paint:{'line-color':'#B4B4B0','line-width':1,'line-dasharray':[3,2]}},
    {id:'orto',type:'raster',source:'orto',layout:{visibility:'none'}},
   ].forEach(v=>map.addLayer(v));
 }
@@ -117,13 +122,13 @@ function obnov(){
    inak by farby v paneli tvrdili niečo iné než farby na mape. */
 function kresliLegendu(poc,bez){
   const podla = farbitPodla==='typ'
-    ? TYPY.slice(0,6).map(t=>[t,BARVA_TYPU[t]||'#8B98A3','typ'])
+    ? TYPY.slice(0,6).map(t=>[t,BARVA_TYPU[t]||SIVA,'typ'])
     : FAZY.map(([f,c])=>[f,c,'faza']);
   $('#legenda').innerHTML=podla.map(([f,c,d])=>
     '<div class="r" data-d="'+d+'" data-v="'+esc(f)+'" aria-pressed="'+filtr[d].has(f)+'">'
     +'<span class="t" style="background:'+c+'"></span>'+esc(f)+'</div>').join('')
     +(farbitPodla==='typ' && TYPY.length>6
-      ? '<div class="r" style="cursor:default"><span class="t" style="background:#8B98A3"></span>ostatné</div>' : '')
+      ? '<div class="r" style="cursor:default"><span class="t" style="background:'+SIVA+'"></span>ostatné</div>' : '')
     +'<div class="r" style="cursor:default"><span class="t duta"></span>bez známej polohy</div>';
 }
 /* Prekreslí farbu bodov podľa aktuálne zvolenej vlastnosti. */
@@ -131,9 +136,9 @@ function prefarbi(){
   if(!map.getLayer('bod')) return;
   const vyraz = farbitPodla==='typ'
     ? ['match',['get','typ']].concat(
-        TYPY.slice(0,6).flatMap(t=>[t,BARVA_TYPU[t]||'#8B98A3']), ['#8B98A3'])
+        TYPY.slice(0,6).flatMap(t=>[t,BARVA_TYPU[t]||SIVA]), [SIVA])
     : ['match',['get','faza']].concat(
-        FAZY.flatMap(([f,c])=>[f,c]), ['#8B98A3']);
+        FAZY.flatMap(([f,c])=>[f,c]), [SIVA]);
   map.setPaintProperty('bod','circle-color',vyraz);
   kresliLegendu();
 }
@@ -159,8 +164,8 @@ function kresliKategorie(){
   const p=poctyTypov(), zoz=vsetkyTypy?TYPY:TYPY.slice(0,5);
   /* Bodka nesie farbu len vtedy, keď tá farba niečo znamená aj na mape. */
   const bod=t=>farbitPodla==='typ'
-    ? 'background:'+(TYPY.indexOf(t)<6?(BARVA_TYPU[t]||'#8B98A3'):'#8B98A3')
-    : 'background:transparent;border:1.5px solid var(--ln2)';
+    ? 'background:'+(TYPY.indexOf(t)<6?(BARVA_TYPU[t]||SIVA):SIVA)
+    : 'background:transparent;border:1.5px dashed var(--tx3)';
   $('#kategorie').innerHTML=zoz.map((t,i)=>
     '<div class="r" data-t="'+esc(t)+'" aria-pressed="'+filtr.typ.has(t)+'">'
     +'<span class="t" style="'+bod(t)+'"></span>'+esc(t)
@@ -263,7 +268,7 @@ function riadokStavu(p){
   else pozn='podľa registra EIA — na úradnej tabuli MČ sa vyhláška nenašla (tabule sledujeme od 8. 9. 2026)';
   /* bodka má rovnakú farbu ako bod na mape, nech sa dá spárovať s legendou */
   return riadok('Stav', '<span class="v"><span class="farba" style="background:'
-    +(FARBA[p.faza]||'#8B98A3')+'"></span>'+esc(p.faza||'')
+    +(FARBA[p.faza]||SIVA)+'"></span>'+esc(p.faza||'')
     +'<span class="pozn-stav">'+pozn+'</span></span>', true);
 }
 /* Odkiaľ je poloha: parcely z textu zámeru sú najpresnejšie (ťažisko
@@ -495,7 +500,7 @@ async function nacitajKomunitu(){
 function ukazTabulu(p){
   $('#detail').className='detail on'; $('#detail').scrollTop=0;
   $('#detail').innerHTML='<button class="zavri" onclick="zavriDetail()">×</button>'
-    +'<div class="stitky"><span class="stitok" style="background:#12A67A;color:#0B1117">'+esc((p.druh||'vyhláška').toUpperCase())+'</span>'
+    +'<div class="stitky"><span class="stitok">'+esc((p.druh||'vyhláška').toUpperCase())+'</span>'
       +'<span class="stitok b">ÚRADNÁ TABUĽA MČ</span></div>'
     +'<h2>'+esc(p.n)+'</h2>'
     +'<div class="miesto">◉ '+esc(p.mc||'')+(p.datum?' · '+esc(p.datum):'')+'</div>'
@@ -513,7 +518,7 @@ function ukazTabulu(p){
 function ukazOsm(p){
   $('#detail').className='detail on'; $('#detail').scrollTop=0;
   $('#detail').innerHTML='<button class="zavri" onclick="zavriDetail()">×</button>'
-    +'<div class="stitky"><span class="stitok" style="background:#E8B44A;color:#0B1117">STAVENISKO</span>'
+    +'<div class="stitky"><span class="stitok" style="background:#F3716D">STAVENISKO</span>'
       +(p.druh?'<span class="stitok b">'+esc(p.druh.toUpperCase())+'</span>':'')+'</div>'
     +'<h2>'+esc(p.n)+'</h2>'
     +'<div class="miesto">◉ '+esc(p.mc||'')+'</div>'
@@ -628,11 +633,11 @@ async function spusti(){
       layout:{'text-field':['get','n'],'symbol-placement':'line','text-size':11,
         'text-font':['Noto Sans Regular'],'text-letter-spacing':.03,
         'text-max-angle':38,'symbol-spacing':270},
-      paint:{'text-color':'#7B8B99','text-halo-color':'#0B1117','text-halo-width':1.4}});
+      paint:{'text-color':'#8A8A86','text-halo-color':'#EDEDEA','text-halo-width':1.4}});
   }
   map.addSource('hranice',{type:'geojson',data:mc});
   map.addLayer({id:'hranice-c',type:'line',source:'hranice',
-    paint:{'line-color':'#333F4A','line-width':1,'line-dasharray':[4,3]}});
+    paint:{'line-color':'#000000','line-opacity':.45,'line-width':1,'line-dasharray':[4,3]}});
   map.addSource('mcnazvy',{type:'geojson',data:{type:'FeatureCollection',
     features:Object.keys(TAZISKA).map(o=>({type:'Feature',
       geometry:{type:'Point',coordinates:TAZISKA[o]},
@@ -640,79 +645,82 @@ async function spusti(){
   map.addLayer({id:'mc-txt',type:'symbol',source:'mcnazvy',
     layout:{'text-field':['get','n'],'text-size':['interpolate',['linear'],['zoom'],10,10,14,13],
       'text-font':['Noto Sans Regular'],'text-letter-spacing':.16,'text-max-width':9},
-    paint:{'text-color':'#5D6B77','text-halo-color':'#0B1117','text-halo-width':1.6}});
+    paint:{'text-color':'#6E6E6A','text-halo-color':'#EDEDEA','text-halo-width':1.6}});
+
+  /* ikony kreslené v prehliadači: bublina pod popisky bodov (naťahovací
+     rámček ako v Praha zítra) a štvorce pre stavby mimo registra */
+  pridajIkony();
 
   map.addSource('zamery',{type:'geojson',data:{type:'FeatureCollection',features:[]},
     cluster:true, clusterRadius:20, clusterMaxZoom:13});
-  /* Zhluk je neutrálny — farba je vyhradená pre význam (fáza / účel),
-     a zhluk mieša viacero hodnôt naraz, takže by klamal. */
+  /* Zhluk = čierna bublina s číslom — motív bubliny na linke z logotypu.
+     Farba je vyhradená pre význam (fáza / účel), zhluk ho mieša, tak je čierny. */
   map.addLayer({id:'zh-kruh',type:'circle',source:'zamery',filter:['has','point_count'],
-    paint:{'circle-color':'rgba(122,144,166,.16)',
-      'circle-radius':['step',['get','point_count'],17,10,23,100,30]}});
+    paint:{'circle-color':'rgba(0,0,0,.08)',
+      'circle-radius':['step',['get','point_count'],18,10,24,100,31]}});
   map.addLayer({id:'zh',type:'circle',source:'zamery',filter:['has','point_count'],
-    paint:{'circle-color':'#3D5165','circle-opacity':.96,
-      'circle-stroke-width':1.4,'circle-stroke-color':'rgba(180,200,218,.34)',
+    paint:{'circle-color':'#000000',
       'circle-radius':['step',['get','point_count'],13,10,17,100,21]}});
   map.addLayer({id:'zh-txt',type:'symbol',source:'zamery',filter:['has','point_count'],
     layout:{'text-field':['get','point_count_abbreviated'],'text-size':12.5,
       'text-font':['Noto Sans Regular']},paint:{'text-color':'#fff'}});
   map.addLayer({id:'bod',type:'circle',source:'zamery',filter:['!',['has','point_count']],
-    paint:{'circle-color':['match',['get','faza'],'zámer','#D6165A','posúdené','#3B82D9',
-        'povolené','#12A67A','dokončené','#7FC4EA','#8B98A3'],
+    paint:{'circle-color':['match',['get','faza'],'zámer','#F3716D','posúdené','#000000',
+        'povolené','#FFFFFF','dokončené','#B4B4B0',SIVA],
       'circle-radius':['interpolate',['linear'],['zoom'],10,4.5,14,7,18,11],
-      /* líniové stavby majú svetlý prstenec, nech sa dajú od budov rozoznať */
-      'circle-stroke-width':['case',['==',['get','lin'],1],2.5,1.5],
-      'circle-stroke-color':['case',['==',['get','lin'],1],'#C08A4A','rgba(11,17,23,.85)']}});
+      /* líniové stavby majú hrubý sivý prstenec, nech sa dajú od budov rozoznať */
+      'circle-stroke-width':['case',['==',['get','lin'],1],3.5,1.5],
+      'circle-stroke-color':['case',['==',['get','lin'],1],SIVA,'#000000']}});
+  /* popisky ako biele pilulky s čiernym rámčekom — ikona sa natiahne na text */
   map.addLayer({id:'bod-txt',type:'symbol',source:'zamery',
     filter:['!',['has','point_count']],minzoom:14.5,
     layout:{'text-field':['coalesce',['get','nazov_obch'],['get','nazov']],'text-size':11,'text-anchor':'left',
-      'text-offset':[.9,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
-      'text-optional':true},
-    paint:{'text-color':'#DCE4EC','text-halo-color':'#0B1117','text-halo-width':1.5}});
+      'text-offset':[1.1,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
+      'text-optional':true,'text-justify':'left',
+      'icon-image':'bublina','icon-text-fit':'both','icon-text-fit-padding':[4,8,4,8],'icon-optional':false},
+    paint:{'text-color':'#000000'}});
 
   map.addSource('nezname',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
   map.addLayer({id:'nez',type:'circle',source:'nezname',
-    paint:{'circle-color':'rgba(148,163,179,.09)',
+    paint:{'circle-color':'rgba(0,0,0,.05)',
       'circle-radius':['interpolate',['linear'],['get','pocet'],1,14,150,32],
-      'circle-stroke-width':1.2,'circle-stroke-color':'#54626D'}});
+      'circle-stroke-width':1.2,'circle-stroke-color':'#8A8A86'}});
   map.addLayer({id:'nez-txt',type:'symbol',source:'nezname',
     layout:{'text-field':['get','pocet'],'text-size':12,'text-font':['Noto Sans Regular']},
-    paint:{'text-color':'#94A3B3'}});
+    paint:{'text-color':'#48484A'}});
 
   map.addSource('komunita',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
   map.addSource('moje',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
-  [['kom','komunita','#8B6FD4'],['moj','moje','#B79BEE']].forEach(([id,src,c])=>{
+  [['kom','komunita','#FFFFFF'],['moj','moje','#FBD5D3']].forEach(([id,src,c])=>{
     map.addLayer({id:id,type:'circle',source:src,
-      paint:{'circle-color':c,'circle-opacity':.92,
+      paint:{'circle-color':c,
         'circle-radius':['interpolate',['linear'],['zoom'],10,4.5,14,7,18,11],
-        'circle-stroke-width':2,'circle-stroke-color':'rgba(11,17,23,.85)'}});
+        'circle-stroke-width':2,'circle-stroke-color':'#F3716D'}});
     map.addLayer({id:id+'-txt',type:'symbol',source:src,minzoom:13,
       layout:{'text-field':['get','nazov'],'text-size':11,'text-anchor':'left',
-        'text-offset':[.9,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
-        'text-optional':true},
-      paint:{'text-color':'#C3B4EC','text-halo-color':'#0B1117','text-halo-width':1.5}});
+        'text-offset':[1.1,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
+        'text-optional':true,'icon-image':'bublina','icon-text-fit':'both','icon-text-fit-padding':[4,8,4,8]},
+      paint:{'text-color':'#000000'}});
     map.on('click',id,e=>ukazKomunitu(e.features[0].properties));
   });
   map.addSource('novy',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
   map.addLayer({id:'novy-b',type:'circle',source:'novy',
-    paint:{'circle-color':'#D6165A','circle-radius':11,'circle-stroke-width':3,
-      'circle-stroke-color':'#fff'}});
+    paint:{'circle-color':'#F3716D','circle-radius':11,'circle-stroke-width':3,
+      'circle-stroke-color':'#000'}});
 
   /* staveniská z OpenStreetMap, ktoré k žiadnemu zámeru nesedia — stavby
-     pod prahom EIA. Iný symbol (tmavý stred, žltý prstenec), aby sa
-     nemiešali s registrom. */
+     pod prahom EIA. Iný tvar (červený štvorec), aby sa nemiešali s registrom. */
   if(osm && osm.features){
     /* zdroj sa nesmie volať 'osm' — tak sa volá podkladová vektorová mapa */
     map.addSource('osm-st',{type:'geojson',data:osm});
-    map.addLayer({id:'osm-b',type:'circle',source:'osm-st',
-      paint:{'circle-color':'#0B1117','circle-opacity':.9,
-        'circle-radius':['interpolate',['linear'],['zoom'],10,3.5,14,6,18,10],
-        'circle-stroke-width':2.5,'circle-stroke-color':'#E8B44A'}});
+    map.addLayer({id:'osm-b',type:'symbol',source:'osm-st',
+      layout:{'icon-image':'stvorec-cerveny','icon-allow-overlap':true,
+        'icon-size':['interpolate',['linear'],['zoom'],10,.45,14,.7,18,1]}});
     map.addLayer({id:'osm-txt',type:'symbol',source:'osm-st',minzoom:13,
       layout:{'text-field':['get','n'],'text-size':11,'text-anchor':'left',
-        'text-offset':[.9,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
-        'text-optional':true},
-      paint:{'text-color':'#F0D9A0','text-halo-color':'#0B1117','text-halo-width':1.5}});
+        'text-offset':[1.1,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
+        'text-optional':true,'icon-image':'bublina','icon-text-fit':'both','icon-text-fit-padding':[4,8,4,8]},
+      paint:{'text-color':'#E4534F'}});
     map.on('click','osm-b',e=>{ if(!pridavam) ukazOsm(e.features[0].properties); });
     map.on('mouseenter','osm-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
     map.on('mouseleave','osm-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
@@ -724,15 +732,14 @@ async function spusti(){
      stavby pod prahom EIA, z úradných tabúľ MČ (sledované od 8. 9. 2026) */
   if(tab && tab.features){
     map.addSource('tab-st',{type:'geojson',data:tab});
-    map.addLayer({id:'tab-b',type:'circle',source:'tab-st',
-      paint:{'circle-color':'#0B1117','circle-opacity':.9,
-        'circle-radius':['interpolate',['linear'],['zoom'],10,3.5,14,6,18,10],
-        'circle-stroke-width':2.5,'circle-stroke-color':'#12A67A'}});
+    map.addLayer({id:'tab-b',type:'symbol',source:'tab-st',
+      layout:{'icon-image':'stvorec-cierny','icon-allow-overlap':true,
+        'icon-size':['interpolate',['linear'],['zoom'],10,.45,14,.7,18,1]}});
     map.addLayer({id:'tab-txt',type:'symbol',source:'tab-st',minzoom:13,
       layout:{'text-field':['get','n'],'text-size':11,'text-anchor':'left',
-        'text-offset':[.9,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
-        'text-optional':true},
-      paint:{'text-color':'#A7E6CF','text-halo-color':'#0B1117','text-halo-width':1.5}});
+        'text-offset':[1.1,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
+        'text-optional':true,'icon-image':'bublina','icon-text-fit':'both','icon-text-fit-padding':[4,8,4,8]},
+      paint:{'text-color':'#000000'}});
     map.on('click','tab-b',e=>{ if(!pridavam) ukazTabulu(e.features[0].properties); });
     map.on('mouseenter','tab-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
     map.on('mouseleave','tab-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
@@ -747,8 +754,9 @@ async function spusti(){
   /* farby typov sa priradia raz zo všetkých, aby sa nepremiešali,
      keď sa líniové stavby zapnú alebo vypnú */
   const pcv={}; z.features.forEach(f=>{const t=f.properties.typ||'Iné'; pcv[t]=(pcv[t]||0)+1;});
-  const paleta=['#D6165A','#3B82D9','#12A67A','#7FC4EA','#C08A4A','#8B6FD4',
-                '#4E9E86','#B0607F','#5E7F96','#7C8B99','#8B98A3'];
+  /* účel stavby: čierno-biela škála + červená, nie dúha */
+  const paleta=['#000000','#F3716D','#FFFFFF','#8A8A86','#F3B0AE','#D9D9D6',
+                '#55555A','#B4B4B0','#FBD5D3','#6E6E6A','#8A8A86'];
   Object.keys(pcv).sort((a,b)=>pcv[b]-pcv[a]).forEach((t,i)=>BARVA_TYPU[t]=paleta[i%paleta.length]);
   zostavTypy();
   const nl=z.features.filter(f=>f.properties.lin).length;
@@ -779,6 +787,23 @@ async function spusti(){
     map.on('mouseleave',l,()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
   });
 }
+/* Ikony kreslené na plátno — bez externých obrázkov. Bublina je
+   naťahovací rámček (stretchX/Y), do ktorého MapLibre vloží text. */
+function pridajIkony(){
+  const px=2;                                   // pixelRatio pre ostré hrany
+  const platno=(w,h,kresli)=>{ const c=document.createElement('canvas'); c.width=w*px; c.height=h*px;
+    const g=c.getContext('2d'); g.scale(px,px); kresli(g); return g.getImageData(0,0,c.width,c.height); };
+  if(!map.hasImage('bublina')) map.addImage('bublina', platno(28,28,g=>{
+    g.fillStyle='#FFFFFF'; g.strokeStyle='#000000'; g.lineWidth=1.2;
+    g.beginPath(); g.roundRect(1,1,26,26,4); g.fill(); g.stroke(); }),
+    {pixelRatio:px, stretchX:[[8,20]], stretchY:[[8,20]], content:[6,6,22,22]});
+  const stvorec=farba=>platno(24,24,g=>{
+    g.fillStyle='#FFFFFF'; g.strokeStyle=farba; g.lineWidth=3;
+    g.beginPath(); g.rect(3,3,18,18); g.fill(); g.stroke(); });
+  if(!map.hasImage('stvorec-cerveny')) map.addImage('stvorec-cerveny', stvorec('#F3716D'), {pixelRatio:px});
+  if(!map.hasImage('stvorec-cierny')) map.addImage('stvorec-cierny', stvorec('#000000'), {pixelRatio:px});
+}
+
 /* 'style.load' príde hneď po rozparsovaní štýlu, 'load' až keď dobehnú
    dlaždice podkladu. Geoportál býva pomalý a občas nedostupný, tak sa
    chytáme toho skoršieho — vrstvy sa dajú pridať aj bez dlaždíc. */
@@ -894,8 +919,8 @@ $('#v-mhd').onchange=async e=>{
     layout:{'line-cap':'round','line-join':'round',
       'line-sort-key':['get','r']},          // električka nakoniec, nech je vrchu
     paint:{
-      'line-color':['match',['get','r'],3,'#E8B44A',2,'#4FA3D9','#6F8095'],
-      'line-opacity':['match',['get','r'],3,.95,2,.85,.5],
+      'line-color':['match',['get','r'],3,'#000000',2,'#F3716D','#A5A5A1'],
+      'line-opacity':['match',['get','r'],3,.9,2,.85,.6],
       'line-width':['interpolate',['linear'],['zoom'],
         10,['match',['get','r'],3,1.6,2,1.1,.6],
         14,['match',['get','r'],3,3,2,2.2,1.2],
@@ -944,13 +969,13 @@ $('#v-3d').onchange=async e=>{
       /* farba podľa výšky — bežná zástavba splýva s podkladom,
          výškové budovy vystúpia; ide o to, aby bolo vidieť, čo prečnieva */
       'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','v'],9],
-        3,'#1B2732', 12,'#23323F', 25,'#2C4051', 45,'#3B5670', 70,'#52789B'],
+        3,'#E4E4E0', 12,'#D9D9D6', 25,'#A5A5A1', 45,'#55555A', 70,'#F3716D'],
       'fill-extrusion-height':['coalesce',['get','v'],9],
       'fill-extrusion-base':0,
       'fill-extrusion-opacity':.94},
   }, map.getLayer('ulice-txt')?'ulice-txt':undefined);
   /* mäkšie svetlo, nech telesá nesvietia nad tmavým podkladom */
-  map.setLight({anchor:'viewport',color:'#dce7f2',intensity:.32,position:[1.4,205,32]});
+  map.setLight({anchor:'viewport',color:'#ffffff',intensity:.45,position:[1.4,205,32]});
   budovy3d='hotove'; ploche(false);
   if(map.getPitch()<20) map.easeTo({pitch:55});
   dotiahniBudovy();
@@ -1032,7 +1057,7 @@ function nacitajVysku(){
     .then(g=>{VYSKA=g; return g;}).catch(e=>{vyskaSlub=null; throw e;});
   return vyskaSlub;
 }
-const FARBA_VYSKY=['match',['get','v'],1,'#2E4A3A',2,'#3F6B4E',3,'#7A8A3C',4,'#B0742E',5,'#C24A3A','#3D5165'];
+const FARBA_VYSKY=['match',['get','v'],1,'#D9D9D6',2,'#B4B4B0',3,'#8A8A86',4,'#F3B0AE',5,'#F3716D','#8A8A86'];
 $('#v-vyska').onchange=async e=>{
   $('#legenda-vyska').hidden=!e.target.checked;
   if(!e.target.checked){ ['vyska-f','vyska-l'].forEach(l=>map.getLayer(l)&&map.setLayoutProperty(l,'visibility','none')); return; }
@@ -1044,9 +1069,9 @@ $('#v-vyska').onchange=async e=>{
   map.addSource('vyska',{type:'geojson',data:g});
   const pod=map.getLayer('zh-kruh')?'zh-kruh':undefined;
   map.addLayer({id:'vyska-f',type:'fill',source:'vyska',
-    paint:{'fill-color':FARBA_VYSKY,'fill-opacity':.30}}, pod);
+    paint:{'fill-color':FARBA_VYSKY,'fill-opacity':.45}}, pod);
   map.addLayer({id:'vyska-l',type:'line',source:'vyska',minzoom:12,
-    paint:{'line-color':FARBA_VYSKY,'line-opacity':.55,'line-width':.7}}, pod);
+    paint:{'line-color':'#000000','line-opacity':.25,'line-width':.6}}, pod);
   $('#stav-vyska').textContent='('+cis(g.features.length)+')';
   map.on('click','vyska-f',ev=>{
     if(pridavam||nadBodom(ev)) return;
@@ -1092,9 +1117,9 @@ $('#v-upn').onchange=async e=>{
   catch(err){ e.target.checked=false; $('#stav-upn').textContent='(nedá sa načítať)'; return; }
   map.addSource('upn',{type:'geojson',data:g});
   const pod=map.getLayer('zh-kruh')?'zh-kruh':undefined;
-  map.addLayer({id:'upn-f',type:'fill',source:'upn',paint:{'fill-color':'#8B6FD4','fill-opacity':.28}}, pod);
+  map.addLayer({id:'upn-f',type:'fill',source:'upn',paint:{'fill-color':'#F3716D','fill-opacity':.22}}, pod);
   map.addLayer({id:'upn-l',type:'line',source:'upn',
-    paint:{'line-color':'#B79BEE','line-width':1.6,'line-dasharray':[2,1.5]}}, pod);
+    paint:{'line-color':'#000000','line-width':1.4,'line-dasharray':[2,1.5]}}, pod);
   $('#stav-upn').textContent='('+g.features.length+')';
   map.on('click','upn-f',ev=>{ if(!pridavam && !nadBodom(ev)) ukazUpn(ev.features[0].properties); });
   map.on('mouseenter','upn-f',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});

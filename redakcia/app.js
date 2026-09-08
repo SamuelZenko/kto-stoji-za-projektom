@@ -230,24 +230,24 @@ function miniMapa(id,pol,p){
   if(MM.map){ try{ MM.map.remove(); }catch(e){} MM.map=null; MM.marker=null; }
   const stred=pol||TAZISKA[p.obec]||[17.11,48.15];
   const map=new maplibregl.Map({container:'mini-mapa',attributionControl:{compact:true},
-    style:{version:8,sources:{},layers:[{id:'pozadie',type:'background',paint:{'background-color':'#0B1117'}}]},
+    style:{version:8,sources:{},layers:[{id:'pozadie',type:'background',paint:{'background-color':'#EDEDEA'}}]},
     center:stred,zoom:pol?16:12.5,minZoom:9,maxZoom:19});
   MM.map=map;
   map.addControl(new maplibregl.NavigationControl({showCompass:false}),'bottom-right');
   map.on('style.load',()=>{
     map.addSource('osm',{type:'vector',maxzoom:18,tiles:[G+'/Hosted/Podkladov%C3%A1_mapa_OSM_UP/VectorTileServer/tile/{z}/{y}/{x}.pbf']});
     map.addSource('orto',{type:'raster',tileSize:256,maxzoom:19,tiles:[G+'/Hosted/Ortofoto/MapServer/tile/{z}/{y}/{x}']});
-    [{id:'v-zast',type:'fill',source:'osm','source-layer':'zastavané územie',paint:{'fill-color':'#131C24'}},
-     {id:'v-zelen',type:'fill',source:'osm','source-layer':'zeleň',paint:{'fill-color':'#10201A'}},
-     {id:'v-voda',type:'fill',source:'osm','source-layer':'vodné plochy',paint:{'fill-color':'#0E1D28'}},
-     {id:'v-bud',type:'fill',source:'osm','source-layer':'budovy',minzoom:13,paint:{'fill-color':'#1E2A36'}},
-     {id:'v-cesty',type:'line',source:'osm','source-layer':'cestná sieť',paint:{'line-color':'#2C3843','line-width':['interpolate',['linear'],['zoom'],10,.5,14,1.8,18,6]}},
+    [{id:'v-zast',type:'fill',source:'osm','source-layer':'zastavané územie',paint:{'fill-color':'#E6E6E2'}},
+     {id:'v-zelen',type:'fill',source:'osm','source-layer':'zeleň',paint:{'fill-color':'#E2E5DE'}},
+     {id:'v-voda',type:'fill',source:'osm','source-layer':'vodné plochy',paint:{'fill-color':'#D4D8D6'}},
+     {id:'v-bud',type:'fill',source:'osm','source-layer':'budovy',minzoom:13,paint:{'fill-color':'#DCDCD8'}},
+     {id:'v-cesty',type:'line',source:'osm','source-layer':'cestná sieť',paint:{'line-color':'#FFFFFF','line-width':['interpolate',['linear'],['zoom'],10,.5,14,1.8,18,6]}},
      {id:'orto',type:'raster',source:'orto',layout:{visibility:'none'}},
     ].forEach(v=>map.addLayer(v));
     /* ostatné zámery s polohou — nech vidno, či bod nekoliduje so susedom */
     map.addSource('ost',{type:'geojson',data:{type:'FeatureCollection',features:Z.filter(q=>q.id!==id&&(zaznam(q.id)||{}).poloha||q.presnost==='presná').map(q=>({type:'Feature',geometry:{type:'Point',coordinates:(zaznam(q.id)||{}).poloha||q.sur},properties:{n:(zaznam(q.id)||{}).nazov||q.nazov}}))}});
-    map.addLayer({id:'ost',type:'circle',source:'ost',paint:{'circle-color':'#5E7F96','circle-radius':4,'circle-stroke-width':1,'circle-stroke-color':'#0B1117'}});
-    map.addLayer({id:'ost-txt',type:'symbol',source:'ost',minzoom:15,layout:{'text-field':['get','n'],'text-size':10.5,'text-anchor':'left','text-offset':[.7,0],'text-max-width':10,'text-font':['Noto Sans Regular'],'text-optional':true},paint:{'text-color':'#8FA3B5','text-halo-color':'#0B1117','text-halo-width':1.2}});
+    map.addLayer({id:'ost',type:'circle',source:'ost',paint:{'circle-color':'#8A8A86','circle-radius':4,'circle-stroke-width':1,'circle-stroke-color':'#FFFFFF'}});
+    map.addLayer({id:'ost-txt',type:'symbol',source:'ost',minzoom:15,layout:{'text-field':['get','n'],'text-size':10.5,'text-anchor':'left','text-offset':[.7,0],'text-max-width':10,'text-font':['Noto Sans Regular'],'text-optional':true},paint:{'text-color':'#48484A','text-halo-color':'#FFFFFF','text-halo-width':1.2}});
     if(pol) pridajMarker(id,pol);
   });
   map.on('click',e=>{ if(vybrane!==id) return; nastavPolohu(id,[e.lngLat.lng,e.lngLat.lat]); });
@@ -255,7 +255,7 @@ function miniMapa(id,pol,p){
     if(map.getLayer('orto')) map.setLayoutProperty('orto','visibility',on?'visible':'none'); };
 }
 function pridajMarker(id,s){
-  MM.marker=new maplibregl.Marker({color:'#D6165A',draggable:true}).setLngLat(s).addTo(MM.map);
+  MM.marker=new maplibregl.Marker({color:'#F3716D',draggable:true}).setLngLat(s).addTo(MM.map);
   MM.marker.on('dragend',()=>{ const l=MM.marker.getLngLat(); nastavPolohu(id,[l.lng,l.lat]); });
   MM.map.easeTo({center:s,zoom:Math.max(MM.map.getZoom(),15.5)});
 }

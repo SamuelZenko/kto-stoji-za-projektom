@@ -6,34 +6,10 @@
 <meta name="color-scheme" content="dark">
 <meta name="description" content="Mapa developerských zámerov v Bratislave z registra posudzovania vplyvov na životné prostredie.">
 <title>Zámery Bratislavy</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,600&family=Public+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
+<link rel="stylesheet" href="../spolocne/tuba.css?v=20260908y">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260908x">
-<style>
-/* pridávanie bodu priamo v mape */
-.pridavam #map{cursor:crosshair}
-.navod{position:absolute;left:50%;top:20px;transform:translateX(-50%);z-index:6;
-  background:var(--ac);color:#fff;border-radius:var(--r2);padding:11px 18px;
-  font-size:13.5px;font-weight:600;box-shadow:var(--tien);display:none;
-  align-items:center;gap:14px}
-.navod.on{display:flex}
-.navod button{background:rgba(255,255,255,.2);border:0;color:#fff;border-radius:6px;
-  padding:5px 11px;font-size:12.5px;cursor:pointer}
-.form label{display:block;font-size:12px;color:var(--tx2);margin:0 0 5px}
-.form input,.form select,.form textarea{width:100%;background:var(--karta);
-  border:1px solid var(--ln);border-radius:var(--r2);color:var(--tx);
-  padding:10px 11px;font-size:13.5px}
-.form textarea{min-height:78px;resize:vertical}
-.form input:focus,.form select:focus,.form textarea:focus{outline:none;border-color:var(--ac)}
-.form .par{display:flex;gap:10px}
-.form .par>div{flex:1}
-.form .riadok{display:flex;flex-direction:column;gap:0}
-.cakajuce{background:rgba(139,111,212,.14);border:1px solid rgba(139,111,212,.4);
-  border-radius:var(--r2);padding:10px 12px;font-size:12.5px;color:#C3B4EC}
-</style>
+<link rel="stylesheet" href="ui.css?v=20260908y">
 </head>
 <body>
 
@@ -42,8 +18,8 @@
     <span class="mib">MIB</span>
     <span class="kto">Metropolitný<br>inštitút Bratislavy</span>
   </div>
-  <h1>Zámery Bratislavy</h1>
-  <span class="pod">z registra posudzovania vplyvov na životné prostredie</span>
+  <h1>Zámery<span class="l"></span>Bratislavy</h1>
+  <span class="pod">Register EIA · úradné tabule · redakcia</span>
   <nav>
     <a href="../redakcia/">Doplniť polohy a obrázky</a>
     <a href="../tok-dat/">Tok dát</a>
@@ -98,40 +74,40 @@
     <div class="legenda" id="legenda"></div>
     <div class="legenda pridavna" id="legenda-mhd" hidden>
       <span class="nadpis">MHD</span>
-      <div class="r"><span class="ciara" style="background:#E8B44A"></span>električka</div>
-      <div class="r"><span class="ciara" style="background:#4FA3D9"></span>trolejbus</div>
-      <div class="r"><span class="ciara" style="background:#6F8095"></span>autobus</div>
+      <div class="r"><span class="ciara" style="background:#000"></span>električka</div>
+      <div class="r"><span class="ciara" style="background:#F3716D"></span>trolejbus</div>
+      <div class="r"><span class="ciara" style="background:#A5A5A1"></span>autobus</div>
     </div>
     <div class="legenda pridavna" id="legenda-tabule" hidden>
-      <div class="r"><span class="t tabula"></span>povolená stavba z úradnej tabule MČ — nie je v registri EIA</div>
+      <div class="r" title="Povolená stavba z úradnej tabule mestskej časti — v registri EIA nie je"><span class="t tabula"></span>vyhláška úradu · mimo EIA</div>
     </div>
     <div class="legenda pridavna" id="legenda-osm" hidden>
-      <div class="r"><span class="t osm"></span>stavenisko z OpenStreetMap — nie je v registri EIA</div>
+      <div class="r" title="Stavenisko zakreslené v OpenStreetMap — v registri EIA nie je"><span class="t osm"></span>stavenisko OSM · mimo EIA</div>
     </div>
     <div class="legenda pridavna" id="legenda-lin" hidden>
-      <div class="r"><span class="t prst"></span>doprava a infraštruktúra (bod = miesto konania, nie trasa)</div>
+      <div class="r" title="Bod je miesto konania, nie trasa"><span class="t prst"></span>doprava a infraštruktúra</div>
     </div>
     <div class="legenda pridavna" id="legenda-vyska" hidden>
       <span class="nadpis">POVOLENÁ VÝŠKA</span>
-      <div class="r"><span class="plocha" style="background:#2E4A3A"></span>11 m</div>
-      <div class="r"><span class="plocha" style="background:#3F6B4E"></span>16 m</div>
-      <div class="r"><span class="plocha" style="background:#7A8A3C"></span>21 m</div>
-      <div class="r"><span class="plocha" style="background:#B0742E"></span>30 m</div>
-      <div class="r"><span class="plocha" style="background:#C24A3A"></span>46 m</div>
+      <div class="r"><span class="plocha" style="background:#D9D9D6"></span>11 m</div>
+      <div class="r"><span class="plocha" style="background:#B4B4B0"></span>16 m</div>
+      <div class="r"><span class="plocha" style="background:#8A8A86"></span>21 m</div>
+      <div class="r"><span class="plocha" style="background:#F3B0AE"></span>30 m</div>
+      <div class="r"><span class="plocha" style="background:#F3716D"></span>46 m</div>
     </div>
     <div class="legenda pridavna" id="legenda-3d" hidden>
       <span class="nadpis">VÝŠKA BUDOV</span>
-      <div class="r"><span class="ciara" style="background:#23323F"></span>do 12 m</div>
-      <div class="r"><span class="ciara" style="background:#2C4051"></span>25 m</div>
-      <div class="r"><span class="ciara" style="background:#3B5670"></span>45 m</div>
-      <div class="r"><span class="ciara" style="background:#52789B"></span>70 m a viac</div>
+      <div class="r"><span class="ciara" style="background:#D9D9D6"></span>do 12 m</div>
+      <div class="r"><span class="ciara" style="background:#A5A5A1"></span>25 m</div>
+      <div class="r"><span class="ciara" style="background:#55555A"></span>45 m</div>
+      <div class="r"><span class="ciara" style="background:#F3716D"></span>70 m a viac</div>
     </div>
   </div>
 
   <div class="pop" id="pop-vrstvy">
     <div>
       <h4>MAPA</h4>
-      <label><input type="radio" name="pod" value="mapa" checked> Tmavá mapa</label>
+      <label><input type="radio" name="pod" value="mapa" checked> Mapa</label>
       <label><input type="radio" name="pod" value="orto"> Ortofoto</label>
       <label><input type="radio" name="pod" value="ziadny"> Bez podkladu</label>
     </div>
@@ -167,7 +143,7 @@
       Stlačené koliesko myši alebo <b style="color:var(--tx2)">Shift</b> + ťahanie otáča a nakláňa mapu.<br>
       3D budovy sú z modelu LOD1 2021 — 91 539 budov celej Bratislavy.
       Sťahujú sa po dlaždiciach podľa výrezu, tak si najprv priblíž mapu.<br>
-      Linky MHD sú z OpenStreetMap — električka žltá, trolejbus modrý,
+      Linky MHD sú z OpenStreetMap — električka čierna, trolejbus červený,
       autobus sivý.<br>
       Výšková regulácia je z územnej štúdie výškového zónovania (5 hladín),
       žiadosti o zmenu ÚPN z geoportálu — oboje stav k septembru 2026.<br>
@@ -242,6 +218,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260908x"></script>
+<script src="app.js?v=20260908y"></script>
 </body>
 </html>
