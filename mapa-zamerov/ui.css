@@ -238,6 +238,7 @@ body.tiaham .tahadlo-d{transition:background .15s}
 .legenda .plocha{width:14px;height:11px;border-radius:2px;flex:none;opacity:.85}
 .legenda .t.prst{background:transparent;border:2.5px solid #C08A4A}
 .legenda .t.osm{background:#0B1117;border:2.5px solid #E8B44A;width:9px;height:9px;border-radius:2px}
+.legenda .t.tabula{background:#0B1117;border:2.5px solid #12A67A;width:9px;height:9px}
 .zalozky{display:flex;gap:26px;border-bottom:1px solid var(--ln);margin-top:4px}
 .zalozky button{background:transparent;border:0;color:var(--tx3);font-size:12px;
   font-weight:600;letter-spacing:.08em;padding:0 0 10px;cursor:pointer;

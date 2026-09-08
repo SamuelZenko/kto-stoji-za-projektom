@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,600&family=Public+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260908a">
+<link rel="stylesheet" href="ui.css?v=20260908b">
 <style>
 /* pridávanie bodu priamo v mape */
 .pridavam #map{cursor:crosshair}
@@ -103,6 +103,9 @@
       <div class="r"><span class="ciara" style="background:#4FA3D9"></span>trolejbus</div>
       <div class="r"><span class="ciara" style="background:#6F8095"></span>autobus</div>
     </div>
+    <div class="legenda pridavna" id="legenda-tabule" hidden>
+      <div class="r"><span class="t tabula"></span>povolená stavba z úradnej tabule MČ — nie je v registri EIA</div>
+    </div>
     <div class="legenda pridavna" id="legenda-osm" hidden>
       <div class="r"><span class="t osm"></span>stavenisko z OpenStreetMap — nie je v registri EIA</div>
     </div>
@@ -142,6 +145,7 @@
       <h4>STAVBY</h4>
       <label><input type="checkbox" id="v-liniove"> Doprava a infraštruktúra <span id="stav-lin" style="color:var(--tx3)"></span></label>
       <label><input type="checkbox" id="v-osm" checked> Staveniská z OpenStreetMap <span id="stav-osm" style="color:var(--tx3)"></span></label>
+      <label><input type="checkbox" id="v-tabule" checked> Vyhlášky stavebných úradov <span id="stav-tabule" style="color:var(--tx3)"></span></label>
       <label><input type="checkbox" id="v-komunita" checked> Komunitné body <span id="kom-pocet" style="color:var(--tx3)"></span></label>
     </div>
     <div>
@@ -236,6 +240,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260908a"></script>
+<script src="app.js?v=20260908b"></script>
 </body>
 </html>

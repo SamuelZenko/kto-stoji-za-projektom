@@ -20,11 +20,11 @@ let filtr={q:'',mc:'',sk:'',pl:'',typ:new Set(),faza:new Set()};
 /* Doprava a technická infraštruktúra sú líniové stavby — bod pre diaľnicu
    zavádza. V dátach majú príznak `lin` a do mapy idú len na vyžiadanie. */
 let ukazLiniove=false;
-/* Mestské časti, ktoré svoje vyhlášky dávajú na centrálnu úradnú tabuľu
-   (CUET). Pri ostatných nemá zmysel tvrdiť „bez povolenia" — len tam
-   nepublikujú. Zistené prechodom všetkých 17 MČ, 7. 9. 2026. */
-const TABULA_MC=new Set(['Ružinov','Nové Mesto','Dúbravka','Staré Mesto','Rača','Vajnory',
-  'Devín','Podunajské Biskupice','Čunovo']);
+/* Mestské časti, ktorých úradné tabule sledujeme (vlastné weby od 8. 9. 2026,
+   Vajnory cez CUET). Ružinov a Jarovce zatiaľ nie — ich weby z našej siete
+   neodpovedali; pri nich nemá zmysel tvrdiť „bez povolenia". */
+const TABULA_MC=new Set(['Staré Mesto','Vrakuňa','Nové Mesto','Devín','Devínska Nová Ves','Petržalka',
+  'Podunajské Biskupice','Čunovo','Dúbravka','Záhorská Bystrica','Karlova Ves','Lamač','Rusovce','Rača','Vajnory']);
 const VYSKY={1:11,2:16,3:21,4:30,5:46};   // hladiny výškovej regulácie → metre
 
 /* Štartovací štýl je zámerne prázdny — len pozadie. Podklad z geoportálu
@@ -251,9 +251,9 @@ function riadokStavu(p){
   const mc=(p.obec||'').replace(/^Bratislava\s*[-–]\s*/,'');
   let pozn;
   if(p.faza_zdroj==='tabula') pozn='doložené vyhláškou'+(p.doklad?': '+esc(p.doklad):'');
-  else if(!TABULA_MC.has(mc)) pozn='podľa registra EIA — MČ '+esc(mc)+' na úradnú tabuľu CUET nepublikuje, '
-    +'skutočné povolenie sa odtiaľ zistiť nedá';
-  else pozn='podľa registra EIA — na úradnej tabuli sa vyhláška nenašla';
+  else if(!TABULA_MC.has(mc)) pozn='podľa registra EIA — úradná tabuľa MČ '+esc(mc)+' zatiaľ nie je napojená, '
+    +'skutočné povolenie odtiaľ nevidíme';
+  else pozn='podľa registra EIA — na úradnej tabuli MČ sa vyhláška nenašla (tabule sledujeme od 8. 9. 2026)';
   /* bodka má rovnakú farbu ako bod na mape, nech sa dá spárovať s legendou */
   return riadok('Stav', '<span class="v"><span class="farba" style="background:'
     +(FARBA[p.faza]||'#8B98A3')+'"></span>'+esc(p.faza||'')
@@ -481,6 +481,24 @@ async function nacitajKomunitu(){
     $('#kom-pocet').textContent='('+prvky.length+')';
   }catch(e){ $('#kom-pocet').textContent='(nedá sa načítať)'; }
 }
+/* karta vyhlášky z úradnej tabule MČ — úradný dokument, ale bez zámeru v EIA */
+function ukazTabulu(p){
+  $('#detail').className='detail on'; $('#detail').scrollTop=0;
+  $('#detail').innerHTML='<button class="zavri" onclick="zavriDetail()">×</button>'
+    +'<div class="stitky"><span class="stitok" style="background:#12A67A;color:#0B1117">'+esc((p.druh||'vyhláška').toUpperCase())+'</span>'
+      +'<span class="stitok b">ÚRADNÁ TABUĽA MČ</span></div>'
+    +'<h2>'+esc(p.n)+'</h2>'
+    +'<div class="miesto">◉ '+esc(p.mc||'')+(p.datum?' · '+esc(p.datum):'')+'</div>'
+    +'<div class="udaje">'
+      +riadok('Stavebník', p.stavebnik?esc(p.stavebnik)+(p.ico?' · IČO '+esc(p.ico):''):null)
+      +riadok('Parcely', p.parcely?esc(p.parcely)+(p.ku?' · k. ú. '+esc(p.ku):''):null)
+      +riadok('V registri EIA', '<span class="v chyba">nie je — stavba pod zákonným prahom</span>', true)
+    +'</div>'
+    +'<a class="odkaz" href="'+esc(p.url)+'" target="_blank" rel="noopener">Dokument z úradnej tabule →</a>'
+    +(p.detail&&p.detail!==p.url?'<a class="odkaz" href="'+esc(p.detail)+'" target="_blank" rel="noopener">Záznam na tabuli MČ →</a>':'')
+    +'<p class="pozn">Zdroj: verejná vyhláška stavebného úradu MČ '+esc(p.mc||'')+'. Poloha je ťažisko parciel '
+    +'uvedených v dokumente, overené v katastri. Register EIA túto stavbu nevidí.</p>';
+}
 /* karta staveniska z OSM — údaje od komunity OpenStreetMap, nie z úradu */
 function ukazOsm(p){
   $('#detail').className='detail on'; $('#detail').scrollTop=0;
@@ -536,15 +554,16 @@ const DATA=Promise.all([
   ber('zamery.geojson'),
   ber('ulice.geojson',null),
   ber('nazvy-obchodne.json',{}),
-  ber('osm-staveniska.geojson',null)]);
+  ber('osm-staveniska.geojson',null),
+  ber('tabule-stavby.geojson',null)]);
 
 let spustene=false;
 async function spusti(){
   if(spustene) return; spustene=true;
-  let mc,z,ul,naz,osm;
+  let mc,z,ul,naz,osm,tab;
   try{ pridajPodklad(); }
   catch(e){ console.warn('podklad sa nepridal:',e.message); }
-  try{ [KONFIG,mc,z,ul,naz,osm]=await DATA; }
+  try{ [KONFIG,mc,z,ul,naz,osm,tab]=await DATA; }
   catch(e){ $('#c-spolu').textContent='Dáta sa nenačítali'; spustene=false; return; }
   Z=z;
   /* komerčné názvy sú ručný zoznam — register ich nepozná a ochranné
@@ -658,6 +677,26 @@ async function spusti(){
     $('#legenda-osm').hidden=!$('#v-osm').checked;
   } else { $('#stav-osm').textContent='(nedá sa načítať)'; }
 
+  /* vyhlášky stavebných úradov, ktoré k žiadnemu zámeru nesedia — povolené
+     stavby pod prahom EIA, z úradných tabúľ MČ (sledované od 8. 9. 2026) */
+  if(tab && tab.features){
+    map.addSource('tab-st',{type:'geojson',data:tab});
+    map.addLayer({id:'tab-b',type:'circle',source:'tab-st',
+      paint:{'circle-color':'#0B1117','circle-opacity':.9,
+        'circle-radius':['interpolate',['linear'],['zoom'],10,3.5,14,6,18,10],
+        'circle-stroke-width':2.5,'circle-stroke-color':'#12A67A'}});
+    map.addLayer({id:'tab-txt',type:'symbol',source:'tab-st',minzoom:13,
+      layout:{'text-field':['get','n'],'text-size':11,'text-anchor':'left',
+        'text-offset':[.9,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
+        'text-optional':true},
+      paint:{'text-color':'#A7E6CF','text-halo-color':'#0B1117','text-halo-width':1.5}});
+    map.on('click','tab-b',e=>{ if(!pridavam) ukazTabulu(e.features[0].properties); });
+    map.on('mouseenter','tab-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
+    map.on('mouseleave','tab-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
+    $('#stav-tabule').textContent='('+tab.features.length+')';
+    $('#legenda-tabule').hidden=!$('#v-tabule').checked;
+  } else { $('#stav-tabule').textContent='(nedá sa načítať)'; }
+
   [...new Set(z.features.map(f=>f.properties.obec).filter(Boolean))].sort()
     .forEach(o=>$('#f-mc').insertAdjacentHTML('beforeend','<option>'+esc(o)+'</option>'));
   [...new Set(z.features.map(f=>f.properties.skupina).filter(Boolean))].sort()
@@ -730,8 +769,8 @@ function ukazNezname(obec){
 /* ---------- ovládanie ---------- */
 $('#q').addEventListener('input',()=>{filtr.q=$('#q').value.trim().toLowerCase(); obnov();
   /* hľadanie platí aj pre staveniská z OSM */
-  if(map.getLayer('osm-b')){ const f=filtr.q?['in',filtr.q,['downcase',['get','n']]]:null;
-    ['osm-b','osm-txt'].forEach(l=>map.setFilter(l,f)); }});
+  const fq=filtr.q?['in',filtr.q,['downcase',['get','n']]]:null;
+  ['osm-b','osm-txt','tab-b','tab-txt'].forEach(l=>{ if(map.getLayer(l)) map.setFilter(l,fq); });});
 $('#tl-hladaj').onclick=()=>$('#q').focus();
 $('#kategorie').addEventListener('click',e=>{
   const r=e.target.closest('.r'); if(!r) return;
@@ -907,6 +946,8 @@ map.on('moveend',dotiahniBudovy);
 prep('v-komunita','kom','kom-txt','moj','moj-txt');
 prep('v-osm','osm-b','osm-txt');
 $('#v-osm').addEventListener('change',e=>{ $('#legenda-osm').hidden=!e.target.checked; });
+prep('v-tabule','tab-b','tab-txt');
+$('#v-tabule').addEventListener('change',e=>{ $('#legenda-tabule').hidden=!e.target.checked; });
 
 /* ---------- líniové stavby (doprava, technická infraštruktúra) ---------- */
 $('#v-liniove').onchange=e=>{
@@ -931,7 +972,7 @@ function vPolygone(pt,g){
 }
 const vBode=(fc,pt)=>{ const f=fc.features.find(f=>vPolygone(pt,f.geometry)); return f?f.properties:null; };
 /* klik do plochy pod bodom má otvoriť bod, nie plochu */
-const nadBodom=e=>map.queryRenderedFeatures(e.point,{layers:['bod','zh','nez','kom','moj','osm-b'].filter(l=>map.getLayer(l))}).length>0;
+const nadBodom=e=>map.queryRenderedFeatures(e.point,{layers:['bod','zh','nez','kom','moj','osm-b','tab-b'].filter(l=>map.getLayer(l))}).length>0;
 
 /* ---------- výšková regulácia ----------
    Územná štúdia výškového zónovania — 3 829 plôch v piatich hladinách
