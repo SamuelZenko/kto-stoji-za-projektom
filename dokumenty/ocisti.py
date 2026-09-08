@@ -142,6 +142,8 @@ for f in F:
     p = f["properties"]
     if not p.get("skupina"):
         p.pop("sk_ist", None); continue
+    if not SKUPINY:                  # bez tabulky skupin (napr. v cloude) nechaj, co uz je
+        ist[p.get("sk_ist", "?")] += 1; continue
     s = podla_nazvu.get(p["skupina"])
     firma = bd(p.get("firma") or "")
     dolozene = bool(s) and (str(p.get("ico") or "") in set(s.get("kotvy", []))

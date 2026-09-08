@@ -70,7 +70,14 @@
   .strom li{margin:5px 0;line-height:1.5}
   .strom b{color:var(--tx);font-weight:600}
   .strom .kam{color:var(--tx3)}
-  @media (max-width:1100px){.tok{grid-template-columns:1fr}.tok .hl,.s{display:none}.tok .k{margin-bottom:-6px}.dva{grid-template-columns:1fr}.strom{columns:1}}
+  /* prehlad cisel — pocita sa v prehliadaci zo suborov mapy, takze sedi s poslednym behom */
+  .prehlad{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 22px}
+  .cislo{background:var(--karta);border:1px solid var(--ln);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:2px}
+  .cislo b{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+  .cislo span{font-size:13.5px;color:var(--tx)}
+  .cislo small{display:block;font-size:12px;color:var(--tx3);margin-top:3px;line-height:1.4}
+  .cislo.chyba b{color:#E8B44A}
+  @media (max-width:1100px){.prehlad{grid-template-columns:repeat(2,1fr)}.tok{grid-template-columns:1fr}.tok .hl,.s{display:none}.tok .k{margin-bottom:-6px}.dva{grid-template-columns:1fr}.strom{columns:1}}
 </style>
 </head>
 <body>
@@ -81,6 +88,18 @@
 <main>
 <h2>Odkiaľ dáta prichádzajú a kde v mape končia</h2>
 <p class="uvod">Každý údaj v mape má zdroj, skript a súbor, cez ktorý prešiel. Čítaj zľava doprava: <b>zdroj → spracovanie → čo z toho vidíš v mape</b>. Každý riadok je jeden zdroj; plná bodka je jeho vlastná vrstva alebo súbor, prázdna bodka to, čím dopĺňa kartu zámeru. Stav k 8. 9. 2026.</p>
+
+<section class="prehlad" id="prehlad" aria-live="polite">
+  <div class="cislo"><b id="p-projekty">…</b><span>projektov v mape<small id="p-projekty-pozn">z registra EIA, bez dopravy a infraštruktúry</small></span></div>
+  <div class="cislo"><b id="p-poloha">…</b><span>má presnú polohu<small id="p-poloha-pozn">parcela · ulica · stavenisko</small></span></div>
+  <div class="cislo chyba"><b id="p-bez">…</b><span>bez polohy<small>len ťažisko mestskej časti — čaká na doplnenie</small></span></div>
+  <div class="cislo"><b id="p-mimo">…</b><span>stavieb mimo registra<small id="p-mimo-pozn">staveniská z OSM + vyhlášky úradov</small></span></div>
+  <div class="cislo"><b id="p-nazvy">…</b><span>obchodných názvov<small id="p-nazvy-pozn">známky · OSM · ručne</small></span></div>
+  <div class="cislo"><b id="p-faza">…</b><span>fáz doložených vyhláškou<small>CUET a úradné tabule MČ</small></span></div>
+  <div class="cislo"><b id="p-galeria">…</b><span>s výkresmi zo spisu<small>náhľady z PDF</small></span></div>
+  <div class="cislo"><b id="p-stav">…</b><span>dátum dát<small id="p-stav-pozn">podľa posledného behu</small></span></div>
+</section>
+<p class="pozn" id="p-zdroje" style="margin:-10px 0 40px"></p>
 
 <section class="tok">
   <div class="hl">Zdroj</div><div></div><div class="hl">Spracovanie · skripty v <code>dokumenty/</code></div><div></div><div class="hl">V mape</div>
@@ -206,5 +225,42 @@
 </div>
 <p class="pozn">Skripty a poradie ich spúšťania: <code>dokumenty/README.md</code> v repe. Odhad práce a stav: <a href="../dokumenty/odhad-prve-doplnenie.html" style="color:var(--tx2)">tabuľka odhadu</a>.</p>
 </main>
+<script>
+/* Čísla sa počítajú z tých istých súborov, ktoré číta mapa — po každom
+   behu skriptov tu sedia bez toho, aby niekto prepisoval stránku. */
+(async()=>{
+  const $=id=>document.getElementById(id);
+  const cis=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+  const ber=async(s)=>{ try{ return await (await fetch('../mapa-zamerov/'+s,{cache:'no-cache'})).json(); }catch(e){ return null; } };
+  const [z,osm,tab,naz]=await Promise.all([ber('zamery.geojson'),ber('osm-staveniska.geojson'),ber('tabule-stavby.geojson'),ber('nazvy-obchodne.json')]);
+  if(!z){ $('#p-projekty').textContent='—'; return; }
+  const P=z.features.map(f=>f.properties);
+  const st=P.filter(p=>!p.lin), lin=P.length-st.length;
+  const presne=st.filter(p=>p.presnost==='presná');
+  const zdroj={parcela:0,ulica:0,osm:0,ine:0};
+  presne.forEach(p=>{ if(p.zdroj_polohy==='parcela') zdroj.parcela++; else if(p.zdroj_polohy==='osm') zdroj.osm++; else if(p.ulica||p.zdroj_polohy) zdroj.ulica++; else zdroj.ine++; });
+  const nOsm=osm?osm.features.length:0, nTab=tab?tab.features.length:0;
+  const nz={znamka:0,osm:0,rucne:0};
+  if(naz) Object.entries(naz).forEach(([k,v])=>{ if(k.startsWith('_')) return; if(typeof v==='string') nz.rucne++; else if(/OpenStreetMap/i.test(v.zdroj||'')) nz.osm++; else nz.znamka++; });
+  const faza=st.filter(p=>p.faza_zdroj==='tabula').length;
+  const gal=st.filter(p=>p.nahlady&&p.nahlady.length).length;
+  const datum=P.map(p=>p.zmena||'').filter(Boolean).sort().pop()||'';
+  $('#p-projekty').textContent=cis(st.length);
+  $('#p-projekty-pozn').textContent='z registra EIA · + '+cis(lin)+' dopravných a infraštruktúrnych vo vlastnej vrstve';
+  $('#p-poloha').textContent=cis(presne.length)+' ('+Math.round(100*presne.length/st.length)+' %)';
+  $('#p-poloha-pozn').textContent='parcela '+cis(zdroj.parcela)+' · stred ulice '+cis(zdroj.ulica+zdroj.ine)+' · stavenisko OSM '+cis(zdroj.osm);
+  $('#p-bez').textContent=cis(st.length-presne.length);
+  $('#p-mimo').textContent=cis(nOsm+nTab);
+  $('#p-mimo-pozn').textContent='staveniská z OSM '+cis(nOsm)+' · vyhlášky úradov '+cis(nTab);
+  $('#p-nazvy').textContent=cis(nz.znamka+nz.osm+nz.rucne);
+  $('#p-nazvy-pozn').textContent='ochranné známky '+nz.znamka+' · OSM '+nz.osm+' · ručne '+nz.rucne;
+  $('#p-faza').textContent=cis(faza);
+  $('#p-galeria').textContent=cis(gal);
+  $('#p-stav').textContent=datum?datum.split('-').reverse().join('. '):'—';
+  $('#p-stav-pozn').textContent='posledná zmena zámeru v registri';
+  const obce={}; st.forEach(p=>{ const o=(p.obec||'').replace('Bratislava - ',''); obce[o]=(obce[o]||0)+1; });
+  $('#p-zdroje').textContent='Podľa mestských častí: '+Object.entries(obce).sort((a,b)=>b[1]-a[1]).map(([o,n])=>o+' '+n).join(' · ');
+})();
+</script>
 </body>
 </html>

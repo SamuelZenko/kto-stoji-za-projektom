@@ -1,0 +1,72 @@
+# Týždenný beh mapy: úradné tabule, staveniská z OSM, prepočet tabuliek.
+# Archív vyhlášok (tabule_zaznamy.json) žije v súkromnom repe — názvy
+# dokumentov občas nesú mená osôb, do verejného repa nepatria.
+name: tyzdenny-beh
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"        # pondelok 04:00 UTC (06:00 v Bratislave)
+  workflow_dispatch:
+    inputs:
+      osm:
+        description: "Spustiť aj staveniská z OSM (inak len v prvom týždni mesiaca)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tyzdenny
+  cancel-in-progress: false
+
+jobs:
+  beh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Verejné repo
+        uses: actions/checkout@v4
+
+      - name: Súkromný archív vyhlášok
+        uses: actions/checkout@v4
+        with:
+          repository: SamuelZenko/kto-stoji-za-projektom-archiv
+          ssh-key: ${{ secrets.ARCHIV_KEY }}
+          path: archiv
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Knižnice
+        run: pip install --quiet pymupdf shapely
+
+      - name: Archív dovnútra
+        run: |
+          mkdir -p archiv
+          [ -f archiv/tabule_zaznamy.json ] && cp archiv/tabule_zaznamy.json dokumenty/ || echo "archív je zatiaľ prázdny"
+
+      - name: Beh
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          python dokumenty/beh_tyzdenny.py ${{ inputs.osm && '--osm' || '' }}
+
+      - name: Archív von (súkromné repo)
+        run: |
+          cp dokumenty/tabule_zaznamy.json archiv/
+          cd archiv
+          git config user.name "tyzdenny-beh"
+          git config user.email "noreply@github.com"
+          git add tabule_zaznamy.json
+          git diff --cached --quiet || git commit -m "archív vyhlášok $(date -u +%F)"
+          git push
+
+      - name: Zmeny do mapy (verejné repo)
+        run: |
+          git config user.name "tyzdenny-beh"
+          git config user.email "noreply@github.com"
+          git add mapa-zamerov/*.geojson mapa-zamerov/*.json mapa-zamerov/index.html doplnit-polohu/zamery.csv dokumenty/beh_log.md
+          git diff --cached --quiet && echo "bez zmien" || (git commit -m "Týždenný beh $(date -u +%F): tabule, OSM, tabuľky" && git push)
