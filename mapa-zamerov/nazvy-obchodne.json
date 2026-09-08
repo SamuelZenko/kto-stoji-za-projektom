@@ -196,5 +196,110 @@
   "nazov": "NIVI",
   "istota": "istá",
   "zdroj": "ochranná známka ÚPV č. 2145-2020, majiteľ NIVI s.r.o."
+ },
+ "eset-campus": {
+  "nazov": "ESET Campus",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/7703724"
+ },
+ "revitalizacia-transformacia-casti-brownfieldu-palma": {
+  "nazov": "Palma",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/19784123"
+ },
+ "polyfunkcne-objekty-domino-jasovskeho-ul-bratislava-petrzalka": {
+  "nazov": "CityPark Petržalka",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/253095750, 1 m od bodu"
+ },
+ "administrativna-budova-triangel": {
+  "nazov": "Ganz House",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/256421157, 18 m od bodu"
+ },
+ "kampus-zdravia-sportu-bratislava-petrzalka": {
+  "nazov": "Kampus zdravia a športu",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/264010645"
+ },
+ "polyfunkcny-objekt-jegeho-ul-": {
+  "nazov": "KVARTER",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/352147935, 0 m od bodu"
+ },
+ "polyfunkcna-stavba-chalupkova-residence": {
+  "nazov": "Chalupkova",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/451966544"
+ },
+ "polyfunkcna-stavba-chalupkova": {
+  "nazov": "Chalupkova",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/451966544"
+ },
+ "polyfunkcny-objekt-chalupkova-bratislava": {
+  "nazov": "Chalupkova",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/451966544"
+ },
+ "polyfunkcna-stavba-nova-bottova-1": {
+  "nazov": "Twin City",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/529196237, 22 m od bodu"
+ },
+ "polyfunkcny-komplex-portum-bratislava": {
+  "nazov": "Portum Towers",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/967361563, 10 m od bodu"
+ },
+ "obytny-subor-fazulova-1": {
+  "nazov": "Obytný súbor Fazuľová",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/1157788895"
+ },
+ "obytny-subor-nove-slovany-racianska-ulica-bratislava": {
+  "nazov": "Bytový dom Predmestie",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/1180065597, 27 m od bodu"
+ },
+ "goldbeck-viacpodlazna-administrativna-vystavba-aparkovaci-dom": {
+  "nazov": "Goldbeck",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/1189083662"
+ },
+ "podzemny-parkovaci-dom-mestsky-park-kollarovo-namestie-bratislava": {
+  "nazov": "Parkovací dom a mestský park",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/1344904307"
+ },
+ "rekonstrukcia-dostavba-polyfunkcneho-objektu-na-bottovej-ulici-bratisl": {
+  "nazov": "Sky Park Square",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/1471465588, 28 m od bodu"
+ },
+ "polyfunkcny-komplex-ehq": {
+  "nazov": "Éclaire",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/1471467093, 15 m od bodu"
+ },
+ "prima-park-bytovy-dom-jasikova-ulica-bratislava-2-etapa-2016": {
+  "nazov": "Jašik Ružinov",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/1484085389, 26 m od bodu"
+ },
+ "polyfunkcny-dom-na-luke": {
+  "nazov": "Na Lúke",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/1505021520, 8 m od bodu"
+ },
+ "administrativna-budova-twin-city-": {
+  "nazov": "Chalupkova Offices",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko way/1529273053, 21 m od bodu"
+ },
+ "-obytny-subor-dolny-slanec-": {
+  "nazov": "Dolný Slanec",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko relation/20239642"
  }
 }

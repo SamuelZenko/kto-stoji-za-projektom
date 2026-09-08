@@ -267,6 +267,9 @@ function riadokPolohy(p){
   if(p.zdroj_polohy==='parcela' && parc.length)
     return riadok('Poloha', '<span class="v">parcely '+esc(parc.join(', '))+(p.ku?' · k. ú. '+esc(p.ku):'')
       +'<span class="pozn-stav">ťažisko pozemkov uvedených v zámere, overené v katastri</span></span>', true);
+  if(p.zdroj_polohy==='osm')
+    return riadok('Poloha', '<span class="v">stavenisko<span class="pozn-stav">podľa rovnomenného staveniska '
+      +'v OpenStreetMap ('+esc(p.osm||'')+') — komunitný údaj</span></span>', true);
   return riadok('Poloha', '<span class="v">'+esc(p.ulica||'presná')
     +'<span class="pozn-stav">'+(p.ulica?'stred ulice podľa adresných bodov — nie konkrétny pozemok':'z prvého zberu, bez uvedenej ulice')+'</span></span>', true);
 }
@@ -478,6 +481,25 @@ async function nacitajKomunitu(){
     $('#kom-pocet').textContent='('+prvky.length+')';
   }catch(e){ $('#kom-pocet').textContent='(nedá sa načítať)'; }
 }
+/* karta staveniska z OSM — údaje od komunity OpenStreetMap, nie z úradu */
+function ukazOsm(p){
+  $('#detail').className='detail on'; $('#detail').scrollTop=0;
+  $('#detail').innerHTML='<button class="zavri" onclick="zavriDetail()">×</button>'
+    +'<div class="stitky"><span class="stitok" style="background:#E8B44A;color:#0B1117">STAVENISKO</span>'
+      +(p.druh?'<span class="stitok b">'+esc(p.druh.toUpperCase())+'</span>':'')+'</div>'
+    +'<h2>'+esc(p.n)+'</h2>'
+    +'<div class="miesto">◉ '+esc(p.mc||'')+'</div>'
+    +'<div class="udaje">'
+      +riadok('Investor', p.dev?esc(p.dev):null)
+      +riadok('Začiatok stavby', p.od?esc(p.od):null)
+      +riadok('V registri EIA', '<span class="v chyba">nie je — stavba pod zákonným prahom, alebo iné konanie</span>', true)
+    +'</div>'
+    +(p.web?'<a class="odkaz" href="'+esc(p.web)+'" target="_blank" rel="noopener">Web projektu →</a>':'')
+    +'<a class="odkaz" href="https://www.openstreetmap.org/'+esc(p.osm)+'" target="_blank" rel="noopener">Stavenisko v OpenStreetMap →</a>'
+    +'<p class="pozn">Zdroj: OpenStreetMap (ODbL) — rozostavaný projekt zakreslený a pomenovaný '
+    +'komunitou mapperov, nie úradný údaj. Register EIA ho nevidí; kto stavia, sa dá dohľadať cez '
+    +'<a href="../" style="color:var(--ac2)">Kto stojí za projektom</a>.</p>';
+}
 function ukazKomunitu(p){
   $('#detail').className='detail on'; $('#detail').scrollTop=0;
   $('#detail').innerHTML='<button class="zavri" onclick="zavriDetail()">×</button>'
@@ -513,15 +535,16 @@ const DATA=Promise.all([
   ber('mestske-casti.geojson'),
   ber('zamery.geojson'),
   ber('ulice.geojson',null),
-  ber('nazvy-obchodne.json',{})]);
+  ber('nazvy-obchodne.json',{}),
+  ber('osm-staveniska.geojson',null)]);
 
 let spustene=false;
 async function spusti(){
   if(spustene) return; spustene=true;
-  let mc,z,ul,naz;
+  let mc,z,ul,naz,osm;
   try{ pridajPodklad(); }
   catch(e){ console.warn('podklad sa nepridal:',e.message); }
-  try{ [KONFIG,mc,z,ul,naz]=await DATA; }
+  try{ [KONFIG,mc,z,ul,naz,osm]=await DATA; }
   catch(e){ $('#c-spolu').textContent='Dáta sa nenačítali'; spustene=false; return; }
   Z=z;
   /* komerčné názvy sú ručný zoznam — register ich nepozná a ochranné
@@ -613,6 +636,28 @@ async function spusti(){
     paint:{'circle-color':'#D6165A','circle-radius':11,'circle-stroke-width':3,
       'circle-stroke-color':'#fff'}});
 
+  /* staveniská z OpenStreetMap, ktoré k žiadnemu zámeru nesedia — stavby
+     pod prahom EIA. Iný symbol (tmavý stred, žltý prstenec), aby sa
+     nemiešali s registrom. */
+  if(osm && osm.features){
+    /* zdroj sa nesmie volať 'osm' — tak sa volá podkladová vektorová mapa */
+    map.addSource('osm-st',{type:'geojson',data:osm});
+    map.addLayer({id:'osm-b',type:'circle',source:'osm-st',
+      paint:{'circle-color':'#0B1117','circle-opacity':.9,
+        'circle-radius':['interpolate',['linear'],['zoom'],10,3.5,14,6,18,10],
+        'circle-stroke-width':2.5,'circle-stroke-color':'#E8B44A'}});
+    map.addLayer({id:'osm-txt',type:'symbol',source:'osm-st',minzoom:13,
+      layout:{'text-field':['get','n'],'text-size':11,'text-anchor':'left',
+        'text-offset':[.9,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
+        'text-optional':true},
+      paint:{'text-color':'#F0D9A0','text-halo-color':'#0B1117','text-halo-width':1.5}});
+    map.on('click','osm-b',e=>{ if(!pridavam) ukazOsm(e.features[0].properties); });
+    map.on('mouseenter','osm-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
+    map.on('mouseleave','osm-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
+    $('#stav-osm').textContent='('+osm.features.length+')';
+    $('#legenda-osm').hidden=!$('#v-osm').checked;
+  } else { $('#stav-osm').textContent='(nedá sa načítať)'; }
+
   [...new Set(z.features.map(f=>f.properties.obec).filter(Boolean))].sort()
     .forEach(o=>$('#f-mc').insertAdjacentHTML('beforeend','<option>'+esc(o)+'</option>'));
   [...new Set(z.features.map(f=>f.properties.skupina).filter(Boolean))].sort()
@@ -683,7 +728,10 @@ function ukazNezname(obec){
 }
 
 /* ---------- ovládanie ---------- */
-$('#q').addEventListener('input',()=>{filtr.q=$('#q').value.trim().toLowerCase(); obnov();});
+$('#q').addEventListener('input',()=>{filtr.q=$('#q').value.trim().toLowerCase(); obnov();
+  /* hľadanie platí aj pre staveniská z OSM */
+  if(map.getLayer('osm-b')){ const f=filtr.q?['in',filtr.q,['downcase',['get','n']]]:null;
+    ['osm-b','osm-txt'].forEach(l=>map.setFilter(l,f)); }});
 $('#tl-hladaj').onclick=()=>$('#q').focus();
 $('#kategorie').addEventListener('click',e=>{
   const r=e.target.closest('.r'); if(!r) return;
@@ -857,6 +905,8 @@ function ukazPocet(){
 }
 map.on('moveend',dotiahniBudovy);
 prep('v-komunita','kom','kom-txt','moj','moj-txt');
+prep('v-osm','osm-b','osm-txt');
+$('#v-osm').addEventListener('change',e=>{ $('#legenda-osm').hidden=!e.target.checked; });
 
 /* ---------- líniové stavby (doprava, technická infraštruktúra) ---------- */
 $('#v-liniove').onchange=e=>{
@@ -881,7 +931,7 @@ function vPolygone(pt,g){
 }
 const vBode=(fc,pt)=>{ const f=fc.features.find(f=>vPolygone(pt,f.geometry)); return f?f.properties:null; };
 /* klik do plochy pod bodom má otvoriť bod, nie plochu */
-const nadBodom=e=>map.queryRenderedFeatures(e.point,{layers:['bod','zh','nez','kom','moj'].filter(l=>map.getLayer(l))}).length>0;
+const nadBodom=e=>map.queryRenderedFeatures(e.point,{layers:['bod','zh','nez','kom','moj','osm-b'].filter(l=>map.getLayer(l))}).length>0;
 
 /* ---------- výšková regulácia ----------
    Územná štúdia výškového zónovania — 3 829 plôch v piatich hladinách

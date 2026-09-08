@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,600&family=Public+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260907e">
+<link rel="stylesheet" href="ui.css?v=20260908a">
 <style>
 /* pridávanie bodu priamo v mape */
 .pridavam #map{cursor:crosshair}
@@ -103,6 +103,9 @@
       <div class="r"><span class="ciara" style="background:#4FA3D9"></span>trolejbus</div>
       <div class="r"><span class="ciara" style="background:#6F8095"></span>autobus</div>
     </div>
+    <div class="legenda pridavna" id="legenda-osm" hidden>
+      <div class="r"><span class="t osm"></span>stavenisko z OpenStreetMap — nie je v registri EIA</div>
+    </div>
     <div class="legenda pridavna" id="legenda-lin" hidden>
       <div class="r"><span class="t prst"></span>doprava a infraštruktúra (bod = miesto konania, nie trasa)</div>
     </div>
@@ -138,6 +141,7 @@
     <div>
       <h4>STAVBY</h4>
       <label><input type="checkbox" id="v-liniove"> Doprava a infraštruktúra <span id="stav-lin" style="color:var(--tx3)"></span></label>
+      <label><input type="checkbox" id="v-osm" checked> Staveniská z OpenStreetMap <span id="stav-osm" style="color:var(--tx3)"></span></label>
       <label><input type="checkbox" id="v-komunita" checked> Komunitné body <span id="kom-pocet" style="color:var(--tx3)"></span></label>
     </div>
     <div>
@@ -163,7 +167,9 @@
       Linky MHD sú z OpenStreetMap — električka žltá, trolejbus modrý,
       autobus sivý.<br>
       Výšková regulácia je z územnej štúdie výškového zónovania (5 hladín),
-      žiadosti o zmenu ÚPN z geoportálu — oboje stav k septembru 2026.
+      žiadosti o zmenu ÚPN z geoportálu — oboje stav k septembru 2026.<br>
+      Staveniská z OpenStreetMap sú rozostavané projekty, ktoré register EIA
+      nevidí (stavby pod zákonným prahom) — zakreslila ich komunita mapperov.
     </p>
   </div>
 
@@ -230,6 +236,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260907e"></script>
+<script src="app.js?v=20260908a"></script>
 </body>
 </html>
