@@ -121,9 +121,11 @@
   /* ── prezentačná forma podľa plagátov TU—BA: otázka sama na strane (mikro-štítky
      na linke hore, veľký nadpis regular, odpoveď dole na linke) → ďalšia strana
      s obsahom. Každý celok = dvojica strán, číslované 01–07. ── */
-  html{scroll-snap-type:y proximity}
-  main.tb-strana{max-width:none;padding:0 var(--okraj) var(--okraj)}
-  .strana{min-height:calc(100vh - 76px);display:flex;flex-direction:column;scroll-snap-align:start;scroll-margin-top:76px;padding-bottom:calc(var(--okraj)*1.2)}
+  /* deck: každý pohyb = presne jedna strana; dlhší obsah sa skroluje vo vnútri strany */
+  html{scroll-snap-type:y mandatory;scroll-padding-top:76px}
+  main.tb-strana{max-width:none;padding:0 var(--okraj)}
+  .strana{height:calc(100vh - 76px);display:flex;flex-direction:column;scroll-snap-align:start;scroll-snap-stop:always;padding-bottom:calc(var(--okraj)*1.2);overflow:hidden}
+  .strana.obsah{overflow-y:auto;overscroll-behavior:contain}
   .strana .okraj{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;height:44px;padding-bottom:6px;border-bottom:1px solid var(--ciara);flex:none}
   .strana .okraj .tb-stitok{color:var(--tx)}
   .strana .okraj .tb-stitok.tlm{color:var(--tx3)}
@@ -131,7 +133,6 @@
   .otazka .odpoved{margin:auto 0 0;padding-top:14px;border-top:1px solid var(--ciara);font-size:clamp(19px,1.7vw,26px);line-height:1.25;font-weight:400;color:var(--tx);max-width:30em}
   .otazka .odpoved b{font-weight:500}
   .otazka .odpoved code{font-size:.8em}
-  .obsah{min-height:0}
   .obsah>.okraj+*{margin-top:var(--okraj)}
   .obsah .stav{margin-top:var(--okraj)}
   .pata-strana{display:flex;justify-content:space-between;gap:16px;padding-top:8px;border-top:1px solid var(--ciara);margin-top:calc(var(--okraj)*2)}
@@ -414,9 +415,9 @@
     <p class="pozn">Tip: pošli všetkých 17 v jeden deň a do tabuľky si zapíš dátum — lehota beží od doručenia. Údaje o fyzických osobách nežiadame, preto sa úrad nemôže vyhovoriť na ochranu osobných údajov.</p>
   </div>
 </div>
-</section>
 <p class="pozn" style="margin-top:calc(var(--okraj)*1.5)">Skripty a poradie ich spúšťania: <code>dokumenty/README.md</code> v repe. Odhad práce a stav: <a href="../dokumenty/odhad-prve-doplnenie.html" style="color:var(--tx2)">tabuľka odhadu</a>.</p>
 <div class="pata-strana"><span class="tb-stitok">Metropolitný inštitút Bratislavy</span><span class="tb-stitok tlm">Zámery Bratislavy · Tok dát</span></div>
+</section>
 </main>
 <script>
 /* Čísla sa počítajú z tých istých súborov, ktoré číta mapa — po každom
@@ -557,6 +558,39 @@ ${mail||'[e-mail]'}`;
   $('g-kopiruj').onclick=()=>kopiruj($('g-text').value,'Skopírované.');
   $('g-vsetky').onclick=()=>kopiruj(MC.map(m=>'='.repeat(70)+'\nKOMU: '+(m[1]||'[doplniť — '+m[2]+']')+'\n'+'='.repeat(70)+'\n'+sablona(m[0],$('g-meno').value.trim(),$('g-mail').value.trim(),$('g-od').value.trim())).join('\n\n'),'Skopírovaných 17 žiadostí.');
   obnov();
+})();
+</script>
+<script>
+/* Deck: koliesko, šípky, PageUp/Down, medzerník, Home/End posúvajú vždy presne
+   o jednu stranu. Strana s dlhším obsahom sa najprv doskroluje vo vnútri
+   (overflow:auto), až potom sa ide ďalej. Dotyk rieši scroll-snap mandatory. */
+(()=>{
+  const S=[...document.querySelectorAll('main > .strana')]; if(!S.length) return;
+  const H=76; let zamok=false, ostatny=0;
+  const aktual=()=>{ let b=0,bd=1e9; S.forEach((s,k)=>{ const d=Math.abs(s.getBoundingClientRect().top-H); if(d<bd){ bd=d; b=k; } }); return b; };
+  const chod=n=>{ n=Math.max(0,Math.min(S.length-1,n)); zamok=true;
+    scrollTo({top:S[n].getBoundingClientRect().top+scrollY-H,behavior:'smooth'}); setTimeout(()=>zamok=false,750); };
+  addEventListener('wheel',e=>{
+    if(e.ctrlKey) return;
+    const s=S[aktual()], dole=e.deltaY>0;
+    const vnutri=s.scrollHeight>s.clientHeight+2 && (dole ? s.scrollTop+s.clientHeight<s.scrollHeight-2 : s.scrollTop>2);
+    if(vnutri) return;                      /* ešte je čo skrolovať vo vnútri strany */
+    e.preventDefault();
+    /* zotrvačnosť trackpadu posiela prúd udalostí — nové gesto je až po pauze */
+    const t=performance.now(), nove=t-ostatny>400; ostatny=t;
+    if(!nove||zamok||Math.abs(e.deltaY)<6) return;
+    chod(aktual()+(dole?1:-1));
+  },{passive:false});
+  addEventListener('keydown',e=>{
+    if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
+    const k=aktual();
+    if(['ArrowDown','PageDown',' '].includes(e.key)){ e.preventDefault(); chod(k+1); }
+    else if(['ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); chod(k-1); }
+    else if(e.key==='Home'){ e.preventDefault(); chod(0); }
+    else if(e.key==='End'){ e.preventDefault(); chod(S.length-1); }
+  });
+  /* kotva v adrese (#nastroj, #urady) — dorovnať na stranu */
+  if(location.hash){ const c=document.querySelector(location.hash); const k=S.indexOf(c); if(k>=0) setTimeout(()=>chod(k),50); }
 })();
 </script>
 <script src="../spolocne/tuba.js" defer></script>
