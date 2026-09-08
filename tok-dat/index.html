@@ -247,7 +247,7 @@
 /* Čísla sa počítajú z tých istých súborov, ktoré číta mapa — po každom
    behu skriptov tu sedia bez toho, aby niekto prepisoval stránku. */
 (async()=>{
-  const $=id=>document.getElementById(id);
+  const $=id=>document.getElementById(id.replace(/^#/,''));
   const cis=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
   const ber=async(s)=>{ try{ return await (await fetch('../mapa-zamerov/'+s,{cache:'no-cache'})).json(); }catch(e){ return null; } };
   /* stavový riadok: stav.json píše týždenný beh; výsledok posledného behu
@@ -260,8 +260,9 @@
       if(r.ok){ const j=await r.json(); run=(j.workflow_runs||[])[0]||null; } }catch(e){}
     if(!stav){ $('#s-text').textContent='Stav behu nie je k dispozícii'; return; }
     const beh=new Date(stav.beh), teraz=new Date(), dni=(teraz-beh)/864e5, lim=stav.interval_dni||7;
-    const pred=dni<1?(Math.round(dni*24)+' h'):(Math.round(dni)+' d');
-    const dalsi=new Date(beh.getTime()+lim*864e5);
+    const h=Math.round(dni*24), pred=h<1?'chvíľou':dni<1?(h+' h'):(Math.round(dni)+' d');
+    // ďalší plánovaný beh: pondelok 06:00 (cron v tyzdenny.yml), nie beh+7 dní
+    const dalsi=new Date(teraz); dalsi.setHours(6,0,0,0); dalsi.setDate(dalsi.getDate()+((8-dalsi.getDay())%7||7));
     let tr='ok', txt='✓ Aktuálne', pozn='posledný beh '+beh.toLocaleString('sk-SK',{day:'numeric',month:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})+' (pred '+pred+')';
     if(run && run.status==='completed' && run.conclusion!=='success'){ tr='chyba'; txt='✗ Posledný beh zlyhal'; pozn+=' — pozri Actions na GitHube'; }
     else if(run && run.status!=='completed'){ tr='pozor'; txt='● Beh práve prebieha'; }
