@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Tok dát — Zámery Bratislavy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{--bg:#0B1117;--karta:#131C24;--ln:#22303B;--ln2:#33434F;--tx:#E6ECF1;--tx2:#A7B4BF;--tx3:#6E7C88;
+    --eia:#3B82D9;--urad:#12A67A;--geo:#C08A4A;--osm:#E8B44A;--upv:#8B6FD4;--kom:#D6165A;--model:#52789B}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 "Public Sans",system-ui,sans-serif}
+  .lista{display:flex;align-items:center;gap:18px;padding:12px 24px;border-bottom:1px solid var(--ln)}
+  .lista h1{font-size:16px;margin:0;font-weight:600}
+  .lista nav{margin-left:auto;display:flex;gap:18px}
+  .lista a{color:var(--tx2);text-decoration:none;font-size:13px}
+  .lista a:hover{color:var(--tx)}
+  main{max-width:1180px;margin:0 auto;padding:28px 24px 60px}
+  h2{font-size:20px;margin:0 0 6px}
+  .uvod{color:var(--tx2);max-width:760px;margin:0 0 26px}
+  .schema{background:var(--karta);border:1px solid var(--ln);border-radius:10px;padding:18px;overflow-x:auto}
+  svg{display:block;width:100%;min-width:900px;height:auto}
+  svg text{font-family:"Public Sans",system-ui,sans-serif;fill:var(--tx)}
+  .hl{font-size:11px;letter-spacing:.1em;fill:var(--tx3)!important;font-weight:600}
+  .box{fill:#0F171E;stroke-width:1.4}
+  .box.zdroj{stroke-width:2}
+  .tn{font-size:12.5px;font-weight:600}
+  .tp{font-size:11px;fill:var(--tx2)!important}
+  .tk{font-size:10.5px;fill:var(--tx3)!important;font-family:ui-monospace,Consolas,monospace}
+  .l{fill:none;stroke-width:1.6;opacity:.75}
+  .legenda{display:flex;flex-wrap:wrap;gap:16px;margin:14px 0 0;font-size:12.5px;color:var(--tx2)}
+  .legenda span{display:inline-flex;align-items:center;gap:7px}
+  .legenda i{width:12px;height:12px;border-radius:3px;display:inline-block}
+  h3{font-size:12px;letter-spacing:.1em;color:var(--tx3);margin:34px 0 10px;font-weight:600}
+  table{border-collapse:collapse;width:100%;font-size:13px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--ln);vertical-align:top}
+  th{color:var(--tx3);font-size:11px;letter-spacing:.08em;font-weight:600}
+  td code{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--tx2);background:#0F171E;padding:1px 5px;border-radius:4px}
+  .z{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:0}
+  .pozn{color:var(--tx3);font-size:12.5px;margin-top:6px}
+  .strom{columns:2;column-gap:36px;font-size:13px}
+  .strom details{break-inside:avoid;margin:0 0 10px;border:1px solid var(--ln);border-radius:8px;padding:8px 12px;background:var(--karta)}
+  .strom summary{cursor:pointer;font-weight:600}
+  .strom ul{margin:6px 0 4px;padding-left:18px;color:var(--tx2)}
+  .strom li{margin:3px 0}
+  .strom b{color:var(--tx);font-weight:600}
+  .strom .kam{color:var(--tx3)}
+  @media (max-width:800px){.strom{columns:1}}
+</style>
+</head>
+<body>
+<div class="lista">
+  <h1>Zámery Bratislavy · tok dát</h1>
+  <nav><a href="../mapa-zamerov/">Mapa</a><a href="../">O projekte</a><a href="../doplnit-polohu/">Doplniť polohy</a><a href="../komunita/">Dáta</a></nav>
+</div>
+<main>
+<h2>Odkiaľ dáta prichádzajú a kde v mape končia</h2>
+<p class="uvod">Každý údaj v mape má zdroj, skript a súbor, cez ktorý prešiel. Čítaj zľava doprava: <b>zdroj</b> → <b>spracovanie</b> → <b>súbor v repe</b> → <b>čo z toho vidíš v mape</b>. Farba čiary = pôvod údaja. Stav k 8. 9. 2026.</p>
+
+<div class="schema">
+<svg viewBox="0 0 1140 720" role="img" aria-label="Schéma toku dát">
+  <defs>
+    <marker id="s" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4 0 8z" fill="#6E7C88"/></marker>
+  </defs>
+  <text x="20" y="22" class="hl">ZDROJE</text>
+  <text x="430" y="22" class="hl">SPRACOVANIE (skripty v dokumenty/)</text>
+  <text x="860" y="22" class="hl">V MAPE</text>
+
+  <!-- zdroje -->
+  <g>
+    <rect x="20" y="40" width="330" height="58" rx="8" class="box zdroj" stroke="#3B82D9"/>
+    <text x="34" y="62" class="tn">Enviroportál — register EIA</text>
+    <text x="34" y="80" class="tp">MŽP SR · 18 673 zámerov, 2 303 v kraji · JSON API</text>
+    <rect x="20" y="108" width="330" height="58" rx="8" class="box zdroj" stroke="#12A67A"/>
+    <text x="34" y="130" class="tn">Úradné tabule stavebných úradov</text>
+    <text x="34" y="148" class="tp">16 zo 17 MČ (weby, RSS) + CUET · Ružinov chýba</text>
+    <rect x="20" y="176" width="330" height="58" rx="8" class="box zdroj" stroke="#8B6FD4"/>
+    <text x="34" y="198" class="tn">RPO · ÚPV WebRegistre</text>
+    <text x="34" y="216" class="tp">Štatistický úrad (firmy, sídla) · ochranné známky podľa majiteľa</text>
+    <rect x="20" y="244" width="330" height="90" rx="8" class="box zdroj" stroke="#C08A4A"/>
+    <text x="34" y="266" class="tn">Mestský geoportál</text>
+    <text x="34" y="284" class="tp">adresné body (celé SR!) · kataster C a E · hranice MČ</text>
+    <text x="34" y="300" class="tp">výšková regulácia · žiadosti o zmenu ÚPN</text>
+    <text x="34" y="316" class="tp">podklad OSM (vektor) · ortofoto — naživo, bez skriptu</text>
+    <rect x="20" y="344" width="330" height="58" rx="8" class="box zdroj" stroke="#52789B"/>
+    <text x="34" y="366" class="tn">3D model LOD1 2021</text>
+    <text x="34" y="384" class="tp">interný ArcGIS Pro · 91 539 budov · von ide len pôdorys + výška</text>
+    <rect x="20" y="412" width="330" height="58" rx="8" class="box zdroj" stroke="#E8B44A"/>
+    <text x="34" y="434" class="tn">OpenStreetMap (Overpass)</text>
+    <text x="34" y="452" class="tp">trasy MHD · pomenované staveniská · komunitný zdroj (ODbL)</text>
+    <rect x="20" y="480" width="330" height="58" rx="8" class="box zdroj" stroke="#D6165A"/>
+    <text x="34" y="502" class="tn">Ľudia</text>
+    <text x="34" y="520" class="tp">formulár / hárok (pripravené) · ručné zápisy · dopĺňanie polôh</text>
+  </g>
+
+  <!-- spracovanie -->
+  <g>
+    <rect x="430" y="40" width="300" height="74" rx="8" class="box" stroke="#3B82D9"/>
+    <text x="444" y="60" class="tn">zber + čistenie</text>
+    <text x="444" y="77" class="tk">zamery.py · obohat_mapu · typy · ocisti</text>
+    <text x="444" y="94" class="tk">nahlady3 (náhľady z PDF, otočené) · parcely_*</text>
+    <rect x="430" y="124" width="300" height="58" rx="8" class="box" stroke="#12A67A"/>
+    <text x="444" y="144" class="tn">sledovač tabúľ</text>
+    <text x="444" y="161" class="tk">tabule_sledovac → tabule_zaznamy.json (archív, lokálne)</text>
+    <rect x="430" y="192" width="300" height="58" rx="8" class="box" stroke="#8B6FD4"/>
+    <text x="444" y="212" class="tn">skupiny a obchodné názvy</text>
+    <text x="444" y="229" class="tk">skupiny.py · znamky_upv → znamky_priradenie</text>
+    <rect x="430" y="260" width="300" height="74" rx="8" class="box" stroke="#C08A4A"/>
+    <text x="444" y="280" class="tn">poloha a vrstvy z geoportálu</text>
+    <text x="444" y="297" class="tk">oprav_polohy (ulica v MČ) · parcely_zapis (parcela)</text>
+    <text x="444" y="314" class="tk">vyska.geojson · upn-ziadosti.geojson · mestske-casti</text>
+    <rect x="430" y="344" width="300" height="58" rx="8" class="box" stroke="#52789B"/>
+    <text x="444" y="364" class="tn">export z ArcGIS Pro</text>
+    <text x="444" y="381" class="tk">lod1_export (S-JTSK → WGS) · lod1_dlazdice → budovy/</text>
+    <rect x="430" y="412" width="300" height="58" rx="8" class="box" stroke="#E8B44A"/>
+    <text x="444" y="432" class="tn">OSM</text>
+    <text x="444" y="449" class="tk">mhd_osm + mhd_zmensi · osm_staveniska</text>
+    <rect x="430" y="480" width="300" height="58" rx="8" class="box" stroke="#D6165A"/>
+    <text x="444" y="500" class="tn">komunita</text>
+    <text x="444" y="517" class="tk">komunita.json (hárok CSV) · nazvy-obchodne.json · zamery.csv</text>
+  </g>
+
+  <!-- vystupy -->
+  <g>
+    <rect x="810" y="40" width="310" height="128" rx="8" class="box" stroke="#3B82D9"/>
+    <text x="824" y="60" class="tn">zamery.geojson — 988 projektov</text>
+    <text x="824" y="78" class="tp">body zámerov + karta: názov, firma, IČO, úrad, stav,</text>
+    <text x="824" y="94" class="tp">fáza + zdroj, poloha + zdroj, skupina (indícia), obchodný</text>
+    <text x="824" y="110" class="tp">názov, ďalšie konania, výkresy, povolená výška</text>
+    <text x="824" y="128" class="tk">nahlady/*.jpg (galéria) · bez-polohy.json · zamery.csv</text>
+    <text x="824" y="150" class="tp">vrstva „Doprava a infraštruktúra" (126, príznak lin)</text>
+    <rect x="810" y="178" width="310" height="44" rx="8" class="box" stroke="#12A67A"/>
+    <text x="824" y="198" class="tn">tabule-stavby.geojson</text>
+    <text x="824" y="214" class="tp">vrstva „Vyhlášky stavebných úradov" — stavby mimo EIA</text>
+    <rect x="810" y="232" width="310" height="44" rx="8" class="box" stroke="#8B6FD4"/>
+    <text x="824" y="252" class="tn">nazvy-obchodne.json</text>
+    <text x="824" y="268" class="tp">obchodný názov v karte + zdroj (číslo známky / OSM / ručne)</text>
+    <rect x="810" y="286" width="310" height="60" rx="8" class="box" stroke="#C08A4A"/>
+    <text x="824" y="306" class="tn">vyska.geojson · upn-ziadosti.geojson</text>
+    <text x="824" y="322" class="tp">vrstvy „Výšková regulácia" (5 hladín) a „Žiadosti o zmenu ÚPN"</text>
+    <text x="824" y="338" class="tp">podklad, ortofoto, hranice a názvy MČ — naživo</text>
+    <rect x="810" y="356" width="310" height="44" rx="8" class="box" stroke="#52789B"/>
+    <text x="824" y="376" class="tn">budovy/*.json (79 dlaždíc)</text>
+    <text x="824" y="392" class="tp">vrstva „3D budovy" — sťahuje sa podľa výrezu</text>
+    <rect x="810" y="410" width="310" height="60" rx="8" class="box" stroke="#E8B44A"/>
+    <text x="824" y="430" class="tn">mhd.geojson · osm-staveniska.geojson</text>
+    <text x="824" y="446" class="tp">vrstvy „Linky MHD" a „Staveniská z OpenStreetMap"</text>
+    <text x="824" y="462" class="tp">+ 11 obchodných názvov a 14 polôh v zamery.geojson</text>
+    <rect x="810" y="480" width="310" height="58" rx="8" class="box" stroke="#D6165A"/>
+    <text x="824" y="500" class="tn">komunitné body · ručné názvy · polohy</text>
+    <text x="824" y="516" class="tp">vrstva „Komunitné body" (hárok zatiaľ prázdny), River Park,</text>
+    <text x="824" y="532" class="tp">stránka Doplniť polohy → späť do zamery.geojson</text>
+  </g>
+
+  <!-- ciary zdroj -> spracovanie -->
+  <path d="M350 69 C390 69 390 77 430 77" class="l" stroke="#3B82D9" marker-end="url(#s)"/>
+  <path d="M350 137 C390 137 390 153 430 153" class="l" stroke="#12A67A" marker-end="url(#s)"/>
+  <path d="M350 205 C390 205 390 221 430 221" class="l" stroke="#8B6FD4" marker-end="url(#s)"/>
+  <path d="M350 289 C390 289 390 297 430 297" class="l" stroke="#C08A4A" marker-end="url(#s)"/>
+  <path d="M350 373 C390 373 390 373 430 373" class="l" stroke="#52789B" marker-end="url(#s)"/>
+  <path d="M350 441 C390 441 390 441 430 441" class="l" stroke="#E8B44A" marker-end="url(#s)"/>
+  <path d="M350 509 C390 509 390 509 430 509" class="l" stroke="#D6165A" marker-end="url(#s)"/>
+  <!-- CUET faza aj do zberu -->
+  <path d="M350 130 C400 130 380 90 430 90" class="l" stroke="#12A67A" stroke-dasharray="4 3"/>
+  <!-- spracovanie -> vystupy -->
+  <path d="M730 77 C770 77 770 100 810 100" class="l" stroke="#3B82D9" marker-end="url(#s)"/>
+  <path d="M730 153 C770 153 770 200 810 200" class="l" stroke="#12A67A" marker-end="url(#s)"/>
+  <path d="M730 145 C775 145 760 110 810 110" class="l" stroke="#12A67A" stroke-dasharray="4 3" marker-end="url(#s)"/>
+  <path d="M730 221 C770 221 770 254 810 254" class="l" stroke="#8B6FD4" marker-end="url(#s)"/>
+  <path d="M730 213 C780 213 760 120 810 120" class="l" stroke="#8B6FD4" stroke-dasharray="4 3" marker-end="url(#s)"/>
+  <path d="M730 297 C770 297 770 316 810 316" class="l" stroke="#C08A4A" marker-end="url(#s)"/>
+  <path d="M730 289 C790 289 750 104 810 104" class="l" stroke="#C08A4A" stroke-dasharray="4 3" marker-end="url(#s)"/>
+  <path d="M730 373 C770 373 770 378 810 378" class="l" stroke="#52789B" marker-end="url(#s)"/>
+  <path d="M730 441 C770 441 770 440 810 440" class="l" stroke="#E8B44A" marker-end="url(#s)"/>
+  <path d="M730 433 C790 433 750 124 810 124" class="l" stroke="#E8B44A" stroke-dasharray="4 3" marker-end="url(#s)"/>
+  <path d="M730 509 C770 509 770 509 810 509" class="l" stroke="#D6165A" marker-end="url(#s)"/>
+  <path d="M730 501 C790 501 750 128 810 128" class="l" stroke="#D6165A" stroke-dasharray="4 3" marker-end="url(#s)"/>
+
+  <!-- co sa nepublikuje -->
+  <rect x="430" y="560" width="690" height="70" rx="8" fill="#0F171E" stroke="#33434F" stroke-dasharray="5 4"/>
+  <text x="444" y="581" class="tn">Čo ostáva len lokálne (nikdy na GitHub)</text>
+  <text x="444" y="599" class="tp">archív vyhlášok tabule_zaznamy.json (názvy môžu niesť mená osôb) · stiahnuté detaily EIA · katastrálne dáta z licencií</text>
+  <text x="444" y="617" class="tp">náhľady bez výpisov z LV, plných mocí a zmlúv · stavebník sa ukladá len s právnou formou (živnostník = fyzická osoba)</text>
+
+  <rect x="20" y="560" width="390" height="70" rx="8" fill="#0F171E" stroke="#33434F" stroke-dasharray="5 4"/>
+  <text x="34" y="581" class="tn">Ako často</text>
+  <text x="34" y="599" class="tp">tabule: týždenne (vyhlášky miznú po 15 dňoch) · OSM: mesačne</text>
+  <text x="34" y="617" class="tp">register EIA + parcely + známky: mesačne · LOD1: pri novom modeli</text>
+
+  <text x="20" y="670" class="tp">Plná čiara = hlavný výstup zdroja. Prerušovaná = ten istý zdroj dopĺňa aj kartu zámeru (fáza, poloha, obchodný názov, skupina).</text>
+  <text x="20" y="690" class="tp">Naživo (bez súboru v repe): podkladová mapa, ortofoto — sťahujú sa priamo z geoportálu pri prezeraní.</text>
+</svg>
+<div class="legenda">
+  <span><i style="background:#3B82D9"></i>register EIA</span><span><i style="background:#12A67A"></i>stavebné úrady / CUET</span>
+  <span><i style="background:#8B6FD4"></i>RPO, ochranné známky</span><span><i style="background:#C08A4A"></i>mestský geoportál</span>
+  <span><i style="background:#52789B"></i>3D model mesta</span><span><i style="background:#E8B44A"></i>OpenStreetMap</span><span><i style="background:#D6165A"></i>ľudia</span>
+</div>
+</div>
+
+<h3>ČO V KARTE ZÁMERU ODKIAĽ JE</h3>
+<table>
+<tr><th>pole v karte</th><th>zdroj</th><th>skript</th><th>ako spoľahlivé</th></tr>
+<tr><td>názov, investor, IČO, povoľujúci úrad, stav konania, spis</td><td><span class="z" style="background:#3B82D9"></span>Enviroportál</td><td><code>zamery.py</code>, <code>obohat_mapu.py</code></td><td>úradné podanie — vysoká; chýba všetko pod prahom EIA</td></tr>
+<tr><td>obchodný názov</td><td><span class="z" style="background:#8B6FD4"></span>ÚPV známky · <span class="z" style="background:#E8B44A"></span>OSM stavenisko · <span class="z" style="background:#D6165A"></span>ručne</td><td><code>znamky_priradenie.py</code>, <code>osm_staveniska.py</code></td><td>istá zhoda slov / rovnaké miesto; v karte je vždy uvedený zdroj</td></tr>
+<tr><td>poloha</td><td><span class="z" style="background:#C08A4A"></span>kataster (parcely z textu zámeru) · adresné body (ulica) · <span class="z" style="background:#E8B44A"></span>OSM stavenisko</td><td><code>parcely_test.py</code> + <code>parcely_zapis.py</code>, <code>oprav_polohy*.py</code></td><td>parcela = ťažisko pozemku (349) · ulica = stred ulice (147) · bez polohy = ťažisko MČ (366)</td></tr>
+<tr><td>fáza (zámer / posúdené / povolené / dokončené)</td><td><span class="z" style="background:#3B82D9"></span>stav konania EIA · <span class="z" style="background:#12A67A"></span>vyhláška z tabule MČ / CUET</td><td><code>obohat_mapu.py</code>, <code>tabule_sledovac.py</code></td><td>doložené vyhláškou len tam, kde karta píše „doložené vyhláškou"</td></tr>
+<tr><td>developerská skupina</td><td><span class="z" style="background:#8B6FD4"></span>RPO + tabuľka skupín</td><td><code>skupiny.py</code>, <code>ocisti.py</code></td><td>doložená (IČO / značka) len pri 13; 118 je zhoda sídla = indícia</td></tr>
+<tr><td>ďalšie konania k projektu</td><td><span class="z" style="background:#3B82D9"></span>Enviroportál</td><td><code>ocisti.py</code> (zlúčenie duplicít)</td><td>rovnaký názov + IČO</td></tr>
+<tr><td>výkresy a náhľady</td><td><span class="z" style="background:#3B82D9"></span>PDF zo spisu</td><td><code>nahlady3.py</code></td><td>len technické podklady; vizualizácie register nemá (6 %)</td></tr>
+<tr><td>povolená výška</td><td><span class="z" style="background:#C08A4A"></span>územná štúdia výškového zónovania</td><td><code>vyska.geojson</code> + bod v polygóne v prehliadači</td><td>5 hladín, pokrýva časť mesta</td></tr>
+</table>
+<p class="pozn">Register EIA je spoľahlivý, ale nie úplný: stavby pod 10 000 m² hrubej podlažnej plochy v zastavanom území (1 000 m² mimo neho) a pod 200 parkovacích stojísk doň nejdú. Tú dieru čiastočne kryjú vyhlášky z tabúľ a staveniská z OSM.</p>
+
+<h3>STROM PO ZDROJOCH</h3>
+<div class="strom">
+<details open><summary><span class="z" style="background:#3B82D9"></span>Enviroportál — register EIA</summary><ul>
+<li><b>zber</b> celého registra (10 min) → 2 303 bratislavských do detailu (30 min) → <code>eia_detaily/</code> <span class="kam">lokálne</span></li>
+<li><b>čistenie</b> <code>ocisti.py</code>: 23 bodov mimo BA von, 129 plánov von, 126 líniových s príznakom, 49 duplicít zlúčených → <b>988 projektov</b></li>
+<li><b>účel stavby</b> <code>typy.py</code> → kategórie v paneli</li>
+<li><b>výkresy</b> <code>nahlady3.py</code> → <code>nahlady/</code> (381 galérií, 1 038 obrázkov) <span class="kam">→ karta, záložka Dokumenty</span></li>
+<li><b>tabuľky</b> → <code>bez-polohy.json</code>, <code>doplnit-polohu/zamery.csv</code> <span class="kam">→ stránka Doplniť polohy</span></li>
+</ul></details>
+<details open><summary><span class="z" style="background:#12A67A"></span>Stavebné úrady — úradné tabule 16 MČ + CUET</summary><ul>
+<li><code>tabule_sledovac.py</code> týždenne: RSS alebo HTML podľa systému MČ → <code>tabule_zaznamy.json</code> <span class="kam">len lokálne</span></li>
+<li>z PDF: druh rozhodnutia, názov stavby, stavebník (len firma), parcely + k. ú. → kataster → bod</li>
+<li>sedí na zámer (IČO, parcela, 2 slová) → <b>fáza doložená vyhláškou</b> <span class="kam">→ karta, riadok Stav</span></li>
+<li>nesedí → <code>tabule-stavby.geojson</code> <span class="kam">→ vrstva Vyhlášky stavebných úradov (zelený prstenec)</span></li>
+<li>CUET aj cez <code>obohat_mapu.py</code> (142 doložených fáz z prvého zberu)</li>
+</ul></details>
+<details open><summary><span class="z" style="background:#C08A4A"></span>Mestský geoportál</summary><ul>
+<li><b>adresné body</b> (pozor: celé Slovensko) → <code>oprav_polohy.py</code> ulica v správnej MČ <span class="kam">→ poloha „stred ulice"</span></li>
+<li><b>kataster C a E</b> → <code>parcely_test.py vsetky</code> + <code>parcely_zapis.py</code> <span class="kam">→ poloha „parcely", 349 bodov</span></li>
+<li><b>hranice MČ</b> → <code>mestske-casti.geojson</code> <span class="kam">→ hranice, názvy, ťažiská pre body bez polohy, kontrola každého bodu</span></li>
+<li><b>výšková regulácia</b> 3 829 plôch → <code>vyska.geojson</code> <span class="kam">→ vrstva + riadok v karte</span></li>
+<li><b>žiadosti o zmenu ÚPN</b> 89 → <code>upn-ziadosti.geojson</code> <span class="kam">→ vrstva s kartou</span></li>
+<li><b>podklad OSM (vektor), ortofoto</b> <span class="kam">→ naživo z geoportálu</span></li>
+</ul></details>
+<details open><summary><span class="z" style="background:#8B6FD4"></span>RPO a ÚPV</summary><ul>
+<li><b>RPO</b> + ručná tabuľka 17 skupín → <code>skupiny.py</code> → <code>ocisti.py</code> určí istotu <span class="kam">→ karta: „Skupina" / „sídli na adrese skupiny X · indícia"</span></li>
+<li><b>WebRegistre ÚPV</b> podľa majiteľa (415 majiteľov → 861 známok) → <code>znamky_upv.py</code> → <code>znamky_priradenie.py</code> → <code>nazvy-obchodne.json</code> <span class="kam">→ obchodný názov v karte (39), 132 kandidátov v <code>nazvy-navrh.csv</code></span></li>
+</ul></details>
+<details open><summary><span class="z" style="background:#E8B44A"></span>OpenStreetMap</summary><ul>
+<li><b>trasy MHD</b> → <code>mhd_osm.py</code>, <code>mhd_zmensi.py</code> → <code>mhd.geojson</code> <span class="kam">→ vrstva Linky MHD</span></li>
+<li><b>pomenované staveniská</b> (77 v BA) → <code>osm_staveniska.py</code>: do 30 m od bodu → obchodný názov (11); rovnaké meno ako zámer bez polohy → poloha (14); bez zámeru → <code>osm-staveniska.geojson</code> <span class="kam">→ vrstva Staveniská z OpenStreetMap (53)</span></li>
+</ul></details>
+<details open><summary><span class="z" style="background:#52789B"></span>3D model LOD1 2021</summary><ul>
+<li>ArcGIS Pro → <code>lod1_export.py</code> (S-JTSK → WGS 84, transformácia S_JTSK_To_ETRS_1989_3) → <code>lod1_dlazdice.py</code> → <code>budovy/</code> 79 dlaždíc <span class="kam">→ vrstva 3D budovy, farba podľa výšky</span></li>
+<li>von ide len pôdorys a výška; nič iné z modelu sa nepublikuje</li>
+</ul></details>
+<details open><summary><span class="z" style="background:#D6165A"></span>Ľudia</summary><ul>
+<li><b>Google formulár + hárok</b> (<code>komunita.json</code>, zatiaľ prázdne) <span class="kam">→ vrstva Komunitné body, schválenie = stĺpec v hárku</span></li>
+<li><b>ručné zápisy</b> do <code>nazvy-obchodne.json</code> (River Park ↔ CPR) <span class="kam">→ obchodný názov</span></li>
+<li><b>Doplniť polohy</b> → <code>zamery.csv</code> → späť do <code>zamery.geojson</code></li>
+<li><b>bod pridaný v mape</b> — zatiaľ ostáva v prehliadači, export cez stránku Dáta</li>
+</ul></details>
+</div>
+<p class="pozn">Skripty a poradie ich spúšťania: <code>dokumenty/README.md</code> v repe. Odhad práce a stav: <a href="../dokumenty/odhad-prve-doplnenie.html" style="color:var(--tx2)">tabuľka odhadu</a>.</p>
+</main>
+</body>
+</html>
