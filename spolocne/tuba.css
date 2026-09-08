@@ -29,8 +29,8 @@
   /* písmo */
   --pismo:"Overused Grotesk","Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,"JetBrains Mono",Consolas,monospace;
-  /* linka: hrúbka v nadpisoch a v drobnom delení */
-  --linka:1.5px; --linka-tenka:1px;
+  /* linka: hrubá pre hlavné delenie a hlavičku, bežná v sekciách, tenká v tabuľkách */
+  --linka:2px; --linka-hruba:2px; --linka-tenka:1px;
   /* rohy: identita je ostrá, zaobľuje sa len to, čo musí (vstupy) */
   --r:0px; --r2:2px;
   --okraj:clamp(16px,3.33vw,40px);   /* kratšia strana / 30 */
@@ -38,7 +38,7 @@
 
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--papier);color:var(--tx);font-family:var(--pismo);
-  font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;font-feature-settings:"ss01","cv05"}
+  font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased;font-feature-settings:"ss01","cv05"}
 a{color:inherit;text-decoration:none}
 a.tb-odkaz,.tb-text a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.16em}
 a.tb-odkaz:hover,.tb-text a:hover{color:var(--cervena2)}
@@ -54,10 +54,10 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .tb-h3{font-weight:500;font-size:22px;line-height:1.1;letter-spacing:-.01em;margin:0}
 .tb-h4{font-weight:500;font-size:17px;line-height:1.2;margin:0}
 /* drobný popis nad linkou / v hlavičkách — verzálky s prestrknutím */
-.tb-stitok{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--tx);line-height:1.2}
+.tb-stitok{font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--tx);line-height:1.2}
 .tb-stitok.tlm{color:var(--tx3)}
 .tb-perex{font-size:clamp(17px,1.5vw,21px);line-height:1.3;font-weight:400;color:var(--tx);max-width:34em;margin:0}
-.tb-text{font-size:15px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.tb-text{font-size:16px;line-height:1.5;color:var(--tx2);max-width:64ch}
 .tb-text b,.tb-text strong{color:var(--tx);font-weight:500}
 .tb-mono{font-family:var(--mono);font-size:.86em}
 .tb-cislo{font-variant-numeric:tabular-nums}
@@ -76,35 +76,47 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 /* nadpis, ktorý sa mäkčeňom dotýka linky — manuál: odsadenie = medzera nad verzálkou */
 .tb-sekcia>.tb-h1,.tb-sekcia>.tb-h2{margin-top:.08em}
 
-/* logotypový princíp: dve slová spojené natiahnuteľnou linkou */
-.tb-znacka{display:inline-flex;align-items:center;gap:0;font-weight:600;letter-spacing:.01em;
+/* logotypový princíp: dve slová spojené natiahnuteľnou linkou — linka
+   vychádza priamo z písmen (bez medzery), min. 3 × šírka T, ťahá sa podľa miesta */
+.tb-znacka{display:inline-flex;align-items:center;gap:0;font-weight:700;letter-spacing:.015em;
   text-transform:uppercase;white-space:nowrap;line-height:1}
-.tb-znacka .l{display:inline-block;height:.11em;min-width:1em;flex:1 1 2.4em;background:currentColor;
-  margin:0 .12em;transform:translateY(.02em)}
-.tb-znacka.velka{font-size:34px}
+.tb-znacka .l{display:inline-block;height:.135em;min-width:3.2em;flex:1 1 6em;background:currentColor;
+  margin:0 -.02em;transform:translateY(-.03em)}
+.tb-znacka.velka{font-size:48px}
 
 /* ---------- hlavička stránky ---------- */
-.tb-lista{display:flex;align-items:center;gap:28px;height:56px;padding:0 var(--okraj);
-  background:var(--biela);border-bottom:var(--linka) solid var(--ciara);position:sticky;top:0;z-index:20}
-.tb-lista .tb-znacka{font-size:19px;flex:0 1 auto}
-.tb-lista nav{display:flex;gap:22px;align-items:center;margin-left:8px}
-.tb-lista nav a{font-size:14px;font-weight:500;color:var(--tx2);padding:4px 0;border-bottom:1.5px solid transparent}
+.tb-lista{display:flex;align-items:center;gap:36px;height:80px;padding:0 var(--okraj);
+  background:var(--biela);border-bottom:var(--linka-hruba) solid var(--ciara);position:sticky;top:0;z-index:20}
+.tb-lista .tb-znacka{font-size:30px;flex:0 1 auto}
+.tb-lista nav{display:flex;gap:26px;align-items:center;margin-left:8px}
+.tb-lista nav a{font-size:17px;font-weight:600;color:var(--tx2);padding:4px 0;border-bottom:2px solid transparent}
 .tb-lista nav a:hover,.tb-lista nav a[aria-current="page"]{color:var(--tx);border-bottom-color:var(--ciara)}
 .tb-lista .tb-vpravo{margin-left:auto;display:flex;align-items:center;gap:14px}
 .tb-lista .tb-stitok{color:var(--tx3)}
-@media (max-width:760px){.tb-lista{gap:14px;height:52px}.tb-lista .tb-vpravo .tb-stitok{display:none}}
+@media (max-width:960px){.tb-lista{gap:18px;height:64px}.tb-lista .tb-znacka{font-size:24px}.tb-lista nav{gap:16px}.tb-lista nav a{font-size:15px}}
+@media (max-width:760px){.tb-lista{gap:14px;height:56px}.tb-lista .tb-vpravo .tb-stitok{display:none}.tb-lista .tb-znacka{font-size:20px}}
+
+/* pätička — okraj drží rovnaký grid ako hlavička */
+.tb-pata{display:flex;justify-content:space-between;gap:16px;padding:18px var(--okraj);border-top:var(--linka-hruba) solid var(--ciara);
+  background:var(--biela);font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--tx)}
+.tb-pata span:last-child{color:var(--tx3)}
+
+/* kontrolný grid z manuálu — klávesa G (spolocne/tuba.js) */
+.dm-grid{position:fixed;inset:0;z-index:100;pointer-events:none;display:grid;grid-template-columns:repeat(8,1fr);gap:var(--okraj);padding:0 var(--okraj)}
+.dm-grid i{display:block;border-left:1px solid rgba(243,113,109,.7);border-right:1px solid rgba(243,113,109,.7);background:rgba(243,113,109,.035)}
+.dm-grid[hidden]{display:none}
 
 /* ---------- stránka / grid ---------- */
-.tb-strana{max-width:1440px;margin:0 auto;padding:calc(var(--okraj)*1.2) var(--okraj) calc(var(--okraj)*2.5)}
+.tb-strana{max-width:1600px;margin:0 auto;padding:calc(var(--okraj)*1.6) var(--okraj) calc(var(--okraj)*3)}
 .tb-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:var(--okraj)}
 .tb-s2{grid-column:span 2}.tb-s3{grid-column:span 3}.tb-s4{grid-column:span 4}.tb-s5{grid-column:span 5}.tb-s6{grid-column:span 6}.tb-s8{grid-column:1/-1}
 @media (max-width:1000px){.tb-s2,.tb-s3{grid-column:span 4}.tb-s5,.tb-s6{grid-column:1/-1}}
 @media (max-width:640px){.tb-grid{gap:16px}.tb-s2,.tb-s3,.tb-s4{grid-column:1/-1}}
 
 /* ---------- tlačidlá ---------- */
-.tb-tl{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;
+.tb-tl{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;
   background:var(--biela);border:var(--linka) solid var(--ciara);color:var(--tx);border-radius:var(--r);
-  font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;text-decoration:none;line-height:1}
+  font-size:16px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;line-height:1}
 .tb-tl:hover{background:var(--cierna);color:var(--biela)}
 .tb-tl.hl{background:var(--cierna);color:var(--biela)}
 .tb-tl.hl:hover{background:var(--cervena);border-color:var(--cervena)}
@@ -113,12 +125,12 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .tb-tl.duch{border-color:var(--ciara2)}
 .tb-tl.duch:hover{border-color:var(--ciara);background:var(--biela);color:var(--tx)}
 .tb-tl:disabled{opacity:.4;cursor:default;background:var(--biela);color:var(--tx)}
-.tb-tl.mala{height:32px;padding:0 12px;font-size:13px}
+.tb-tl.mala{height:36px;padding:0 14px;font-size:14px}
 .tb-tl svg{width:15px;height:15px;flex:none}
 
 /* ---------- štítky / pilulky ---------- */
-.tb-pil{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;background:var(--plocha);
-  color:var(--tx);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
+.tb-pil{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;background:var(--plocha);
+  color:var(--tx);font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
 .tb-pil.cierna{background:var(--cierna);color:var(--biela)}
 .tb-pil.cervena{background:var(--cervena);color:var(--biela)}
 .tb-pil.obrys{background:transparent;border:1px solid var(--ciara)}
@@ -135,8 +147,8 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .tb-bod.duta{background:transparent;border-style:dashed;border-color:var(--tx3)}
 
 /* ---------- vstupy ---------- */
-.tb-vstup,input.tb-vstup,select.tb-vstup,textarea.tb-vstup{width:100%;height:40px;padding:0 12px;background:var(--biela);
-  border:1px solid var(--ciara2);border-radius:var(--r2);color:var(--tx);font-size:14px}
+.tb-vstup,input.tb-vstup,select.tb-vstup,textarea.tb-vstup{width:100%;height:48px;padding:0 14px;background:var(--biela);
+  border:1px solid var(--ciara2);border-radius:var(--r2);color:var(--tx);font-size:16px}
 textarea.tb-vstup{height:auto;min-height:96px;padding:10px 12px;line-height:1.45;resize:vertical}
 .tb-vstup:focus{outline:none;border-color:var(--ciara);box-shadow:0 0 0 1px var(--ciara)}
 .tb-vstup::placeholder{color:var(--tx3)}
@@ -144,8 +156,8 @@ textarea.tb-vstup{height:auto;min-height:96px;padding:10px 12px;line-height:1.45
 input[type=checkbox],input[type=radio]{accent-color:var(--cierna)}
 
 /* ---------- tabuľky ---------- */
-.tb-tab{width:100%;border-collapse:collapse;font-size:14px}
-.tb-tab th{text-align:left;font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);
+.tb-tab{width:100%;border-collapse:collapse;font-size:15px}
+.tb-tab th{text-align:left;font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);
   padding:0 12px 8px 0;border-bottom:var(--linka) solid var(--ciara);vertical-align:bottom}
 .tb-tab td{padding:11px 12px 11px 0;border-bottom:1px solid var(--ciara2);vertical-align:top;color:var(--tx2)}
 .tb-tab td:first-child,.tb-tab td b{color:var(--tx);font-weight:500}
