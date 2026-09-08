@@ -30,7 +30,7 @@
   --pismo:"Overused Grotesk","Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,"JetBrains Mono",Consolas,monospace;
   /* linka: hrubá pre hlavné delenie a hlavičku, bežná v sekciách, tenká v tabuľkách */
-  --linka:2px; --linka-hruba:2px; --linka-tenka:1px;
+  --linka:1px; --linka-hruba:1px; --linka-tenka:1px;
   /* rohy: identita je ostrá, zaobľuje sa len to, čo musí (vstupy) */
   --r:0px; --r2:2px;
   --okraj:clamp(16px,3.33vw,40px);   /* kratšia strana / 30 */
@@ -49,9 +49,10 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 ::-webkit-scrollbar-track{background:transparent}
 
 /* ---------- typografia ---------- */
-.tb-h1{font-weight:500;font-size:clamp(36px,5.2vw,72px);line-height:1;letter-spacing:-.025em;margin:0}
-.tb-h2{font-weight:500;font-size:clamp(26px,3vw,40px);line-height:1.02;letter-spacing:-.02em;margin:0}
-.tb-h3{font-weight:500;font-size:22px;line-height:1.1;letter-spacing:-.01em;margin:0}
+/* nadpisy ako na plagátoch: regular, veľké, tesné — nie tučné */
+.tb-h1{font-weight:400;font-size:clamp(44px,5.6vw,80px);line-height:1;letter-spacing:-.025em;margin:0}
+.tb-h2{font-weight:400;font-size:clamp(30px,3.4vw,48px);line-height:1;letter-spacing:-.022em;margin:0}
+.tb-h3{font-weight:400;font-size:24px;line-height:1.1;letter-spacing:-.012em;margin:0}
 .tb-h4{font-weight:500;font-size:17px;line-height:1.2;margin:0}
 /* drobný popis nad linkou / v hlavičkách — verzálky s prestrknutím */
 .tb-stitok{font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--tx);line-height:1.2}
@@ -78,32 +79,34 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 
 /* logotypový princíp: dve slová spojené natiahnuteľnou linkou — linka
    vychádza priamo z písmen (bez medzery), min. 3 × šírka T, ťahá sa podľa miesta */
-.tb-znacka{display:inline-flex;align-items:center;gap:0;font-weight:700;letter-spacing:.015em;
+.tb-znacka{display:inline-flex;align-items:center;gap:0;font-weight:500;letter-spacing:0;
   text-transform:uppercase;white-space:nowrap;line-height:1}
-.tb-znacka .l{display:inline-block;height:.135em;min-width:3.2em;flex:1 1 6em;background:currentColor;
-  margin:0 -.02em;transform:translateY(-.03em)}
+/* linka sa natiahne cez voľnú šírku a je prilepená na Y a B — princíp „naťahovanie linky" z manuálu */
+.tb-znacka .l{display:inline-block;height:.085em;min-width:2em;flex:1 1 auto;background:currentColor;
+  margin:0 -.045em;transform:translateY(-.02em)}
 .tb-znacka.velka{font-size:48px}
 
-/* ---------- hlavička stránky ---------- */
-.tb-lista{display:flex;align-items:center;gap:36px;height:80px;padding:0 var(--okraj);
-  background:var(--biela);border-bottom:var(--linka-hruba) solid var(--ciara);position:sticky;top:0;z-index:20}
-.tb-lista .tb-znacka{font-size:30px;flex:0 1 auto}
-.tb-lista nav{display:flex;gap:26px;align-items:center;margin-left:8px}
-.tb-lista nav a{font-size:17px;font-weight:600;color:var(--tx2);padding:4px 0;border-bottom:2px solid transparent}
-.tb-lista nav a:hover,.tb-lista nav a[aria-current="page"]{color:var(--tx);border-bottom-color:var(--ciara)}
-.tb-lista .tb-vpravo{margin-left:auto;display:flex;align-items:center;gap:14px}
-.tb-lista .tb-stitok{color:var(--tx3)}
-@media (max-width:960px){.tb-lista{gap:18px;height:64px}.tb-lista .tb-znacka{font-size:24px}.tb-lista nav{gap:16px}.tb-lista nav a{font-size:15px}}
-@media (max-width:760px){.tb-lista{gap:14px;height:56px}.tb-lista .tb-vpravo .tb-stitok{display:none}.tb-lista .tb-znacka{font-size:20px}}
+/* ---------- hlavička stránky: značka s natiahnutou linkou, navigácia ako mikro-štítky z okrajov plagátov ---------- */
+.tb-lista{display:flex;align-items:center;gap:0;height:76px;padding:0 var(--okraj);
+  background:var(--biela);border-bottom:var(--linka) solid var(--ciara);position:sticky;top:0;z-index:20}
+.tb-lista .tb-znacka{font-size:32px;flex:1 1 auto;min-width:0;margin-right:var(--okraj)}
+.tb-lista nav{display:flex;gap:0;align-items:center;height:100%;margin:0 var(--okraj) 0 0}
+.tb-lista nav a{display:inline-flex;align-items:center;height:100%;padding:0 14px;font-size:12px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--tx);border:0}
+.tb-lista nav a:hover,.tb-lista nav a[aria-current="page"]{color:var(--cervena2)}
+.tb-lista .tb-vpravo{margin-left:0;display:flex;align-items:center;gap:8px}
+.tb-lista .tb-vpravo>.tb-stitok{color:var(--tx3);font-size:12px}
+@media (max-width:960px){.tb-lista{height:64px}.tb-lista .tb-znacka{font-size:26px}.tb-lista nav a{padding:0 10px}}
+@media (max-width:760px){.tb-lista{height:56px}.tb-lista .tb-vpravo .tb-stitok{display:none}.tb-lista .tb-znacka{font-size:20px}.tb-lista nav a{padding:0 8px;font-size:11px}}
 
-/* pätička — okraj drží rovnaký grid ako hlavička */
-.tb-pata{display:flex;justify-content:space-between;gap:16px;padding:18px var(--okraj);border-top:var(--linka-hruba) solid var(--ciara);
-  background:var(--biela);font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--tx)}
+/* pätička — mikro-štítky na okraji, rovnaký grid ako hlavička */
+.tb-pata{display:flex;justify-content:space-between;gap:16px;padding:18px var(--okraj);border-top:var(--linka) solid var(--ciara);
+  background:var(--biela);font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--tx)}
 .tb-pata span:last-child{color:var(--tx3)}
 
 /* kontrolný grid z manuálu — klávesa G (spolocne/tuba.js) */
 .dm-grid{position:fixed;inset:0;z-index:100;pointer-events:none;display:grid;grid-template-columns:repeat(8,1fr);gap:var(--okraj);padding:0 var(--okraj)}
-.dm-grid i{display:block;border-left:1px solid rgba(243,113,109,.7);border-right:1px solid rgba(243,113,109,.7);background:rgba(243,113,109,.035)}
+.dm-grid i{display:block;border-left:1px solid rgba(243,113,109,.7);border-right:1px solid rgba(243,113,109,.7)}
 .dm-grid[hidden]{display:none}
 
 /* ---------- stránka / grid ---------- */
@@ -165,13 +168,14 @@ input[type=checkbox],input[type=radio]{accent-color:var(--cierna)}
 .tb-tab td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 
 /* ---------- karty / plochy ---------- */
-.tb-karta{background:var(--biela);border:1px solid var(--ciara2);padding:18px 20px}
+/* „karta" nie je box — je to celok začínajúci linkou */
+.tb-karta{background:transparent;border:0;border-top:var(--linka) solid var(--ciara);padding:14px 0 0}
 .tb-karta.cierna{background:var(--cierna);color:var(--biela);border-color:var(--cierna)}
 .tb-karta.cierna .tb-stitok,.tb-karta.cierna .tb-text{color:var(--siva)}
 .tb-karta.siva{background:var(--plocha);border-color:var(--plocha)}
 /* veľké číslo nad popisom — ako dátum na plagáte */
 .tb-cifra{display:flex;flex-direction:column;gap:2px;border-top:var(--linka) solid var(--ciara);padding-top:10px}
-.tb-cifra b{font-size:clamp(30px,3vw,44px);font-weight:500;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tb-cifra b{font-size:clamp(36px,3.6vw,56px);font-weight:400;line-height:1;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
 .tb-cifra b.cervena{color:var(--cervena2)}
 .tb-cifra span{font-size:14px;color:var(--tx);margin-top:6px}
 .tb-cifra small{font-size:12.5px;color:var(--tx3);line-height:1.35}

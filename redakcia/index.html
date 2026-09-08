@@ -10,207 +10,206 @@
 <link rel="stylesheet" href="../spolocne/tuba.css">
 <style>
 /* ============================================================
-   Redakcia — svetlá appka nad dizajn systémom TU—BA (tuba.css)
-   grid z manuálu: okraj = kratšia strana / 30, 8 stĺpcov, medzera = okraj
-   ľavý panel = 3 stĺpce, editor = 5 stĺpcov; červený grid = klávesa G
-   papier #F4F4F2 · plocha #EDEDEA · biela karty · čierna linka 1,5 px
-   červená len ako akcent (chyba, rozpracované, marker v mape, grid)
+   Redakcia — typografický (swiss) layout podľa plagátov TU—BA
+   jedna biela plocha · 1 px linky namiesto kariet · mikro-štítky verzálkami
+   veľké písmo v regular/medium · logotyp natiahnutý cez hlavičku
+   grid z manuálu: okraj = kratšia strana/30, 8 stĺpcov (panel 3, editor 5)
+   červený grid = klávesa G
    ============================================================ */
-:root{--stl:calc((100vw - 9*var(--okraj))/8);--linka-hruba:2px}
+:root{--stl:calc((100vw - 9*var(--okraj))/8);--l1:1px solid var(--ciara);--l2:1px solid var(--ciara2)}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{font-size:16px;line-height:1.45;display:flex;flex-direction:column;height:100vh;overflow:hidden;background:var(--papier)}
+body{font-size:16px;line-height:1.4;font-weight:400;display:flex;flex-direction:column;height:100vh;overflow:hidden;background:var(--biela);color:var(--tx)}
 button{cursor:pointer}
 .mono{font-family:var(--mono);font-size:.92em}
+/* mikro-štítok z okraja plagátu */
+.mikro{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;line-height:1.2;color:var(--tx)}
 
-/* červený grid podľa manuálu — 8 stĺpcov, medzera = okraj; prepína klávesa G */
+/* červený grid podľa manuálu — 8 stĺpcov, medzera = okraj; klávesa G */
 .dm-grid{position:fixed;inset:0;z-index:100;pointer-events:none;display:grid;grid-template-columns:repeat(8,1fr);gap:var(--okraj);padding:0 var(--okraj)}
-.dm-grid i{display:block;border-left:1px solid rgba(243,113,109,.7);border-right:1px solid rgba(243,113,109,.7);background:rgba(243,113,109,.035)}
+.dm-grid i{display:block;border-left:1px solid rgba(243,113,109,.55);border-right:1px solid rgba(243,113,109,.55)}
 
-/* vstupy = .tb-vstup, len väčšie (48 px) */
-input,select,textarea{width:100%;height:48px;padding:0 14px;background:var(--biela);border:1px solid var(--ciara2);border-radius:var(--r2);color:var(--tx);font-size:16px}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ciara);box-shadow:0 0 0 1px var(--ciara)}
+/* vstupy: len spodná linka, text sedí na nej */
+input,select{width:100%;height:44px;padding:0;background:transparent;border:0;border-bottom:var(--l2);border-radius:0;color:var(--tx);font-size:17px;font-weight:400}
+textarea{width:100%;min-height:128px;padding:10px 0;background:transparent;border:0;border-top:var(--l2);border-bottom:var(--l2);border-radius:0;color:var(--tx);font-size:17px;line-height:1.4;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ciara);box-shadow:none}
 input::placeholder,textarea::placeholder{color:var(--tx3)}
-textarea{height:auto;min-height:120px;padding:12px 14px;line-height:1.45;resize:vertical}
-select{appearance:none;-webkit-appearance:none;padding-right:40px;cursor:pointer;
-  background:var(--biela) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4'%3E%3Cpath d='M5 9l7 7 7-7'/%3E%3C/svg%3E") right 14px center no-repeat}
-label{display:block;font-size:13px;font-weight:600;color:var(--tx);margin:0 0 8px;letter-spacing:.01em}
+select{appearance:none;-webkit-appearance:none;padding-right:28px;cursor:pointer;
+  background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Cpath d='M5 9l7 7 7-7'/%3E%3C/svg%3E") right 4px center no-repeat}
+label{display:block;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--tx2);margin:0 0 2px}
 
-/* tlačidlá: .tl je alias .tb-tl, len väčšie (48 px) */
-.tl{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 20px;background:var(--biela);border:var(--linka) solid var(--ciara);color:var(--tx);border-radius:var(--r);font-size:16px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;line-height:1}
+/* tlačidlá: 1 px obrys, medium, bez zaoblení */
+.tl{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:44px;padding:0 18px;background:var(--biela);border:var(--l1);color:var(--tx);border-radius:0;font-size:15px;font-weight:500;cursor:pointer;white-space:nowrap;text-decoration:none;line-height:1;letter-spacing:.01em}
 .tl:hover{background:var(--cierna);color:var(--biela)}
 .tl.hl{background:var(--cierna);color:var(--biela)}
 .tl.hl:hover{background:var(--cervena);border-color:var(--cervena)}
-.tl.duch{border-color:var(--ciara2);font-weight:500}
+.tl.duch{border-color:var(--ciara2)}
 .tl.duch:hover{border-color:var(--ciara);background:var(--biela);color:var(--tx)}
-.tl:disabled,.tl.hl:disabled{opacity:.4;cursor:default;background:var(--biela);color:var(--tx);border-color:var(--ciara)}
-.tl.mala{height:38px;padding:0 14px;font-size:14px}
-.tl svg{width:18px;height:18px;flex:none}
-/* Uložiť: čierne; keď sú zmeny (nie je disabled), zčervenie ako akcent */
+.tl:disabled,.tl.hl:disabled{opacity:.35;cursor:default;background:var(--biela);color:var(--tx);border-color:var(--ciara)}
+.tl.mala{height:36px;padding:0 12px;font-size:13px}
+.tl svg{width:16px;height:16px;flex:none}
 #tl-uloz:not(:disabled){background:var(--cervena);border-color:var(--cervena);color:var(--biela)}
 #tl-uloz:not(:disabled):hover{background:var(--cervena2);border-color:var(--cervena2)}
-.badge{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;border-radius:12px;background:var(--biela);color:var(--tx);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:var(--biela);color:var(--tx);font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
 #tl-uloz:not(:disabled) .badge{color:var(--cervena2)}
 #tl-uloz:disabled .badge{background:var(--plocha)}
 
-/* horná lišta = .tb-lista, väčšia; značka: linka vychádza z písmen */
-.tb-lista{flex:none;height:80px;gap:36px;border-bottom-width:var(--linka-hruba)}
-.tb-lista .tb-znacka{font-size:30px;font-weight:700;letter-spacing:.015em;color:var(--tx);flex:0 1 auto;line-height:1}
-.tb-lista .tb-znacka .l{height:.135em;min-width:3.2em;flex:1 1 6em;margin:0 -.02em;transform:translateY(-.03em)}
-.tb-lista>.tb-stitok{font-size:13px;letter-spacing:.12em;margin-left:-14px;color:var(--tx2)}
-.tb-lista nav{gap:28px;margin-left:12px}
-.tb-lista nav a{font-size:17px;font-weight:600;color:var(--tx2);padding:6px 0;border-bottom:2px solid transparent}
-.tb-lista nav a:hover{color:var(--tx);border-bottom-color:var(--ciara)}
-.tb-lista .tb-vpravo{gap:12px}
-.pripoj{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 14px 0 12px;background:transparent;border:1px solid var(--ciara2);color:var(--tx2);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
-.pripoj:hover{border-color:var(--ciara);color:var(--tx)}
-.pripoj i{width:12px;height:12px;border-radius:50%;border:1.5px dashed var(--tx3);background:transparent;flex:none}
-.pripoj.ok i{border:1.5px solid var(--cierna);background:var(--cierna)}
-.pripoj.chyba i{border:1.5px solid var(--cervena);background:var(--cervena)}
+/* hlavička: logotyp natiahnutý cez voľnú šírku, linka prilepená na Y a B */
+.tb-lista{flex:none;height:76px;gap:0;background:var(--biela);border-bottom:var(--l1)}
+.tb-lista .tb-znacka{flex:1 1 auto;min-width:0;font-size:32px;font-weight:500;letter-spacing:0;color:var(--tx);line-height:1;margin-right:var(--okraj)}
+.tb-lista .tb-znacka .l{flex:1 1 auto;min-width:2em;height:.085em;margin:0 -.045em;transform:translateY(-.02em)}
+.tb-lista>.tb-stitok{display:none}
+.tb-lista nav{gap:0;margin:0 var(--okraj) 0 0;height:100%}
+.tb-lista nav a{display:inline-flex;align-items:center;height:100%;padding:0 14px;border:0;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--tx)}
+.tb-lista nav a:hover,.tb-lista nav a[aria-current="page"]{color:var(--cervena2);border:0}
+.tb-lista .tb-vpravo{margin-left:0;gap:8px}
+.pripoj{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 14px 0 0;background:transparent;border:0;color:var(--tx2);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.pripoj:hover{color:var(--tx)}
+.pripoj i{width:11px;height:11px;border-radius:50%;border:1px dashed var(--tx3);background:transparent;flex:none}
+.pripoj.ok i{border:1px solid var(--cierna);background:var(--cierna)}
+.pripoj.chyba i{border:1px solid var(--cervena);background:var(--cervena)}
 .pripoj.ok{color:var(--tx)}
-.pripoj.chyba{color:var(--cervena2);border-color:var(--cervena)}
+.pripoj.chyba{color:var(--cervena2)}
 
-/* rozloženie na gride: panel 3 stĺpce + editor 5 stĺpcov */
+/* rozloženie na gride: panel 3 stĺpce + editor 5 stĺpcov, jedna plocha */
 .rozloz{display:grid;grid-template-columns:calc(3*var(--stl) + 2*var(--okraj)) 1fr;column-gap:var(--okraj);padding:0 var(--okraj);flex:1;min-height:0}
-aside{display:flex;flex-direction:column;min-height:0;background:var(--biela);border-left:1px solid var(--ciara2);border-right:1px solid var(--ciara2)}
-.hlad{padding:24px 24px 16px;display:flex;flex-direction:column;gap:14px}
-.hlad input[type=search]{padding-left:44px;-webkit-appearance:none;appearance:none;
-  background:var(--biela) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") 14px center no-repeat}
+aside{display:flex;flex-direction:column;min-height:0;border-right:var(--l2);padding-right:var(--okraj);margin-right:calc(-1*var(--okraj))}
+.hlad{padding:20px 0 0;display:flex;flex-direction:column;gap:16px}
+.hlad input[type=search]{height:52px;font-size:20px;padding-left:30px;-webkit-appearance:none;appearance:none;border-bottom:var(--l1);
+  background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") 0 center no-repeat}
 .hlad input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
 .chipy{display:flex;flex-wrap:wrap;gap:6px}
-.chipy button{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px;background:var(--plocha);border:1px solid transparent;color:var(--tx);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.chipy button{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 10px;background:transparent;border:var(--l2);color:var(--tx);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .chipy button:hover{border-color:var(--ciara)}
 .chipy button[aria-pressed=true]{background:var(--cierna);border-color:var(--cierna);color:var(--biela)}
-.chipy button b{font-weight:500;color:var(--tx3);font-variant-numeric:tabular-nums;letter-spacing:0;font-size:13px}
+.chipy button b{font-weight:400;color:var(--tx3);font-variant-numeric:tabular-nums;letter-spacing:0;font-size:12px}
 .chipy button b:empty{display:none}
 .chipy button[aria-pressed=true] b{color:var(--siva)}
-.hlad select{height:44px;font-size:15px}
-.pocet{margin:8px 24px 0;padding:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx);border-bottom:var(--linka-hruba) solid var(--ciara)}
-.polozky{overflow:auto;flex:1;padding:0 0 32px}
-.pol{display:grid;grid-template-columns:1fr auto;gap:3px 12px;padding:16px 24px 16px 20px;cursor:pointer;border-left:4px solid transparent;border-bottom:1px solid var(--ciara3)}
+.hlad select{height:40px;font-size:15px}
+.pocet{margin:28px 0 0;padding:6px 0 0;border-top:var(--l1);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--tx)}
+.polozky{overflow:auto;flex:1;padding:10px 0 32px}
+.pol{display:grid;grid-template-columns:1fr auto;gap:3px 12px;padding:14px 0 14px 12px;margin-left:-12px;cursor:pointer;border-left:2px solid transparent;border-bottom:var(--l2)}
 .pol:hover{background:var(--papier)}
-.pol[aria-selected=true]{background:var(--plocha);border-left-color:var(--cierna)}
-.pol .n{font-weight:600;font-size:16px;line-height:1.25;grid-column:1;color:var(--tx);letter-spacing:-.005em}
-.pol .m{grid-column:1;font-size:13px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pol .z{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-top:4px}
+.pol[aria-selected=true]{background:var(--papier);border-left-color:var(--cierna)}
+.pol .n{font-weight:400;font-size:17px;line-height:1.2;grid-column:1;color:var(--tx);letter-spacing:-.005em}
+.pol .m{grid-column:1;font-size:12px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em}
+.pol .z{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-top:5px}
 .pol .st{display:flex;gap:6px;align-items:center}
-/* stavové bodky = .tb-bod: poloha kruh, obrázok štvorec, rozpracované červená; chýbajúce = dutá bodka */
-.ik{width:12px;height:12px;display:inline-block;border:1.5px solid var(--cierna);background:var(--cierna);border-radius:50%}
+.ik{width:10px;height:10px;display:inline-block;border:1px solid var(--cierna);background:var(--cierna);border-radius:50%}
 .ik.obr{border-radius:0}
-.ik.nie{background:transparent;border-style:dashed;border-color:var(--tx3)}
+.ik.nie{background:transparent;border-style:dashed;border-color:var(--tx2)}
 .ik.zmena{background:var(--cervena);border-color:var(--cervena)}
-.viac{margin:16px 24px;width:calc(100% - 48px)}
+.viac{margin:16px 0;width:100%}
 
-/* editor: 5 stĺpcov, vzduch medzi celkami, každý celok začína linkou */
-.editor{overflow:auto;min-height:0;padding:24px 0 96px}
-.prazdne{height:100%;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:14px;color:var(--tx2);text-align:left;max-width:calc(4*var(--stl) + 3*var(--okraj));margin:0}
-.prazdne h2{margin:0 0 6px;color:var(--tx);font-weight:600;font-size:clamp(36px,4vw,60px);line-height:1;letter-spacing:-.025em;border-top:var(--linka-hruba) solid var(--ciara);padding-top:.3em;width:100%}
-.prazdne p{margin:0;font-size:19px;line-height:1.4;max-width:34em}
-.prazdne p b{color:var(--tx);font-weight:600}
-.hlava{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;margin-bottom:48px;padding:14px 0 24px;border-top:var(--linka-hruba) solid var(--ciara);border-bottom:var(--linka) solid var(--ciara)}
-.hlava h2{margin:0 0 8px;font-weight:600;font-size:clamp(34px,3.4vw,52px);line-height:1;letter-spacing:-.025em;flex:1 1 100%;order:-1;max-width:20em}
-.hlava .meta{width:100%;font-size:15px;color:var(--tx2);display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin-top:6px}
+/* editor: 5 stĺpcov, obsah kotvený hore, celky delené 1 px linkou */
+.editor{overflow:auto;min-height:0;padding:20px 0 96px}
+.prazdne{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:20px;color:var(--tx2);text-align:left;margin:0;padding-top:0;height:auto}
+.prazdne h2{margin:0;color:var(--tx);font-weight:400;font-size:clamp(44px,5.2vw,80px);line-height:1;letter-spacing:-.025em;border-top:var(--l1);padding-top:.12em;width:100%}
+.prazdne p{margin:0;font-size:21px;line-height:1.3;max-width:26em;color:var(--tx)}
+.prazdne p b{color:var(--tx);font-weight:500}
+.prazdne p+p{font-size:15px!important;color:var(--tx2)!important;max-width:34em;border-top:var(--l2);padding-top:12px;width:100%}
+.hlava{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:56px;padding:10px 0 0;border-top:var(--l1)}
+.hlava h2{margin:0 0 16px;font-weight:400;font-size:clamp(38px,4vw,60px);line-height:1;letter-spacing:-.025em;flex:1 1 100%;order:-1;max-width:18em}
+.hlava .meta{width:100%;font-size:14px;color:var(--tx2);display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;margin-top:8px;border-top:var(--l2);padding-top:10px}
 .hlava .meta span:empty{display:none}
-.hlava .meta a{color:var(--tx);font-weight:600;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:.18em}
+.hlava .meta a{color:var(--tx);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.2em}
 .hlava .meta a:hover{color:var(--cervena2)}
-.stitok{display:inline-flex;align-items:center;height:28px;padding:0 10px;background:var(--plocha);color:var(--tx);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
-.stitok.red{background:var(--cervena);color:var(--biela)}
-.stitok.novy{background:var(--cierna);color:var(--biela)}
-/* blok = biela karta; hlavička bloku sedí na linke (.tb-riadok) */
-.blok{background:var(--biela);border:1px solid var(--ciara2);padding:24px 32px 32px;margin-bottom:32px}
-.blok h3{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin:0 0 24px;padding-bottom:10px;border-bottom:var(--linka-hruba) solid var(--ciara);
-  font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--tx);line-height:1.2}
-.blok h3 .stav{margin-left:auto;text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;color:var(--tx2);text-align:right;white-space:normal}
-.blok h3 .stav.ok{color:var(--tx);font-weight:600}
-.blok h3 .stav.chyba{color:var(--cervena2);font-weight:600}
+.stitok{display:inline-flex;align-items:center;height:24px;padding:0 8px;border:var(--l1);background:transparent;color:var(--tx);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.stitok.red{background:var(--cervena);border-color:var(--cervena);color:var(--biela)}
+.stitok.novy{background:var(--cierna);border-color:var(--cierna);color:var(--biela)}
+/* blok = celok medzi linkami, bez karty; štítok sedí pod linkou, stav vpravo */
+.blok{background:transparent;border:0;padding:0;margin:0 0 64px}
+.blok h3{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin:0 0 28px;padding-top:8px;border-top:var(--l1);
+  font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--tx);line-height:1.2}
+.blok h3 .stav{margin-left:auto;text-transform:none;letter-spacing:0;font-size:14px;font-weight:400;color:var(--tx2);text-align:right;white-space:normal;margin-top:-2px}
+.blok h3 .stav.ok{color:var(--tx)}
+.blok h3 .stav.chyba{color:var(--cervena2)}
 .blok h3 .stav:empty{display:none}
-.mriezka{display:grid;grid-template-columns:repeat(2,1fr);gap:22px var(--okraj)}
+.mriezka{display:grid;grid-template-columns:repeat(2,1fr);gap:28px var(--okraj)}
 .mriezka .cely{grid-column:1/-1}
-.pomoc{font-size:13.5px;color:var(--tx3);margin:8px 0 0;line-height:1.45}
-.pomoc.chyba{color:var(--cervena2);font-weight:500}
-.pomoc.ok{color:var(--tx);font-weight:500}
+.pomoc{font-size:13px;color:var(--tx3);margin:8px 0 0;line-height:1.45;max-width:60ch}
+.pomoc.chyba{color:var(--cervena2)}
+.pomoc.ok{color:var(--tx)}
 .poloha-rozloz{display:grid;grid-template-columns:1fr 1fr;gap:var(--okraj)}
-#mini-mapa{height:380px;overflow:hidden;border:1px solid var(--ciara2);background:var(--plocha);position:relative}
+.poloha-rozloz>div:last-child{display:flex;flex-direction:column;gap:22px}
+.poloha-rozloz>div:last-child>div[style]{margin-top:0!important}
+#mini-mapa{height:400px;overflow:hidden;border:var(--l1);background:var(--plocha);position:relative}
 .mapa-tl{position:absolute;top:10px;right:10px;z-index:2;display:flex;gap:6px}
-.mapa-tl .tl{height:36px;padding:0 12px;font-size:14px}
+.mapa-tl .tl{height:34px;padding:0 10px;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
 .mapa-tl .tl[aria-pressed=true]{background:var(--cierna);color:var(--biela)}
-.mapa-pozn{position:absolute;left:10px;bottom:10px;z-index:2;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tx);background:var(--biela);padding:6px 10px;pointer-events:none}
-.riadok-tl{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.mapa-pozn{position:absolute;left:10px;bottom:10px;z-index:2;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--tx);background:var(--biela);padding:5px 8px;pointer-events:none}
+.riadok-tl{display:flex;gap:8px;flex-wrap:wrap;margin-top:0}
 .riadok-tl .tl{height:40px;padding:0 14px;font-size:14px}
-.sur{font-family:var(--mono);font-size:15px;font-variant-numeric:tabular-nums;padding:4px 0 0;font-weight:500}
-/* ovládanie MapLibre bez zaoblení a tieňov */
-#mini-mapa .maplibregl-ctrl-group{border-radius:0;box-shadow:none;border:1px solid var(--ciara2);background:var(--biela)}
+.sur{font-size:24px;font-weight:400;letter-spacing:-.01em;font-variant-numeric:tabular-nums;padding:2px 0 6px;border-bottom:var(--l2)}
+#mini-mapa .maplibregl-ctrl-group{border-radius:0;box-shadow:none;border:var(--l1);background:var(--biela)}
 #mini-mapa .maplibregl-ctrl-group button{border-radius:0;width:34px;height:34px}
-#mini-mapa .maplibregl-ctrl-group button+button{border-top:1px solid var(--ciara3)}
+#mini-mapa .maplibregl-ctrl-group button+button{border-top:var(--l2)}
 #mini-mapa .maplibregl-ctrl-attrib{border-radius:0;font-family:var(--pismo);font-size:10px;color:var(--tx2);background:rgba(255,255,255,.85)}
 #mini-mapa .maplibregl-ctrl-attrib-button{border-radius:0}
 
 /* obrázky */
-.drop{border:1.5px dashed var(--ciara2);padding:36px 24px;text-align:center;color:var(--tx2);cursor:pointer;transition:border-color .15s,background .15s;font-size:14px;line-height:1.45}
-.drop b{color:var(--tx);display:block;font-size:17px;font-weight:600;margin-bottom:4px}
-.drop.nad,.drop:hover,.drop:focus-visible{border-color:var(--ciara);background:var(--plocha);outline:none}
-.galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:20px}
+.drop{border:1px dashed var(--ciara);padding:44px 24px;text-align:center;color:var(--tx2);cursor:pointer;transition:background .15s;font-size:14px;line-height:1.45}
+.drop b{color:var(--tx);display:block;font-size:20px;font-weight:400;margin-bottom:6px;letter-spacing:-.01em}
+.drop.nad,.drop:hover,.drop:focus-visible{background:var(--papier);outline:none}
+.galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--okraj);margin-top:28px}
 .galeria:empty{display:none}
-.obr{background:var(--biela);border:1px solid var(--ciara2);overflow:hidden;display:flex;flex-direction:column}
+.obr{background:transparent;border:0;overflow:hidden;display:flex;flex-direction:column}
 .obr .nahl{aspect-ratio:4/3;background:var(--plocha) center/cover no-repeat;position:relative}
 .obr .nahl .tlac{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:opacity .15s}
 .obr:hover .nahl .tlac,.obr:focus-within .nahl .tlac{opacity:1}
-.obr .nahl .tlac button{background:var(--biela);border:1px solid var(--ciara);color:var(--tx);width:32px;height:32px;display:grid;place-items:center;padding:0;font-size:18px;line-height:1}
+.obr .nahl .tlac button{background:var(--biela);border:var(--l1);color:var(--tx);width:32px;height:32px;display:grid;place-items:center;padding:0;font-size:18px;line-height:1}
 .obr .nahl .tlac button:hover{background:var(--cierna);color:var(--biela)}
-.obr .nahl .druh{position:absolute;left:8px;bottom:8px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:var(--biela);padding:4px 7px;color:var(--tx2)}
+.obr .nahl .druh{position:absolute;left:8px;bottom:8px;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;background:var(--biela);padding:4px 6px;color:var(--tx)}
 .obr .nahl .druh.novy{color:var(--biela);background:var(--cervena)}
-.obr input{border-radius:0;border:0;border-top:1px solid var(--ciara2);background:transparent;height:40px;padding:0 12px;font-size:13.5px}
-.obr input:focus{box-shadow:none;border-top-color:var(--ciara)}
-.url-riadok{display:flex;gap:10px;margin-top:16px}
+.obr input{height:40px;font-size:14px}
+.url-riadok{display:flex;gap:var(--okraj);align-items:flex-end;margin-top:28px}
 .url-riadok input{flex:1}
 
 /* päta editora */
-.pata{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:14px;color:var(--tx3);padding:16px 0 0;border-top:var(--linka) solid var(--ciara);margin-top:8px}
-.pata .tl{margin-left:auto}
+.pata{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--tx2);padding:8px 0 0;border-top:var(--l1)}
+.pata .tl{margin-left:auto;text-transform:none;letter-spacing:.01em}
 .pata .tl+.tl{margin-left:0}
 
-/* pätička stránky */
-.tb-pata{flex:none;display:flex;align-items:center;justify-content:space-between;gap:24px;height:52px;padding:0 var(--okraj);background:var(--biela);border-top:var(--linka-hruba) solid var(--ciara)}
-.tb-pata .tb-stitok{font-size:12px;letter-spacing:.12em;font-weight:600}
-.tb-pata .tb-stitok.tlm{color:var(--tx3);font-weight:500}
+/* pätička stránky — mikro-štítky na okraji ako na plagáte */
+.tb-pata{flex:none;display:flex;align-items:center;justify-content:space-between;gap:24px;height:48px;padding:0 var(--okraj);background:var(--biela);border-top:var(--l1)}
+.tb-pata .tb-stitok{font-size:11px;letter-spacing:.08em;font-weight:500;color:var(--tx)}
+.tb-pata .tb-stitok.tlm{color:var(--tx3)}
 
 /* dialógy */
-dialog{background:var(--biela);color:var(--tx);border:var(--linka-hruba) solid var(--ciara);border-radius:0;padding:0;max-width:600px;width:calc(100% - 32px)}
-dialog::backdrop{background:rgba(0,0,0,.35)}
+dialog{background:var(--biela);color:var(--tx);border:var(--l1);border-radius:0;padding:0;max-width:620px;width:calc(100% - 32px)}
+dialog::backdrop{background:rgba(0,0,0,.3)}
 dialog .vn{padding:28px 32px 32px}
-dialog h2{margin:0 0 16px;font-weight:600;font-size:30px;line-height:1;letter-spacing:-.02em;padding-bottom:12px;border-bottom:var(--linka-hruba) solid var(--ciara)}
-dialog p{margin:0 0 14px;color:var(--tx2);font-size:15px;line-height:1.5}
-dialog ol{margin:0 0 20px;padding-left:22px;color:var(--tx2);font-size:15px;line-height:1.5;display:flex;flex-direction:column;gap:6px}
-dialog ol b{color:var(--tx);font-weight:600}
-dialog .pole{margin-bottom:14px}
-dialog .tlacidla{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
-.log{font-family:var(--mono);font-size:13.5px;background:var(--plocha);border:1px solid var(--ciara2);padding:14px 16px;max-height:300px;overflow:auto;white-space:pre-wrap;color:var(--tx2);line-height:1.5}
+dialog h2{margin:0 0 20px;font-weight:400;font-size:36px;line-height:1;letter-spacing:-.02em;padding-bottom:14px;border-bottom:var(--l1)}
+dialog p{margin:0 0 14px;color:var(--tx2);font-size:15px;line-height:1.45}
+dialog ol{margin:0 0 24px;padding-left:20px;color:var(--tx2);font-size:15px;line-height:1.45;display:flex;flex-direction:column;gap:6px}
+dialog ol b{color:var(--tx);font-weight:500}
+dialog .pole{margin-bottom:22px}
+dialog .tlacidla{display:flex;gap:8px;justify-content:flex-end;margin-top:28px;padding-top:16px;border-top:var(--l2)}
+.log{font-family:var(--mono);font-size:13px;background:var(--papier);border:var(--l2);padding:14px 16px;max-height:300px;overflow:auto;white-space:pre-wrap;color:var(--tx2);line-height:1.5}
 .log:empty{display:none}
-.log .ok{color:var(--tx);font-weight:600}
-.log .chyba{color:var(--cervena2);font-weight:600}
-#toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--cierna);color:var(--biela);padding:14px 20px;font-size:15px;font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:30}
+.log .ok{color:var(--tx)}
+.log .chyba{color:var(--cervena2)}
+#toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--cierna);color:var(--biela);padding:14px 20px;font-size:15px;font-weight:500;opacity:0;pointer-events:none;transition:.2s;z-index:30}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 
 @media (max-width:1180px){
-  .rozloz{grid-template-columns:calc(3*var(--stl) + 2*var(--okraj)) 1fr}
   .poloha-rozloz{grid-template-columns:1fr}
-  .tb-lista .tb-znacka{font-size:24px}
+  .tb-lista .tb-znacka{font-size:26px}
 }
 @media (max-width:960px){
   body{overflow:auto;height:auto}
-  .rozloz{grid-template-columns:1fr;padding:0}
-  aside{max-height:46vh;border-left:0;border-right:0;border-bottom:var(--linka-hruba) solid var(--ciara)}
+  .rozloz{grid-template-columns:1fr;padding:0 var(--okraj)}
+  aside{max-height:46vh;border-right:0;margin-right:0;padding-right:0;border-bottom:var(--l1)}
   .poloha-rozloz,.mriezka{grid-template-columns:1fr}
   .tb-lista nav{display:none}
-  .editor{padding:24px var(--okraj) 64px}
-  .hlava h2{font-size:30px}
+  .editor{padding:24px 0 64px}
+  .hlava h2{font-size:32px}
   .dm-grid{display:none}
 }
 @media (max-width:640px){
-  .tb-lista>.tb-stitok{display:none}
-  .tb-lista .tb-vpravo{gap:8px}
+  .tb-lista .tb-vpravo{gap:6px}
   .pripoj span{display:none}
-  .pripoj{padding:0 10px}
+  .pripoj{padding:0 8px}
   .tb-pata{height:auto;padding:12px var(--okraj);flex-direction:column;align-items:flex-start;gap:4px}
 }
 </style>
@@ -226,7 +225,7 @@ dialog .tlacidla{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
   <div class="tb-vpravo">
     <button class="pripoj" id="pripoj" title="Pripojenie na GitHub"><i></i><span>bez pripojenia</span></button>
     <button class="tl" id="tl-novy">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
       Nový zámer</button>
     <button class="tl hl" id="tl-uloz" disabled>Uložiť na GitHub <span class="badge" id="poc-zmien">0</span></button>
   </div>
@@ -254,7 +253,7 @@ dialog .tlacidla{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
     <div class="prazdne">
       <h2>Vyber zámer vľavo</h2>
       <p>Doplníš mu polohu, obrázky, obchodný názov, fázu alebo architekta. Alebo pridaj <b>Nový zámer</b>, ktorý v registri nie je.</p>
-      <p style="font-size:14px;color:var(--tx3)">Zmeny sa priebežne ukladajú v tomto prehliadači. Do mapy sa dostanú tlačidlom <b>Uložiť na GitHub</b>.</p>
+      <p style="font-size:12.5px;color:var(--tx3)">Zmeny sa priebežne ukladajú v tomto prehliadači. Do mapy sa dostanú tlačidlom <b>Uložiť na GitHub</b>.</p>
     </div>
   </section>
 </div>
