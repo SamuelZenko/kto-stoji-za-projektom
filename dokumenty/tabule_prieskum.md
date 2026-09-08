@@ -2,11 +2,14 @@
 
 Cieľ: zistiť, odkiaľ a ako sa dajú strojovo brať verejné vyhlášky stavebných úradov (stavebné povolenia, územné rozhodnutia, kolaudácie), keď CUET pokrýva len 9 MČ a útržkovito.
 
-## Výsledok v skratke
+## Výsledok v skratke (doplnené 8. 9. večer)
 
-- **14 zo 17** tabúľ nájdených a čitateľných skriptom.
-- **2 nedostupné** z tejto siete (Ružinov, Jarovce) — obe odmietajú spojenie aj z prehliadača; skúsiť z inej siete / neskôr. Ružinov je najväčší stavebný úrad, bez neho to nemá zmysel spúšťať.
-- **1 bez vlastnej tabule** (Vajnory) — odkazuje priamo na CUET, tam už je.
+- **16 zo 17 MČ napojených** v sledovači (`tabule_sledovac.py`).
+- **Jarovce** — HTTPS (port 443) z našej siete neodpovedá, obyčajné HTTP ide; stránka je vo windows-1250. Napojené.
+- **Vajnory** — vlastnú tabuľu nemajú, odkazujú na CUET. Napojené cez CUET dopyt.
+- **Ružinov — jediná chýbajúca MČ.** Server `ruzinov.sk` (86.110.226.183) odpovedá na ping, ale port 80 aj 443 vypršia — a to aj z inej siete (fetcher mimo magistrátu dostal „connection refused"). Nie je to blokovanie robotov, server je nedostupný. Ružinov je ~30 % konaní; jeho vyhlášky čiastočne máme z CUET (44 dokumentov v 2026). Skúšať priebežne, parser dopísať, keď ožije.
+
+V mape je to vyznačené: poznámka pod Vrstvami uvádza 16 zo 17 a Ružinov ako chýbajúci; karta ružinovského zámeru pri stave píše „úradná tabuľa MČ Ružinov zatiaľ nie je napojená".
 - Weby stoja na **5 systémoch**, čiže treba ~5 parserov, nie 17. **9 tabúľ má RSS**, čo parser zjednoduší na čítanie XML.
 
 ## Po mestských častiach
