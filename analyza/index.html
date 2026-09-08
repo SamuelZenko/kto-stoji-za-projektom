@@ -3,111 +3,89 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <meta name="description" content="Analýza zberu">
 <title>Anatómia bratislavskej výstavby</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../spolocne/tuba.css">
 
 <style>
-  :root {
-    --ground:#ECEEF0; --surface:#FFFFFF; --sunken:#E1E5E8;
-    --ink:#0F151A; --ink-soft:#39454F; --muted:#5F6E79;
-    --line:#CBD3D9; --line-soft:#DEE4E8;
-    --acc:#B01B52; --acc-bg:#FBE9EF;
-    --ok:#0B6B5E; --ok-bg:#E2F0ED;
-    --warn:#9A5B08; --warn-bg:#FAEEDD;
-    --shadow:0 1px 2px rgba(15,21,26,.05), 0 10px 28px rgba(15,21,26,.06);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ground:#0B0F13; --surface:#141A20; --sunken:#1C242B;
-      --ink:#E8EEF3; --ink-soft:#C0CBD4; --muted:#8A98A3;
-      --line:#2B353D; --line-soft:#222B32;
-      --acc:#FF6F9C; --acc-bg:#2A141C;
-      --ok:#43C6AF; --ok-bg:#102420;
-      --warn:#E5A648; --warn-bg:#2A2113;
-      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.32);
-    }
-  }
-  :root[data-theme="dark"] {
-    --ground:#0B0F13; --surface:#141A20; --sunken:#1C242B;
-    --ink:#E8EEF3; --ink-soft:#C0CBD4; --muted:#8A98A3;
-    --line:#2B353D; --line-soft:#222B32;
-    --acc:#FF6F9C; --acc-bg:#2A141C;
-    --ok:#43C6AF; --ok-bg:#102420;
-    --warn:#E5A648; --warn-bg:#2A2113;
-    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.32);
-  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  .wrap{max-width:1440px;margin:0 auto;padding:calc(var(--okraj)*1.4) var(--okraj) calc(var(--okraj)*2.5);display:flex;flex-direction:column;gap:calc(var(--okraj)*1.6)}
+  .wrap>section,.wrap>footer{max-width:880px}
+  .mono,code{font-family:var(--mono)}
 
-  * { box-sizing:border-box; }
-  body { background:var(--ground); color:var(--ink); margin:0;
-    font-family:"Public Sans", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-    font-size:17px; line-height:1.62; -webkit-font-smoothing:antialiased; }
-  .wrap { max-width:49rem; margin:0 auto; padding:3.5rem 1.3rem 6rem; display:flex; flex-direction:column; gap:3rem; }
-  h1,h2,h3 { font-family:"Newsreader", Georgia, serif; font-weight:600; }
-  .mono, code { font-family:"IBM Plex Mono", ui-monospace, monospace; }
+  /* hlavička dokumentu — štítok na linke, poster-nadpis, perex */
+  .wrap>header{display:flex;flex-direction:column;gap:0}
+  .eyebrow{display:flex;justify-content:space-between;gap:16px;margin:0;max-width:none;padding-bottom:6px;border-bottom:var(--linka) solid var(--ciara);
+    font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;line-height:1.2;color:var(--tx)}
+  .eyebrow::after{content:"analýza zberu";color:var(--tx3);white-space:nowrap}
+  h1{font-weight:500;font-size:clamp(36px,5.2vw,72px);line-height:1;letter-spacing:-.025em;margin:.16em 0 0;max-width:11em}
+  .lede{font-size:clamp(17px,1.5vw,21px);line-height:1.3;color:var(--tx);margin:32px 0 0;max-width:36em}
 
-  header { display:flex; flex-direction:column; gap:.85rem; }
-  .eyebrow { font-family:"IBM Plex Mono",monospace; font-size:.71rem; letter-spacing:.14em; text-transform:uppercase; color:var(--acc); margin:0; }
-  h1 { font-size:clamp(2.3rem,6.6vw,3.3rem); line-height:1.03; letter-spacing:-.02em; margin:0; text-wrap:balance; }
-  .lede { font-size:1.14rem; color:var(--ink-soft); margin:0; max-width:38rem; }
+  /* čísla — veľká cifra nad popisom, každá na vlastnej linke */
+  .cisla{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--okraj);margin-top:calc(var(--okraj)*-.4)}
+  .c{display:flex;flex-direction:column;gap:2px;border-top:var(--linka) solid var(--ciara);padding-top:10px}
+  .c b{font-size:clamp(30px,3vw,44px);font-weight:500;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--tx)}
+  .c span{font-size:13.5px;color:var(--tx2);line-height:1.35;margin-top:6px}
 
-  .cisla { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
-  .c { background:var(--surface); padding:1rem .95rem; display:flex; flex-direction:column; gap:.1rem; }
-  .c b { font-family:"Newsreader",serif; font-size:1.75rem; line-height:1; color:var(--acc); font-weight:600; font-variant-numeric:tabular-nums; }
-  .c span { font-size:.78rem; color:var(--muted); line-height:1.35; }
+  /* sekcie — číslo ako štítok na linke, nadpis pod ňou */
+  section{display:flex;flex-direction:column;gap:14px}
+  section>h2{font-weight:500;font-size:clamp(26px,3vw,40px);line-height:1.02;letter-spacing:-.02em;margin:0 0 10px}
+  section>h2 .n{display:flex;justify-content:space-between;gap:16px;padding-bottom:6px;margin:0 0 .3em;border-bottom:var(--linka) solid var(--ciara);
+    font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;line-height:1.2;color:var(--tx);max-width:none}
+  section>h2 .n::after{content:"Anatómia bratislavskej výstavby";color:var(--tx3);white-space:nowrap}
+  h3{font-size:22px;font-weight:500;line-height:1.1;letter-spacing:-.01em;margin:16px 0 -2px}
+  p{margin:0;max-width:62ch;font-size:16px;line-height:1.5;color:var(--tx2)}
+  strong{font-weight:500;color:var(--tx)}
+  code{font-size:.86em;background:var(--plocha);padding:.1em .35em}
+  ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:8px;max-width:62ch;font-size:16px;line-height:1.5;color:var(--tx2)}
+  li::marker{color:var(--tx3)}
 
-  section { display:flex; flex-direction:column; gap:1.1rem; }
-  section > h2 { font-size:1.75rem; letter-spacing:-.015em; margin:0; line-height:1.18; text-wrap:balance; }
-  section > h2 .n { color:var(--acc); font-family:"IBM Plex Mono",monospace; font-size:1rem; font-weight:500; vertical-align:.45em; margin-right:.5rem; }
-  h3 { font-size:1.13rem; margin:.55rem 0 -.45rem; }
-  p { margin:0; max-width:39rem; }
-  strong { font-weight:600; color:var(--ink); }
-  code { font-size:.86em; background:var(--sunken); padding:.08em .35em; border-radius:2px; }
-  ul { margin:0; padding-left:1.15rem; display:flex; flex-direction:column; gap:.4rem; max-width:39rem; }
-  li::marker { color:var(--muted); }
+  /* tabuľky */
+  .tab{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:30rem}
+  th,td{text-align:left;padding:11px 12px 11px 0;border-bottom:1px solid var(--ciara2);vertical-align:top;color:var(--tx2)}
+  th{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);padding:0 12px 8px 0;border-bottom:var(--linka) solid var(--ciara);vertical-align:bottom;white-space:nowrap}
+  td:first-child{color:var(--tx);font-weight:500}
+  tbody tr:last-child td{border-bottom:none}
+  th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.zn{color:var(--tx);font-weight:500;white-space:nowrap}
 
-  .tab { overflow-x:auto; border:1px solid var(--line); background:var(--surface); }
-  table { border-collapse:collapse; width:100%; font-size:.9rem; min-width:30rem; }
-  th,td { text-align:left; padding:.5rem .7rem; border-bottom:1px solid var(--line-soft); vertical-align:top; }
-  th { font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:.66rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:var(--sunken); white-space:nowrap; }
-  tbody tr:last-child td { border-bottom:none; }
-  td.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
-  td.zn { color:var(--acc); font-weight:600; white-space:nowrap; }
+  /* bloky s poznámkou */
+  .zist,.oprava,.hot{background:var(--plocha);padding:20px 22px 18px;display:flex;flex-direction:column;gap:10px}
+  .zist b,.oprava b,.hot b{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--tx);font-weight:500;line-height:1.2}
+  .oprava b{color:var(--cervena2)}
+  .zist p,.oprava p,.hot p,.hot ul{font-size:15px;color:var(--tx2)}
+  .hot ul{margin-top:2px}
 
-  .zist { background:var(--acc-bg); border-left:3px solid var(--acc); padding:1.1rem 1.25rem; display:flex; flex-direction:column; gap:.4rem; }
-  .zist b { font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.11em; text-transform:uppercase; color:var(--acc); font-weight:500; }
-  .zist p { color:var(--ink-soft); }
+  /* výpis nástroja */
+  .vypis{background:var(--biela);border:1px solid var(--ciara2);padding:16px 18px;font-family:var(--mono);font-size:13px;line-height:1.85;overflow-x:auto;color:var(--tx2)}
+  .vypis .h{color:var(--tx);font-weight:500;font-family:var(--pismo);font-size:14px;margin-bottom:4px}
+  .vypis .d{color:var(--tx3)}
 
-  .oprava { background:var(--warn-bg); border-left:3px solid var(--warn); padding:1.1rem 1.25rem; display:flex; flex-direction:column; gap:.4rem; }
-  .oprava b { font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.11em; text-transform:uppercase; color:var(--warn); font-weight:500; }
-  .oprava p { color:var(--ink-soft); }
+  footer{border-top:var(--linka) solid var(--ciara);padding-top:18px;color:var(--tx3);font-size:13.5px;line-height:1.5;display:flex;flex-direction:column;gap:8px;margin-top:var(--okraj)}
+  footer p{font-size:13.5px;color:var(--tx3);max-width:80ch}
 
-  .hot { background:var(--ok-bg); border-left:3px solid var(--ok); padding:1.1rem 1.25rem; }
-  .hot b { font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.11em; text-transform:uppercase; color:var(--ok); font-weight:500; display:block; margin-bottom:.3rem; }
-  .hot p, .hot ul { color:var(--ink-soft); }
-
-  .vypis { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); padding:1.2rem 1.3rem; font-family:"IBM Plex Mono",monospace; font-size:.8rem; line-height:1.85; overflow-x:auto; }
-  .vypis .h { color:var(--acc); font-weight:500; }
-  .vypis .d { color:var(--muted); }
-
-  footer { border-top:1px solid var(--line); padding-top:1.5rem; color:var(--muted); font-size:.88rem; display:flex; flex-direction:column; gap:.5rem; }
-
-  @media (max-width:640px) {
-    body { font-size:16px; }
-    .wrap { padding:2.4rem 1rem 4rem; gap:2.4rem; }
-    .cisla { grid-template-columns:1fr 1fr; }
+  @media (max-width:1000px){.cisla{grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){
+    .eyebrow::after,section>h2 .n::after{display:none}
+    p,ul{font-size:15px}
+    .cisla{gap:16px}
   }
 </style>
 </head>
 <body>
+<header class="tb-lista">
+  <a class="tb-znacka" href="../mapa-zamerov/">Zámery<span class="l"></span>Bratislavy</a>
+  <nav><a href="../mapa-zamerov/">Mapa</a><a href="../redakcia/">Doplniť polohy a obrázky</a><a href="../tok-dat/">Tok dát</a></nav>
+  <div class="tb-vpravo"><span class="tb-stitok">Metropolitný inštitút Bratislavy</span></div>
+</header>
 <div class="wrap">
 
 <header>
   <p class="eyebrow">Analýza zberu · MIB · september 2026</p>
-  <h1>Anatómia bratislavskej výstavby</h1>
+  <h1>Anatómia<br>bratislavskej výstavby</h1>
   <p class="lede">Čo ukázalo stiahnutie celého registra EIA a rozobratie 2 303 bratislavských zámerov — vrátane jedného zistenia, ktoré vyvracia môj vlastný skorší odhad.</p>
 </header>
 

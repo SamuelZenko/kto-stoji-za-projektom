@@ -3,141 +3,117 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <meta name="description" content="Rešerš k mape rozvoja">
 <title>Kto stavia Bratislavu</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../spolocne/tuba.css">
 
 <style>
-  :root {
-    --ground:#ECEEF0; --surface:#FFFFFF; --sunken:#E1E5E8;
-    --ink:#0F151A; --ink-soft:#39454F; --muted:#5F6E79;
-    --line:#CBD3D9; --line-soft:#DEE4E8;
-    --acc:#B01B52; --acc-bg:#FBE9EF;
-    --ok:#0B6B5E; --ok-bg:#E2F0ED;
-    --mid:#9A5B08; --mid-bg:#FAEEDD;
-    --no:#5F6E79; --no-bg:#E7EBEE;
-    --shadow:0 1px 2px rgba(15,21,26,.05), 0 10px 28px rgba(15,21,26,.06);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ground:#0B0F13; --surface:#141A20; --sunken:#1C242B;
-      --ink:#E8EEF3; --ink-soft:#C0CBD4; --muted:#8A98A3;
-      --line:#2B353D; --line-soft:#222B32;
-      --acc:#FF6F9C; --acc-bg:#2A141C;
-      --ok:#43C6AF; --ok-bg:#102420;
-      --mid:#E5A648; --mid-bg:#2A2113;
-      --no:#8A98A3; --no-bg:#1B2229;
-      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.32);
-    }
-  }
-  :root[data-theme="dark"] {
-    --ground:#0B0F13; --surface:#141A20; --sunken:#1C242B;
-    --ink:#E8EEF3; --ink-soft:#C0CBD4; --muted:#8A98A3;
-    --line:#2B353D; --line-soft:#222B32;
-    --acc:#FF6F9C; --acc-bg:#2A141C;
-    --ok:#43C6AF; --ok-bg:#102420;
-    --mid:#E5A648; --mid-bg:#2A2113;
-    --no:#8A98A3; --no-bg:#1B2229;
-    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.32);
-  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  .wrap{max-width:1440px;margin:0 auto;padding:calc(var(--okraj)*1.4) var(--okraj) calc(var(--okraj)*2.5);display:flex;flex-direction:column;gap:calc(var(--okraj)*1.6)}
+  .wrap>section,.wrap>footer{max-width:880px}
+  .mono,code{font-family:var(--mono)}
 
-  * { box-sizing:border-box; }
-  body {
-    background:var(--ground); color:var(--ink); margin:0;
-    font-family:"Public Sans", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-    font-size:17px; line-height:1.62; -webkit-font-smoothing:antialiased;
-  }
-  .wrap { max-width:50rem; margin:0 auto; padding:3.5rem 1.3rem 6rem; display:flex; flex-direction:column; gap:3.2rem; }
+  /* hlavička dokumentu — štítok na linke, poster-nadpis, perex */
+  .wrap>header{display:flex;flex-direction:column;gap:0}
+  .eyebrow{display:flex;justify-content:space-between;gap:16px;margin:0;padding-bottom:6px;border-bottom:var(--linka) solid var(--ciara);
+    font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;line-height:1.2;color:var(--tx)}
+  .eyebrow::after{content:"rešerš k mape rozvoja";color:var(--tx3);white-space:nowrap}
+  h1{font-weight:500;font-size:clamp(36px,5.2vw,72px);line-height:1;letter-spacing:-.025em;margin:.16em 0 0;max-width:11em}
+  .lede{font-size:clamp(17px,1.5vw,21px);line-height:1.3;color:var(--tx);margin:32px 0 0;max-width:36em}
+  .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
+  .meta span{display:inline-flex;align-items:center;height:22px;padding:0 8px;border:1px solid var(--ciara);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
 
-  h1,h2,h3 { font-family:"Newsreader", Georgia, serif; font-weight:600; }
-  .eyebrow, .lbl, code, .mono { font-family:"IBM Plex Mono", ui-monospace, monospace; }
+  /* sekcie — číslo ako štítok na linke, nadpis pod ňou */
+  section{display:flex;flex-direction:column;gap:14px}
+  section>h2{font-weight:500;font-size:clamp(26px,3vw,40px);line-height:1.02;letter-spacing:-.02em;margin:0 0 10px}
+  section>h2 .cis{display:flex;justify-content:space-between;gap:16px;padding-bottom:6px;margin:0 0 .3em;border-bottom:var(--linka) solid var(--ciara);
+    font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;line-height:1.2;color:var(--tx);max-width:none}
+  section>h2 .cis::after{content:"Kto stavia Bratislavu";color:var(--tx3);white-space:nowrap}
+  h3{font-size:22px;font-weight:500;line-height:1.1;letter-spacing:-.01em;margin:16px 0 -2px}
+  p{margin:0;font-size:16px;line-height:1.5;color:var(--tx2)}
+  section>p,.blok>p{max-width:62ch}
+  strong{font-weight:500;color:var(--tx)}
+  em.q{font-style:italic;color:var(--tx2)}
+  code{font-size:.86em;background:var(--plocha);padding:.1em .35em}
+  .wrap a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.16em}
+  .wrap a:hover{color:var(--cervena2)}
 
-  .eyebrow { font-size:.71rem; letter-spacing:.14em; text-transform:uppercase; color:var(--acc); margin:0; }
+  ul,ol{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:8px;max-width:62ch;font-size:16px;line-height:1.5;color:var(--tx2)}
+  li::marker{color:var(--tx3)}
 
-  header { display:flex; flex-direction:column; gap:.85rem; }
-  h1 { font-size:clamp(2.4rem,7vw,3.5rem); line-height:1.02; letter-spacing:-.02em; margin:0; text-wrap:balance; }
-  .lede { font-size:1.14rem; color:var(--ink-soft); margin:0; max-width:38rem; }
-  .meta { display:flex; flex-wrap:wrap; gap:.4rem; padding-top:.4rem; }
-  .meta span { font-family:"IBM Plex Mono",monospace; font-size:.7rem; color:var(--muted); border:1px solid var(--line); padding:.2rem .5rem; }
+  .blok{background:var(--biela);border:1px solid var(--ciara2);padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+  .blok h3{margin-top:0}
 
-  section { display:flex; flex-direction:column; gap:1.15rem; }
-  section > h2 { font-size:1.85rem; letter-spacing:-.015em; margin:0; line-height:1.15; text-wrap:balance; }
-  section > h2 .cis { color:var(--acc); font-size:1.1rem; vertical-align:.45em; margin-right:.5rem; font-family:"IBM Plex Mono",monospace; font-weight:500; }
-  h3 { font-size:1.18rem; margin:.5rem 0 -.4rem; letter-spacing:-.01em; }
-  p { margin:0; }
-  section > p, .blok > p { max-width:40rem; }
-  strong { font-weight:600; color:var(--ink); }
-  em.q { font-style:italic; color:var(--ink-soft); }
-  code { font-size:.86em; background:var(--sunken); padding:.08em .35em; border-radius:2px; }
-  a { color:var(--acc); text-decoration-thickness:1px; text-underline-offset:2px; }
+  .zistenie{background:var(--plocha);padding:20px 22px 18px;display:flex;flex-direction:column;gap:10px}
+  .zistenie b{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--cervena2);font-weight:500;line-height:1.2}
+  .zistenie p{font-size:15px;color:var(--tx2)}
 
-  ul,ol { margin:0; padding-left:1.15rem; display:flex; flex-direction:column; gap:.42rem; max-width:40rem; }
-  li::marker { color:var(--muted); }
+  /* tabuľky */
+  .tab{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:34rem}
+  th,td{text-align:left;padding:11px 12px 11px 0;border-bottom:1px solid var(--ciara2);vertical-align:top;color:var(--tx2)}
+  thead th{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);padding:0 12px 8px 0;border-bottom:var(--linka) solid var(--ciara);vertical-align:bottom;white-space:nowrap}
+  tbody th{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);white-space:nowrap;padding-top:13px}
+  td:first-child,td strong{color:var(--tx);font-weight:500}
+  tbody tr:last-child td,tbody tr:last-child th{border-bottom:none}
+  td.c{text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
+  td.c.mono{color:var(--tx2);font-weight:400}
+  .pill{display:inline-flex;align-items:center;height:22px;padding:0 8px;background:var(--plocha);color:var(--tx);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
+  .p-ok{background:var(--cierna);color:var(--biela)}
+  .p-mid{background:transparent;border:1px solid var(--ciara)}
+  .p-no{background:var(--plocha);color:var(--tx3)}
 
-  .blok { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); padding:1.5rem 1.55rem; display:flex; flex-direction:column; gap:.9rem; }
+  /* signály — každý sedí na tenkej linke */
+  .sig{border-top:1px solid var(--ciara2);padding:16px 0 4px;display:flex;flex-direction:column;gap:8px}
+  .sig-h{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .sig-h b{font-size:11px;letter-spacing:.09em;color:var(--tx3);font-weight:500;flex:none;font-variant-numeric:tabular-nums}
+  .sig-h h3{margin:0;font-size:18px;flex:1;min-width:12rem}
+  .sila{display:flex;gap:2px;align-items:center;flex:none}
+  .sila i{width:16px;height:5px;background:var(--ciara2)}
+  .sila i.on{background:var(--cierna)}
+  .sila span{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);margin-left:8px}
+  .sig p{font-size:15px;max-width:62ch}
 
-  .zistenie { background:var(--acc-bg); border-left:3px solid var(--acc); padding:1.1rem 1.25rem; display:flex; flex-direction:column; gap:.4rem; }
-  .zistenie b { font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--acc); font-weight:500; }
-  .zistenie p { color:var(--ink-soft); }
+  /* možnosti */
+  .moz{background:var(--biela);border:1px solid var(--ciara2);padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+  .moz-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .moz-h b{font-size:22px;font-weight:500;line-height:1.1;letter-spacing:-.01em;flex:1;min-width:12rem;color:var(--tx)}
+  .cena{display:inline-flex;align-items:center;height:22px;padding:0 8px;border:1px solid var(--ciara);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;color:var(--tx)}
+  .moz ul{font-size:15px}
+  .moz .vysl{font-size:15px;border-top:1px solid var(--ciara2);padding-top:12px}
+  .moz .vysl b{color:var(--tx);font-weight:500}
 
-  /* tabulky */
-  .tab { overflow-x:auto; border:1px solid var(--line); background:var(--surface); }
-  table { border-collapse:collapse; width:100%; font-size:.9rem; min-width:34rem; }
-  th,td { text-align:left; padding:.55rem .7rem; border-bottom:1px solid var(--line-soft); vertical-align:top; }
-  th { font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:.67rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:var(--sunken); white-space:nowrap; }
-  tbody tr:last-child td { border-bottom:none; }
-  td.c { text-align:center; white-space:nowrap; font-variant-numeric:tabular-nums; }
-  .pill { font-family:"IBM Plex Mono",monospace; font-size:.66rem; padding:.16rem .45rem; border-radius:2px; white-space:nowrap; }
-  .p-ok { background:var(--ok-bg); color:var(--ok); }
-  .p-mid { background:var(--mid-bg); color:var(--mid); }
-  .p-no { background:var(--no-bg); color:var(--no); }
+  /* obrázky */
+  figure{margin:6px 0 0;display:flex;flex-direction:column;gap:12px}
+  figure svg{width:100%;height:auto;display:block;color:var(--tx)}
+  figcaption{font-size:13.5px;line-height:1.45;color:var(--tx3);max-width:62ch}
+  svg .a-s{stroke:var(--cervena2)} svg .a-f{fill:var(--cervena2)}
+  svg .o-s{stroke:var(--cierna)} svg .o-f{fill:var(--cierna)}
 
-  /* signaly */
-  .sig { background:var(--surface); border:1px solid var(--line); padding:1.1rem 1.25rem; display:flex; flex-direction:column; gap:.5rem; }
-  .sig-h { display:flex; align-items:baseline; gap:.7rem; flex-wrap:wrap; }
-  .sig-h b { font-family:"IBM Plex Mono",monospace; color:var(--acc); font-size:.72rem; font-weight:500; flex:none; }
-  .sig-h h3 { margin:0; font-size:1.08rem; flex:1; min-width:12rem; }
-  .sila { display:flex; gap:2px; align-items:center; flex:none; }
-  .sila i { width:16px; height:5px; background:var(--line); border-radius:1px; }
-  .sila i.on { background:var(--acc); }
-  .sila span { font-family:"IBM Plex Mono",monospace; font-size:.64rem; color:var(--muted); margin-left:.35rem; }
-  .sig p { font-size:.95rem; color:var(--ink-soft); max-width:40rem; }
+  footer{border-top:var(--linka) solid var(--ciara);padding-top:18px;color:var(--tx3);font-size:13.5px;line-height:1.5;display:flex;flex-direction:column;gap:8px;margin-top:var(--okraj)}
+  footer p{font-size:13.5px;color:var(--tx3)}
+  footer a{color:var(--tx)}
 
-  /* moznosti */
-  .moz { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); padding:1.3rem 1.4rem; display:flex; flex-direction:column; gap:.6rem; }
-  .moz-h { display:flex; align-items:baseline; gap:.75rem; flex-wrap:wrap; }
-  .moz-h b { font-family:"Newsreader",serif; font-size:1.25rem; font-weight:600; flex:1; min-width:12rem; }
-  .cena { font-family:"IBM Plex Mono",monospace; font-size:.72rem; color:var(--acc); background:var(--acc-bg); padding:.22rem .5rem; white-space:nowrap; }
-  .moz ul { font-size:.95rem; color:var(--ink-soft); }
-  .moz .vysl { font-size:.93rem; color:var(--ink-soft); border-top:1px solid var(--line-soft); padding-top:.55rem; }
-  .moz .vysl b { color:var(--ink); }
-
-  /* obrazky */
-  figure { margin:.3rem 0; display:flex; flex-direction:column; gap:.55rem; }
-  figure svg { width:100%; height:auto; display:block; color:var(--ink-soft); }
-  figcaption { font-size:.86rem; color:var(--muted); text-wrap:pretty; max-width:40rem; }
-  svg .a-s { stroke:var(--acc); } svg .a-f { fill:var(--acc); }
-  svg .o-s { stroke:var(--ok); } svg .o-f { fill:var(--ok); }
-
-  footer { border-top:1px solid var(--line); padding-top:1.5rem; color:var(--muted); font-size:.88rem; display:flex; flex-direction:column; gap:.5rem; }
-  footer a { color:var(--muted); }
-
-  @media (max-width:600px) {
-    body { font-size:16px; }
-    .wrap { padding:2.4rem 1rem 4rem; gap:2.5rem; }
-    .blok, .moz { padding:1.2rem 1.1rem; }
+  @media (max-width:640px){
+    .eyebrow::after,section>h2 .cis::after{display:none}
+    p,ul,ol{font-size:15px}
+    .blok,.moz{padding:16px 16px}
   }
 </style>
 </head>
 <body>
+<header class="tb-lista">
+  <a class="tb-znacka" href="../mapa-zamerov/">Zámery<span class="l"></span>Bratislavy</a>
+  <nav><a href="../mapa-zamerov/">Mapa</a><a href="../redakcia/">Doplniť polohy a obrázky</a><a href="../tok-dat/">Tok dát</a></nav>
+  <div class="tb-vpravo"><span class="tb-stitok">Metropolitný inštitút Bratislavy</span></div>
+</header>
 <div class="wrap">
 
 <header>
   <p class="eyebrow">Rešerš · MIB · september 2026</p>
-  <h1>Kto stavia Bratislavu</h1>
+  <h1>Kto stavia<br>Bratislavu</h1>
   <p class="lede">Ako spárovať kódové názvy z povolení s komerčnými názvami projektov, čo sa z toho dá automatizovať a čo nie — a čo by stálo postaviť mapu ako pražská „Praha zítra“.</p>
   <div class="meta"><span>overené v registroch</span><span>4 scenáre s odhadmi</span><span>River Park ako testovací prípad</span></div>
 </header>
@@ -192,7 +168,7 @@
           <polygon points="0,1 10,5 0,9" fill="currentColor"></polygon>
         </marker>
       </defs>
-      <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">
+      <g font-family="Overused Grotesk, Helvetica Neue, Arial, sans-serif" font-size="11.5" fill="currentColor">
 
         <text x="0" y="14" font-size="10" opacity=".6" letter-spacing="1.5">VEREJNOSŤ</text>
         <rect x="0" y="26" width="210" height="52" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
@@ -224,21 +200,21 @@
         <line x1="548" y1="122" x2="504" y2="108" stroke="currentColor" stroke-width="1.2" marker-end="url(#sp)"></line>
 
         <!-- fazy -->
-        <line x1="0" y1="196" x2="760" y2="196" stroke="currentColor" stroke-width="1" opacity=".28"></line>
+        <line x1="0" y1="196" x2="760" y2="196" stroke="currentColor" stroke-width="1.5"></line>
         <text x="0" y="184" font-size="10" opacity=".6" letter-spacing="1.5">ŽIVOTNÝ CYKLUS — ZDROJ PRE KAŽDÚ FÁZU</text>
 
         <g>
-          <circle cx="60" cy="196" r="6" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+          <circle cx="60" cy="196" r="6" fill="#F4F4F2" stroke="currentColor" stroke-width="1.6"></circle>
           <text x="60" y="224" text-anchor="middle" font-size="12">Zámer</text>
           <text x="60" y="240" text-anchor="middle" font-size="10" opacity=".62">EIA / záväzné</text>
           <text x="60" y="253" text-anchor="middle" font-size="10" opacity=".62">stanovisko</text>
 
-          <circle cx="255" cy="196" r="6" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+          <circle cx="255" cy="196" r="6" fill="#F4F4F2" stroke="currentColor" stroke-width="1.6"></circle>
           <text x="255" y="224" text-anchor="middle" font-size="12">Povolené</text>
           <text x="255" y="240" text-anchor="middle" font-size="10" opacity=".62">úradná tabuľa</text>
           <text x="255" y="253" text-anchor="middle" font-size="10" opacity=".62">CUET</text>
 
-          <circle cx="450" cy="196" r="6" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+          <circle cx="450" cy="196" r="6" fill="#F4F4F2" stroke="currentColor" stroke-width="1.6"></circle>
           <text x="450" y="224" text-anchor="middle" font-size="12">Výstavba</text>
           <text x="450" y="240" text-anchor="middle" font-size="10" opacity=".62">LiDAR / ortofoto</text>
           <text x="450" y="253" text-anchor="middle" font-size="10" opacity=".62">satelit</text>

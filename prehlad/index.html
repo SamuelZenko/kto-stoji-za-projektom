@@ -3,142 +3,119 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <meta name="description" content="Prehľad pre vedenie">
 <title>Prehľad pre vedenie</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../spolocne/tuba.css">
 
 <style>
-  :root {
-    --ground:#EDEFF1; --surface:#FFFFFF; --sunken:#E3E7EA;
-    --ink:#0E1418; --ink-soft:#37454E; --muted:#5E6D77;
-    --line:#C9D2D8; --line-soft:#DDE3E7;
-    --acc:#15556E; --acc-bg:#E2EDF2;
-    --ok:#0C6B50; --ok-bg:#E1F0EA;
-    --warn:#8E4A10; --warn-bg:#F8EEE1;
-    --shadow:0 1px 2px rgba(14,20,24,.05), 0 12px 30px rgba(14,20,24,.06);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ground:#0A0E11; --surface:#131A1F; --sunken:#1B242A;
-      --ink:#E9EEF2; --ink-soft:#C0CBD3; --muted:#8896A0;
-      --line:#2A343B; --line-soft:#212A30;
-      --acc:#68B4D4; --acc-bg:#0F2630;
-      --ok:#4BC29C; --ok-bg:#10251E;
-      --warn:#DFA05A; --warn-bg:#2A2015;
-      --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.3);
-    }
-  }
-  :root[data-theme="dark"] {
-    --ground:#0A0E11; --surface:#131A1F; --sunken:#1B242A;
-    --ink:#E9EEF2; --ink-soft:#C0CBD3; --muted:#8896A0;
-    --line:#2A343B; --line-soft:#212A30;
-    --acc:#68B4D4; --acc-bg:#0F2630;
-    --ok:#4BC29C; --ok-bg:#10251E;
-    --warn:#DFA05A; --warn-bg:#2A2015;
-    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.3);
-  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
 
-  * { box-sizing:border-box; }
-  body {
-    background:var(--ground); color:var(--ink); margin:0;
-    font-family:"Public Sans", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-    font-size:17px; line-height:1.62; -webkit-font-smoothing:antialiased;
-  }
-  .wrap { max-width:48rem; margin:0 auto; padding:3.5rem 1.3rem 6rem; display:flex; flex-direction:column; gap:3rem; }
-  h1,h2,h3 { font-family:"Newsreader", Georgia, serif; font-weight:600; }
-  .mono, code { font-family:"IBM Plex Mono", ui-monospace, monospace; }
+  /* ---------- hero ---------- */
+  .hero{margin-bottom:calc(var(--okraj)*1.6)}
+  .hero .tb-h1{margin-top:.16em;max-width:11em}
+  .hero .tb-perex{margin-top:32px;max-width:36em}
 
-  header { display:flex; flex-direction:column; gap:.9rem; }
-  .eyebrow { font-family:"IBM Plex Mono",monospace; font-size:.71rem; letter-spacing:.14em; text-transform:uppercase; color:var(--acc); margin:0; }
-  h1 { font-size:clamp(2.3rem,6.6vw,3.3rem); line-height:1.03; letter-spacing:-.02em; margin:0; text-wrap:balance; }
-  .lede { font-size:1.16rem; color:var(--ink-soft); margin:0; max-width:37rem; }
+  /* ---------- čísla ---------- */
+  .cisla{margin-bottom:calc(var(--okraj)*2.2)}
+  .cisla .tb-cifra b{color:var(--tx)}
+  .cisla .tb-cifra span{font-size:13.5px;color:var(--tx2);line-height:1.35}
 
-  /* čísla */
-  .cisla { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
-  .cislo { background:var(--surface); padding:1.1rem 1rem; display:flex; flex-direction:column; gap:.15rem; }
-  .cislo b { font-family:"Newsreader",serif; font-size:1.9rem; line-height:1; color:var(--acc); font-weight:600; }
-  .cislo span { font-size:.8rem; color:var(--muted); line-height:1.35; }
+  /* ---------- sekcie ---------- */
+  .telo{align-items:start}
+  .tb-grid>*{min-width:0}
+  .sek{grid-column:1/span 6;margin-bottom:calc(var(--okraj)*1.4)}
+  .sek:last-of-type{margin-bottom:0}
+  .sek>.tb-h2{margin:.16em 0 24px;max-width:15em}
+  .sek p{margin:0 0 14px;max-width:62ch;font-size:16px;line-height:1.5;color:var(--tx2)}
+  .sek ul{margin:0 0 14px;padding-left:1.1em;max-width:62ch;font-size:16px;line-height:1.5;color:var(--tx2)}
+  .sek li{margin:0 0 8px}
+  .sek li::marker{color:var(--tx3)}
+  .sek strong{color:var(--tx);font-weight:500}
+  .sek a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.16em}
+  .sek a:hover{color:var(--cervena2)}
+  .sek .tb-h3{margin:34px 0 12px}
+  code{font-family:var(--mono);font-size:.86em;background:var(--plocha);padding:.1em .35em}
+  .mono{font-family:var(--mono)}
 
-  section { display:flex; flex-direction:column; gap:1.1rem; }
-  section > h2 { font-size:1.75rem; letter-spacing:-.015em; margin:0; line-height:1.18; text-wrap:balance; }
-  h3 { font-size:1.14rem; margin:.6rem 0 -.45rem; }
-  p { margin:0; max-width:39rem; }
-  strong { font-weight:600; color:var(--ink); }
-  code { font-size:.86em; background:var(--sunken); padding:.08em .35em; border-radius:2px; }
-  ul { margin:0; padding-left:1.15rem; display:flex; flex-direction:column; gap:.42rem; max-width:39rem; }
-  li::marker { color:var(--muted); }
-  a { color:var(--acc); text-underline-offset:2px; }
+  /* kroky — číslo a text ukotvené na tenkej linke */
+  .kroky{counter-reset:k;margin:6px 0 22px;border-bottom:1px solid var(--ciara2)}
+  .krok{display:grid;grid-template-columns:52px 1fr;gap:16px;border-top:1px solid var(--ciara2);padding:16px 0 14px}
+  .krok::before{counter-increment:k;content:counter(k);font-size:26px;font-weight:500;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--tx);padding-top:2px}
+  .krok strong{display:block;font-size:17px;font-weight:500;line-height:1.25;color:var(--tx);margin-bottom:6px}
+  .krok p{font-size:15px;margin:0;color:var(--tx2)}
 
-  .box { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); padding:1.5rem 1.55rem; display:flex; flex-direction:column; gap:.85rem; }
-  .box h3:first-child { margin-top:0; }
+  /* tabuľky */
+  .tab{overflow-x:auto;margin:6px 0 22px}
+  .tab .tb-tab{min-width:28rem}
+  .tab td.ok{color:var(--tx);font-weight:500;white-space:nowrap}
+  .tab td.mono{white-space:nowrap}
 
-  .vyzn { background:var(--acc-bg); border-left:3px solid var(--acc); padding:1.1rem 1.25rem; display:flex; flex-direction:column; gap:.4rem; }
-  .vyzn b { font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.11em; text-transform:uppercase; color:var(--acc); font-weight:500; }
-  .vyzn p { color:var(--ink-soft); }
+  /* blok s poznámkou */
+  .blok{background:var(--plocha);padding:20px 22px 18px;margin:6px 0 22px}
+  .blok>b{display:block;font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--tx);margin-bottom:12px;line-height:1.2}
+  .blok.zist>b{color:var(--cervena2)}
+  .blok p,.blok ul{font-size:15px;color:var(--tx2)}
+  .blok p:last-child,.blok ul:last-child{margin-bottom:0}
 
-  .limit { background:var(--warn-bg); border-left:3px solid var(--warn); padding:1.1rem 1.25rem; }
-  .limit b { font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.11em; text-transform:uppercase; color:var(--warn); font-weight:500; display:block; margin-bottom:.3rem; }
-  .limit p, .limit ul { color:var(--ink-soft); }
+  /* schéma */
+  figure{margin:8px 0 22px;display:flex;flex-direction:column;gap:12px}
+  figure svg{width:100%;height:auto;display:block;color:var(--tx)}
+  figcaption{font-size:13.5px;line-height:1.45;color:var(--tx3);max-width:62ch}
+  svg .a-s{stroke:var(--cervena2)} svg .a-f{fill:var(--cervena2)}
+  svg .w-s{stroke:var(--tx3)} svg .w-f{fill:var(--tx3)}
 
-  .tab { overflow-x:auto; border:1px solid var(--line); background:var(--surface); }
-  table { border-collapse:collapse; width:100%; font-size:.92rem; min-width:30rem; }
-  th,td { text-align:left; padding:.55rem .7rem; border-bottom:1px solid var(--line-soft); }
-  th { font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:.67rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:var(--sunken); white-space:nowrap; }
-  tbody tr:last-child td { border-bottom:none; }
-  td.ok { color:var(--ok); font-weight:500; }
+  /* pätička */
+  footer{margin-top:calc(var(--okraj)*2.5);border-top:var(--linka) solid var(--ciara);padding-top:18px;font-size:13.5px;line-height:1.5;color:var(--tx3)}
+  footer p{margin:0 0 8px;max-width:80ch}
 
-  figure { margin:.3rem 0; display:flex; flex-direction:column; gap:.6rem; }
-  figure svg { width:100%; height:auto; display:block; color:var(--ink-soft); }
-  figcaption { font-size:.86rem; color:var(--muted); max-width:39rem; text-wrap:pretty; }
-  svg .a-s { stroke:var(--acc); } svg .a-f { fill:var(--acc); }
-  svg .w-s { stroke:var(--warn); } svg .w-f { fill:var(--warn); }
-
-  .kroky { display:flex; flex-direction:column; gap:.7rem; counter-reset:k; }
-  .krok { display:flex; gap:1rem; background:var(--surface); border:1px solid var(--line); padding:1.05rem 1.2rem; }
-  .krok::before { counter-increment:k; content:counter(k); font-family:"Newsreader",serif; font-size:1.2rem; font-weight:600; color:var(--acc); flex:none; line-height:1.5; }
-  .krok div { display:flex; flex-direction:column; gap:.2rem; }
-  .krok p { font-size:.95rem; color:var(--ink-soft); }
-
-  footer { border-top:1px solid var(--line); padding-top:1.5rem; color:var(--muted); font-size:.88rem; display:flex; flex-direction:column; gap:.5rem; }
-
-  @media (max-width:640px) {
-    body { font-size:16px; }
-    .wrap { padding:2.4rem 1rem 4rem; gap:2.4rem; }
-    .cisla { grid-template-columns:1fr 1fr; }
-    .box { padding:1.2rem 1.1rem; }
-  }
+  @media (max-width:1000px){.sek{grid-column:1/-1}}
+  @media (max-width:640px){.sek p,.sek ul{font-size:15px}.krok{grid-template-columns:36px 1fr}.krok::before{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-
-<header>
-  <p class="eyebrow">Interný nástroj · MIB · september 2026</p>
-  <h1>Kto stojí za projektom</h1>
-  <p class="lede">Nástroj, ktorý za pol minúty zistí, kto reálne stavia daný projekt, ktorý úrad ho povoľuje a do ktorej developerskej skupiny patrí — aj keď sa firma volá úplne inak.</p>
+<header class="tb-lista">
+  <a class="tb-znacka" href="../mapa-zamerov/">Zámery<span class="l"></span>Bratislavy</a>
+  <nav><a href="../mapa-zamerov/">Mapa</a><a href="../redakcia/">Doplniť polohy a obrázky</a><a href="../tok-dat/">Tok dát</a></nav>
+  <div class="tb-vpravo"><span class="tb-stitok">Metropolitný inštitút Bratislavy</span></div>
 </header>
 
-<div class="cisla">
-  <div class="cislo"><b>30 s</b><span>namiesto 20–40 minút ručného hľadania</span></div>
-  <div class="cislo"><b>13</b><span>developerských skupín rozpozná automaticky</span></div>
-  <div class="cislo"><b>8 z 9</b><span>testovaných projektov správne spárovaných</span></div>
-  <div class="cislo"><b>0 €</b><span>všetko z verejných registrov, bez licencií</span></div>
+<main class="tb-strana">
+
+<!-- ============ hero ============ -->
+<div class="hero">
+  <div class="tb-riadok">
+    <span class="tb-stitok">Interný nástroj · MIB · september 2026</span>
+    <span class="tb-stitok tlm">prehľad pre vedenie</span>
+  </div>
+  <h1 class="tb-h1">Kto stojí<br>za projektom</h1>
+  <p class="tb-perex">Nástroj, ktorý za pol minúty zistí, kto reálne stavia daný projekt, ktorý úrad ho povoľuje a do ktorej developerskej skupiny patrí — aj keď sa firma volá úplne inak.</p>
 </div>
 
+<!-- ============ čísla ============ -->
+<div class="tb-grid cisla">
+  <div class="tb-cifra tb-s2"><b>30 s</b><span>namiesto 20–40 minút ručného hľadania</span></div>
+  <div class="tb-cifra tb-s2"><b>13</b><span>developerských skupín rozpozná automaticky</span></div>
+  <div class="tb-cifra tb-s2"><b>8 z 9</b><span>testovaných projektov správne spárovaných</span></div>
+  <div class="tb-cifra tb-s2"><b>0 €</b><span>všetko z verejných registrov, bez licencií</span></div>
+</div>
+
+<div class="tb-grid telo">
+
 <!-- ============ problém ============ -->
-<section>
-  <h2>Aký problém to rieši</h2>
+<section class="sek">
+  <div class="tb-riadok"><span class="tb-stitok">01</span><span class="tb-stitok tlm">Aký problém to rieši</span></div>
+  <h2 class="tb-h2">Aký problém to rieši</h2>
   <p>Keď sa nás niekto opýta, kto stavia konkrétny projekt, odpoveď nie je nikde zapísaná. Projekt sa predáva pod marketingovým názvom — <strong>River Park</strong>. Povolenia sú vedené na účelovú firmu, ktorá vznikla kvôli jednej stavbe a volá sa <strong>WOAL, s.r.o.</strong> A tú vlastní firma na Cypre, ktorá u nás nemá ani IČO.</p>
   <p>Kto chce vedieť, čo sa v území deje, musí tú reťaz zakaždým poskladať ručne: nájsť zámer, otvoriť detail, prepísať navrhovateľa, prejsť do obchodného registra, nájsť spoločníka, nájsť materskú firmu. <strong>Osem až dvanásť otvorených stránok a dvadsať až štyridsať minút</strong> — a pri polovici projektov sa к záveru aj tak nedopracujete.</p>
   <p>Nástroj to spraví za pol minúty a napíše, odkiaľ každý údaj má.</p>
 </section>
 
 <!-- ============ ako to funguje ============ -->
-<section>
-  <h2>Ako to funguje</h2>
+<section class="sek">
+  <div class="tb-riadok"><span class="tb-stitok">02</span><span class="tb-stitok tlm">Ako to funguje</span></div>
+  <h2 class="tb-h2">Ako to funguje</h2>
   <p>Postup kopíruje to, čo by robil človek — len sa nezasekne a nezabudne.</p>
 
   <div class="kroky">
@@ -156,15 +133,16 @@
 </section>
 
 <!-- ============ dva prielomy ============ -->
-<section>
-  <h2>Dva prielomy tohto týždňa</h2>
+<section class="sek">
+  <div class="tb-riadok"><span class="tb-stitok">03</span><span class="tb-stitok tlm">Dva prielomy</span></div>
+  <h2 class="tb-h2">Dva prielomy tohto týždňa</h2>
 
-  <h3>1 · Reťaz sa dá prerušiť. Adresa nie.</h3>
+  <h3 class="tb-h3">1 · Reťaz sa dá prerušiť. Adresa nie.</h3>
   <p>Pri overovaní River Parku sa ukázalo, že vlastnícka reťaz vedie na <strong>GRATIUS HOLDINGS LIMITED</strong> na Cypre, ktorá v našich registroch nemá IČO. Tam ručné hľadanie končí a doteraz sme s tým nevedeli pohnúť.</p>
   <p>Čo prerušiť nejde, je <strong>sídlo</strong>. Skupina si účelovú firmu registruje na svojej adrese, lebo tam chodí pošta. Overené priamo v registri:</p>
 
   <div class="tab">
-    <table>
+    <table class="tb-tab">
       <thead><tr><th>adresa</th><th>firmy, ktoré tam sídlia</th></tr></thead>
       <tbody>
         <tr><td class="mono">Dvořákovo nábrežie 10</td><td>JTRE a.s. · JTRE Management · <strong>WOAL</strong> · Klingerka · NOVÉ LIDO 1 až 7</td></tr>
@@ -175,16 +153,16 @@
     </table>
   </div>
 
-  <div class="vyzn">
+  <div class="blok zist">
     <b>Čo to znamená</b>
     <p>Príslušnosť firmy k skupine sa dá <strong>doložiť z verejného registra</strong>, nie odhadnúť z novín. Nástroj to teraz robí sám a ku každému záveru napíše dôvod.</p>
   </div>
 
-  <h3>2 · Ochranná známka spája marketing s úradom</h3>
+  <h3 class="tb-h3">2 · Ochranná známka spája marketing s úradom</h3>
   <p>V registri je zámer vedený ako <em>„Polyfunkčný komplex CPR, blok CPR-B“</em>. Slovo <em>River Park</em> sa v ňom nevyskytuje ani raz. Ale komerčný názov si developer <strong>registruje ako ochrannú známku</strong>, lebo sa naň predáva — a majiteľ známky je verejný údaj.</p>
 
   <div class="tab">
-    <table>
+    <table class="tb-tab">
       <thead><tr><th>projekt</th><th>majiteľ známky</th></tr></thead>
       <tbody>
         <tr><td>River Park</td><td class="ok">JTRE a.s.</td></tr>
@@ -203,8 +181,9 @@
 </section>
 
 <!-- ============ obrázok ============ -->
-<section>
-  <h2>River Park ako príklad</h2>
+<section class="sek">
+  <div class="tb-riadok"><span class="tb-stitok">04</span><span class="tb-stitok tlm">Príklad</span></div>
+  <h2 class="tb-h2">River Park ako príklad</h2>
   <figure>
     <svg viewBox="0 0 740 300" role="img" aria-label="Schéma: cesta od názvu River Park k účelovej firme WOAL vedie cez ochrannú známku a zhodu sídla, pretože vlastnícka reťaz je prerušená cyperskou firmou bez IČO.">
       <defs>
@@ -212,7 +191,7 @@
           <polygon points="0,1 10,5 0,9" fill="currentColor"></polygon>
         </marker>
       </defs>
-      <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">
+      <g font-family="Overused Grotesk, Helvetica Neue, Arial, sans-serif" font-size="11.5" fill="currentColor">
 
         <rect x="0" y="112" width="164" height="56" fill="none" stroke="currentColor" stroke-width="1.3"></rect>
         <text x="82" y="136" text-anchor="middle" font-size="13.5">River Park</text>
@@ -222,9 +201,9 @@
         <text x="376" y="136" text-anchor="middle" font-size="13.5">WOAL, s.r.o.</text>
         <text x="376" y="153" text-anchor="middle" opacity=".6">na nej sú povolenia</text>
 
-        <rect class="a-s" x="576" y="112" width="164" height="56" fill="none" stroke-width="1.8"></rect>
-        <text class="a-f" x="658" y="136" text-anchor="middle" font-size="13.5" font-weight="500">J&amp;T Real Estate</text>
-        <text class="a-f" x="658" y="153" text-anchor="middle" opacity=".8">skutočný developer</text>
+        <rect x="576" y="112" width="164" height="56" fill="#000000" stroke="#000000" stroke-width="1.3"></rect>
+        <text x="658" y="136" text-anchor="middle" font-size="13.5" font-weight="500" fill="#FFFFFF">J&amp;T Real Estate</text>
+        <text x="658" y="153" text-anchor="middle" fill="#D9D9D6">skutočný developer</text>
 
         <!-- prerusena cesta -->
         <rect class="w-s" x="288" y="228" width="176" height="52" fill="none" stroke-width="1.4" stroke-dasharray="5 4"></rect>
@@ -249,7 +228,7 @@
         <text class="a-f" x="519" y="201" text-anchor="middle" font-size="10" opacity=".8">Dvořákovo nábr. 10</text>
 
         <text x="0" y="26" font-size="10" opacity=".55" letter-spacing="1.4">DVE OBCHÁDZKY MIESTO JEDNEJ PRERUŠENEJ CESTY</text>
-        <line x1="0" y1="40" x2="740" y2="40" stroke="currentColor" stroke-width="1" opacity=".2"></line>
+        <line x1="0" y1="40" x2="740" y2="40" stroke="currentColor" stroke-width="1.5"></line>
       </g>
     </svg>
     <figcaption>Priama cesta cez vlastníctvo je prerušená zámerne. Nástroj ju obchádza dvoma nezávislými verejnými údajmi — kto vlastní značku a kto sídli na tej istej adrese.</figcaption>
@@ -257,8 +236,9 @@
 </section>
 
 <!-- ============ hodnota ============ -->
-<section>
-  <h2>Čo to prináša</h2>
+<section class="sek">
+  <div class="tb-riadok"><span class="tb-stitok">05</span><span class="tb-stitok tlm">Čo to prináša</span></div>
+  <h2 class="tb-h2">Čo to prináša</h2>
   <ul>
     <li><strong>Rýchlosť.</strong> Odpoveď na otázku „kto to stavia“ do pol minúty, s odkazmi na zdroje. Pri opakovanom dopyte okamžite.</li>
     <li><strong>Úplnosť.</strong> Súčasťou výstupu je aj celý spis EIA s výkresmi a situáciami — podklady, ktoré kolegovia inak hľadajú zvlášť.</li>
@@ -269,9 +249,10 @@
 </section>
 
 <!-- ============ limity ============ -->
-<section>
-  <h2>Čo nevie — a to je dôležité</h2>
-  <div class="limit">
+<section class="sek">
+  <div class="tb-riadok"><span class="tb-stitok">06</span><span class="tb-stitok tlm">Hranice nástroja</span></div>
+  <h2 class="tb-h2">Čo nevie — a to je dôležité</h2>
+  <div class="blok">
     <b>Hranice nástroja</b>
     <ul>
       <li><strong>Menšie projekty posudzovaním vplyvov na životné prostredie (EIA) neprejdú</strong>, lebo sú pod zákonnou prahovou hodnotou — register o nich teda nemá záznam. Sú to práve tie, o ktorých sa nepíše. Vtedy zostáva známka, web projektu a kataster.</li>
@@ -283,13 +264,14 @@
 </section>
 
 <!-- ============ potenciál ============ -->
-<section>
-  <h2>Potenciál: mapa rozvoja mesta</h2>
+<section class="sek">
+  <div class="tb-riadok"><span class="tb-stitok">07</span><span class="tb-stitok tlm">Potenciál</span></div>
+  <h2 class="tb-h2">Potenciál: mapa rozvoja mesta</h2>
   <p>Praha má <strong>Praha zítra</strong> — verejnú mapu všetkých stavebných zámerov s fázou realizácie a investorom. Prevádzkuje ju <strong>IPR Praha</strong> (Inštitút plánovania a rozvoja hlavného mesta Prahy), teda ich obdoba MIB (Metropolitný inštitút Bratislavy), a dáta má od investorov aj z verejných zdrojov. Bratislava obdobu nemá; najbližšie je súkromný portál Yimba, ktorý to robí ručne ako novinársku prácu.</p>
   <p>To, čo je teraz hotové, je motor takej mapy. Odhad, nakoľko sa dá naplniť automaticky:</p>
 
   <div class="tab">
-    <table>
+    <table class="tb-tab">
       <thead><tr><th>vrstva mapy</th><th>automaticky</th></tr></thead>
       <tbody>
         <tr><td>zoznam zámerov v Bratislave</td><td class="ok">~95 %</td></tr>
@@ -303,15 +285,16 @@
     </table>
   </div>
 
-  <div class="vyzn">
+  <div class="blok zist">
     <b>Zhrnutie</b>
     <p>Mapa sa dá naplniť <strong>zhruba na dve tretiny automaticky</strong> a v tom stave je hneď použiteľná. Posledná tretina je kurátorská práca — alebo cesta, ktorou išla Praha: mesto požiada developerov o podklady a oni ich dodajú, lebo je pre nich výhodné byť na mape mesta.</p>
   </div>
 </section>
 
 <!-- ============ ďalej ============ -->
-<section>
-  <h2>Návrh ďalšieho postupu</h2>
+<section class="sek">
+  <div class="tb-riadok"><span class="tb-stitok">08</span><span class="tb-stitok tlm">Ďalší postup</span></div>
+  <h2 class="tb-h2">Návrh ďalšieho postupu</h2>
   <ul>
     <li><strong>Krátkodobo, bez rozhodnutia.</strong> Nástroj je hotový a použiteľný dnes. Dá sa poslať kolegom ako jeden súbor, netreba inštalovať nič.</li>
     <li><strong>Stredne.</strong> Jednorazovo stiahnuť všetky bratislavské zámery a doplniť sledovanie úradných tabúľ mestských častí — tým sa doplnia povolenia a fázy. Odhad niekoľko pracovných dní.</li>
@@ -320,11 +303,13 @@
   <p>Odhady sú odhady. Ale to, čo je v tomto dokumente napísané ako hotové, je overené na skutočných firmách a dá sa predviesť naživo.</p>
 </section>
 
+</div><!-- /telo -->
+
 <footer>
   <p>Zdroje: register EIA (MŽP SR) · Register právnických osôb (Štatistický úrad SR) · Obchodný register · TMview (EUIPO) · stránky projektov. Všetko verejne prístupné, čítané v rozsahu, aký vidí ktokoľvek v prehliadači.</p>
   <p>Čísla o pokrytí mapy sú odhady, nie merania. Výsledky párovania sú z testov na deviatich bratislavských projektoch.</p>
 </footer>
 
-</div>
+</main>
 </body>
 </html>
