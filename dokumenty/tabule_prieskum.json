@@ -1,0 +1,330 @@
+[
+ {
+  "mc": "Staré Mesto",
+  "web": "https://www.staremesto.sk",
+  "tabula": "https://www.staremesto.sk/novinky/23156/uradna-tabula",
+  "stav": "OK",
+  "platforma": "?",
+  "rss": [
+   "https://www.staremesto.sk/rss"
+  ],
+  "pdf": 6,
+  "dokumenty": 10,
+  "kategorie": [
+   "Pomoc pre ľudí bez domova"
+  ],
+  "strankovanie": "",
+  "ukazky": [
+   "Stavebný úrad",
+   "Územné plánovanie",
+   "Upovedomenie o stavebnom konaní o povolení súboru stavieb 8.9.2026 353//54686/2026/STA/Kjj\"Administratívna budova Triang",
+   "Stavebný úrad",
+   "Verejné vyhlášky"
+  ]
+ },
+ {
+  "mc": "Ružinov",
+  "web": "https://www.ruzinov.sk",
+  "tabula": "",
+  "stav": "web neodpovedá: <urlopen error [WinError 10060] A connection attempt failed because th",
+  "platforma": "",
+  "rss": [],
+  "pdf": 0,
+  "dokumenty": 0,
+  "kategorie": [],
+  "strankovanie": "",
+  "ukazky": []
+ },
+ {
+  "mc": "Vrakuňa",
+  "web": "https://www.vrakuna.sk",
+  "tabula": "https://www.vrakuna.sk/novinky/4783/uradna-tabula",
+  "stav": "OK",
+  "platforma": "?",
+  "rss": [
+   "https://www.vrakuna.sk/rss"
+  ],
+  "pdf": 0,
+  "dokumenty": 8,
+  "kategorie": [],
+  "strankovanie": "",
+  "ukazky": [
+   "Územný plán Vrakuňa",
+   "Stavebný úrad",
+   "Územný plán",
+   "Oznámenie o uložení zásielky 25.8.2026 Verejná vyhláška o oznámení miesta uloženia písomnosti",
+   "Oznámenie o uložení zásielky 21.8.2026 Verejná vyhláška o oznámení miesta uloženia písomnosti, pre Miroslava Bieliková"
+  ]
+ },
+ {
+  "mc": "Podunajské Biskupice",
+  "web": "https://www.mupb.sk",
+  "tabula": "https://www.biskupice.sk/zverejnovanie/uradna-tabula/",
+  "stav": "OK",
+  "platforma": "?",
+  "rss": [
+   "https://www.biskupice.sk/?rss=200"
+  ],
+  "pdf": 0,
+  "dokumenty": 29,
+  "kategorie": [
+   "Odkaz na archív úradnej tabule",
+   "Zobraziť všetky záznamy z dňa"
+  ],
+  "strankovanie": "",
+  "ukazky": [
+   "Komisia územného plánu, výstavby, životného prostredia, odpadov a cestného hospodárstva",
+   "Oddelenie územného plánu, stavebného poriadku a výstavby",
+   "Stavebný úrad",
+   "Informácie pre stavebníkov",
+   "Územné plánovanie"
+  ]
+ },
+ {
+  "mc": "Nové Mesto",
+  "web": "https://www.banm.sk",
+  "tabula": "https://banm.sk/28616/uradna-tabula",
+  "stav": "OK",
+  "platforma": "?",
+  "rss": [
+   "https://banm.sk/rss"
+  ],
+  "pdf": 0,
+  "dokumenty": 5,
+  "kategorie": [
+   "Interaktívny rozpočet",
+   "Interaktívny ­rozpočet"
+  ],
+  "strankovanie": "",
+  "ukazky": [
+   "EIA a povolenia",
+   "Stavebný úrad",
+   "Referát územného plánovania",
+   "EIA ­a ­povolenia",
+   "EIA a povolenia"
+  ]
+ },
+ {
+  "mc": "Rača",
+  "web": "https://www.raca.sk",
+  "tabula": "https://www.raca.sk/uradna-tabula/",
+  "stav": "OK",
+  "platforma": "WordPress",
+  "rss": [],
+  "pdf": 9,
+  "dokumenty": 16,
+  "kategorie": [
+   "Kultúrne podujatia"
+  ],
+  "strankovanie": "",
+  "ukazky": [
+   "Stavebné činnosti",
+   "Kolaudácia stavby",
+   "Rozhodnutie o stavebnom zámere",
+   "Ohlásenie drobnej stavby a stavebných úprav",
+   "Dodatočné stavebné povolenie"
+  ]
+ },
+ {
+  "mc": "Vajnory",
+  "web": "https://www.vajnory.sk",
+  "tabula": "",
+  "stav": "tabuľa sa nenašla (skúšaných 10 adries)",
+  "platforma": "",
+  "rss": [],
+  "pdf": 0,
+  "dokumenty": 0,
+  "kategorie": [],
+  "strankovanie": "",
+  "ukazky": []
+ },
+ {
+  "mc": "Karlova Ves",
+  "web": "https://www.karlovaves.sk",
+  "tabula": "",
+  "stav": "tabuľa sa nenašla (skúšaných 8 adries)",
+  "platforma": "",
+  "rss": [],
+  "pdf": 0,
+  "dokumenty": 0,
+  "kategorie": [],
+  "strankovanie": "",
+  "ukazky": []
+ },
+ {
+  "mc": "Dúbravka",
+  "web": "https://www.dubravka.sk",
+  "tabula": "https://www.dubravka.sk/sk/Miestny-urad/Elektronicka-uradna-tabula-oznamy/Uradna-tabula-Stavebny-urad.html",
+  "stav": "OK",
+  "platforma": "WEBEX/Alejtech",
+  "rss": [
+   "http://feeds.feedburner.com/dubravka?format=xml"
+  ],
+  "pdf": 1,
+  "dokumenty": 7,
+  "kategorie": [],
+  "strankovanie": "",
+  "ukazky": [
+   "Rozhodnutie – Cyklotrasa Beňovského – SU-12247/4260/2026/MF-10",
+   "Rozhodnutie – Bytový súbor Hrubé Lúky – Agátová, Bratislava – SU 11874/2620/2026 U 6 MF",
+   "Rozhodnutie – Rodinné domy Strmé sady – SU 12350/2644/2026 MF",
+   "Zverejnenie žiadosti na vydanie rozhodnutia o zmene stavby pred dokončením – Apartmánový Garni Hotel Cerešne",
+   "Rozhodnutie – Chata, Pivnica – SÚ-11494/2685/2026/C-8-DF"
+  ]
+ },
+ {
+  "mc": "Lamač",
+  "web": "https://www.lamac.sk",
+  "tabula": "",
+  "stav": "tabuľa sa nenašla (skúšaných 8 adries)",
+  "platforma": "",
+  "rss": [],
+  "pdf": 0,
+  "dokumenty": 0,
+  "kategorie": [],
+  "strankovanie": "",
+  "ukazky": []
+ },
+ {
+  "mc": "Devín",
+  "web": "https://www.devin.sk",
+  "tabula": "https://www.devin.sk/18328/uradna-tabula",
+  "stav": "OK",
+  "platforma": "?",
+  "rss": [
+   "https://www.devin.sk/rss"
+  ],
+  "pdf": 0,
+  "dokumenty": 4,
+  "kategorie": [],
+  "strankovanie": "",
+  "ukazky": [
+   "Územné plánovanie",
+   "Tlačivá stavebného úradu",
+   "Úradná ­tabuľa ­stavebného ­úradu",
+   "Úradná tabuľa stavebného úradu"
+  ]
+ },
+ {
+  "mc": "Devínska Nová Ves",
+  "web": "https://www.devinskanovaves.sk",
+  "tabula": "https://www.devinskanovaves.sk/zverejnovanie",
+  "stav": "OK",
+  "platforma": "?",
+  "rss": [
+   "https://www.devinskanovaves.sk/rss"
+  ],
+  "pdf": 0,
+  "dokumenty": 12,
+  "kategorie": [],
+  "strankovanie": "",
+  "ukazky": [
+   "Územný plán zóny MČ BA-DNV",
+   "Verejné vyhlášky",
+   "Verejné vyhlášky - stavebné konania",
+   "Zámery EIA - stavebné konania",
+   "ROZHODNUTIE - rozhodnutie o stavebnom zámere „Obnova bytového domu Ivana Bukovčana 2, 4, Bratislava“"
+  ]
+ },
+ {
+  "mc": "Záhorská Bystrica",
+  "web": "https://www.zahorskabystrica.sk",
+  "tabula": "https://zahorskabystrica.sk/samosprava/uradna-tabula/",
+  "stav": "OK",
+  "platforma": "WordPress",
+  "rss": [
+   "https://zahorskabystrica.sk/comments/feed/",
+   "https://zahorskabystrica.sk/feed/"
+  ],
+  "pdf": 0,
+  "dokumenty": 23,
+  "kategorie": [],
+  "strankovanie": "p",
+  "ukazky": [
+   "Stavebný úrad",
+   "Stavebný úrad",
+   "Územný rozvoj",
+   "Stavebný úrad",
+   "Stavebný úrad"
+  ]
+ },
+ {
+  "mc": "Petržalka",
+  "web": "https://www.petrzalka.sk",
+  "tabula": "https://www.petrzalka.sk/uradna-tabula",
+  "stav": "OK",
+  "platforma": "WordPress",
+  "rss": [],
+  "pdf": 26,
+  "dokumenty": 8,
+  "kategorie": [],
+  "strankovanie": "p",
+  "ukazky": [
+   "Verejná vyhláška (273 KB)",
+   "Verejná vyhláška (340 KB)",
+   "č. 6992/2026 - Rozhodnutie povoľuje zmenu stavby pred dokončením na stavebných objektoch v rámci stavby – Rekonštrukcia ",
+   "Žiadosť o vydanie stavebného povolenia – Areál voľného času Vojenský dvor – SO 4.1 Rekonštrukcia Kopčianskej ulice, Brat",
+   "Príloha: žiadosť o stavebné povolenie (320 KB)"
+  ]
+ },
+ {
+  "mc": "Jarovce",
+  "web": "https://www.jarovce.sk",
+  "tabula": "",
+  "stav": "web neodpovedá: <urlopen error [WinError 10060] A connection attempt failed because th",
+  "platforma": "",
+  "rss": [],
+  "pdf": 0,
+  "dokumenty": 0,
+  "kategorie": [],
+  "strankovanie": "",
+  "ukazky": []
+ },
+ {
+  "mc": "Rusovce",
+  "web": "https://www.bratislava-rusovce.sk",
+  "tabula": "https://www.bratislava-rusovce.sk/uradna-tabula",
+  "stav": "OK",
+  "platforma": "?",
+  "rss": [],
+  "pdf": 10,
+  "dokumenty": 1,
+  "kategorie": [],
+  "strankovanie": "",
+  "ukazky": [
+   "Územný plán"
+  ]
+ },
+ {
+  "mc": "Čunovo",
+  "web": "https://www.cunovo.eu",
+  "tabula": "https://www.cunovo.eu/samosprava/uradna-tabula",
+  "stav": "OK",
+  "platforma": "Digitálne mesto, WEBEX/Alejtech",
+  "rss": [
+   "https://www.cunovo.eu/rss.rss",
+   "https://www.uradne.sk/rssfeed/690/tablenewsRSS",
+   "https://www.uradne.sk/rssfeed/690/tablenewsRSS?feed=1"
+  ],
+  "pdf": 0,
+  "dokumenty": 7,
+  "kategorie": [
+   "1159-1145/2026-BJ-102",
+   "Pozvánka MZ",
+   "Pozvánka MZ 21.8.2026",
+   "Pozvánka MZ 7.9.2026",
+   "UKSP–2246-TX12025-26C-Kri-2",
+   "Uznesenia MZ 13.7.2026",
+   "Uznesenia MZ 21.8.2026",
+   "Zápisnica MZ 13.7.2026"
+  ],
+  "strankovanie": "p",
+  "ukazky": [
+   "Stavebný úrad",
+   "Stavebný úrad",
+   "Územné plánovanie a výstavba",
+   "Verejné vyhlášky",
+   "1186-2026 Stavebné povolenie- rozšírenie vstupnej komunikácie Petržalská ul.- II. etapa"
+  ]
+ }
+]
