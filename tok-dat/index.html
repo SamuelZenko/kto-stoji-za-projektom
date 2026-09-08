@@ -117,6 +117,25 @@
   .tab-mc .nie{color:var(--cervena2)}
   @media (max-width:1100px){.prehlad{grid-template-columns:repeat(2,1fr)}.gen .riadok{grid-template-columns:1fr 1fr}.tok{grid-template-columns:1fr}.tok .hl,.s{display:none}.strom{columns:1}}
   @media (max-width:640px){.prehlad{grid-template-columns:1fr}.gen .riadok{grid-template-columns:1fr}.stav .s-vpravo{margin-left:0;justify-content:flex-start}}
+
+  /* ── prezentačná forma podľa plagátov TU—BA: otázka sama na strane (mikro-štítky
+     na linke hore, veľký nadpis regular, odpoveď dole na linke) → ďalšia strana
+     s obsahom. Každý celok = dvojica strán, číslované 01–07. ── */
+  html{scroll-snap-type:y proximity}
+  main.tb-strana{max-width:none;padding:0 var(--okraj) var(--okraj)}
+  .strana{min-height:calc(100vh - 76px);display:flex;flex-direction:column;scroll-snap-align:start;scroll-margin-top:76px;padding-bottom:calc(var(--okraj)*1.2)}
+  .strana .okraj{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;height:44px;padding-bottom:6px;border-bottom:1px solid var(--ciara);flex:none}
+  .strana .okraj .tb-stitok{color:var(--tx)}
+  .strana .okraj .tb-stitok.tlm{color:var(--tx3)}
+  .otazka-h{margin:.3em 0 0;font-weight:400;font-size:clamp(46px,7vw,116px);line-height:.98;letter-spacing:-.035em;max-width:10.5em}
+  .otazka .odpoved{margin:auto 0 0;padding-top:14px;border-top:1px solid var(--ciara);font-size:clamp(19px,1.7vw,26px);line-height:1.25;font-weight:400;color:var(--tx);max-width:30em}
+  .otazka .odpoved b{font-weight:500}
+  .otazka .odpoved code{font-size:.8em}
+  .obsah{min-height:0}
+  .obsah>.okraj+*{margin-top:var(--okraj)}
+  .obsah .stav{margin-top:var(--okraj)}
+  .pata-strana{display:flex;justify-content:space-between;gap:16px;padding-top:8px;border-top:1px solid var(--ciara);margin-top:calc(var(--okraj)*2)}
+  .pata-strana .tb-stitok.tlm{color:var(--tx3)}
 </style>
 </head>
 <body>
@@ -126,9 +145,14 @@
   <div class="tb-vpravo"><span class="tb-stitok">Metropolitný inštitút Bratislavy</span></div>
 </header>
 <main class="tb-strana">
-<div class="tb-riadok"><span class="tb-stitok">Tok dát</span><span class="tb-stitok tlm">Stav k 8. 9. 2026</span></div>
-<h1 class="tb-h1">Odkiaľ dáta prichádzajú a kde v mape končia</h1>
-<p class="uvod tb-perex">Každý údaj v mape má zdroj, skript a súbor, cez ktorý prešiel. Čítaj zľava doprava: <b>zdroj → spracovanie → čo z toho vidíš v mape</b>. Každý riadok je jeden zdroj; plná bodka je jeho vlastná vrstva alebo súbor, prázdna bodka to, čím dopĺňa kartu zámeru. Stav k 8. 9. 2026.</p>
+<section class="strana otazka">
+<div class="okraj"><span class="tb-stitok">Tok dát</span><span class="tb-stitok tlm">Stav k 8. 9. 2026</span></div>
+<h1 class="otazka-h">Odkiaľ dáta prichádzajú a kde v mape končia?</h1>
+<p class="odpoved">Každý údaj v mape má zdroj, skript a súbor, cez ktorý prešiel. Čítaj zľava doprava: <b>zdroj → spracovanie → čo z toho vidíš v mape</b>.</p>
+</section>
+
+<section class="strana obsah">
+<div class="okraj"><span class="tb-stitok">01 · Stav a čísla</span><span class="tb-stitok tlm">Posledný beh · čo je v mape</span></div>
 <div class="stav" id="stav">
   <span class="svetlo" id="s-svetlo"></span>
   <b id="s-text">Zisťujem posledný beh…</b>
@@ -147,10 +171,16 @@
   <div class="cislo tb-cifra"><b id="p-redakcia">…</b><span>doplnila redakcia<small id="p-redakcia-pozn">polohy · obrázky · nové zámery</small></span></div>
 </section>
 <p class="pozn" id="p-zdroje"></p>
+</section>
 
-<section class="sek">
-<div class="tb-riadok"><span class="tb-stitok">Typy stavieb</span><span class="tb-stitok tlm">Účel podľa <span style="text-transform:none;letter-spacing:0">typy.py</span></span></div>
-<h2 class="tb-h2">Typy stavieb v mape</h2>
+<section class="strana otazka">
+<div class="okraj"><span class="tb-stitok">02 · Typy stavieb</span><span class="tb-stitok tlm">Účel podľa <span style="text-transform:none;letter-spacing:0">typy.py</span></span></div>
+<h2 class="otazka-h">Čo sa v Bratislave stavia?</h2>
+<p class="odpoved">Účel stavby určuje skript <code>typy.py</code> z názvu a textu zámeru podľa kľúčových slov. Najpočetnejšia skupina v registri EIA je <b>výroba a sklady</b>, hneď za ňou <b>bývanie</b>.</p>
+</section>
+
+<section class="strana obsah">
+<div class="okraj"><span class="tb-stitok">02 · Typy stavieb</span><span class="tb-stitok tlm">Projektov podľa účelu</span></div>
 <div class="typy tb-grid">
   <table id="t-typy" class="tb-tab tb-s4"><tr><th>účel stavby</th><th></th><th style="text-align:right">projektov</th><th></th></tr></table>
   <dl class="vys tb-s4">
@@ -167,9 +197,14 @@
 <p class="pozn">Účel určuje skript <code>typy.py</code> z názvu a textu zámeru podľa kľúčových slov; „Iné“ je to, čo nesedelo nikam. Pri zmene názvu v redakcii sa typ nemení.</p>
 </section>
 
-<section class="sek">
-<div class="tb-riadok"><span class="tb-stitok">Tok dát</span><span class="tb-stitok tlm">Sedem zdrojov</span></div>
-<h2 class="tb-h2">Zdroj → spracovanie → v mape</h2>
+<section class="strana otazka">
+<div class="okraj"><span class="tb-stitok">03 · Tok dát</span><span class="tb-stitok tlm">Sedem zdrojov</span></div>
+<h2 class="otazka-h">Ako sa zdroj dostane do mapy?</h2>
+<p class="odpoved">Sedem zdrojov, každý v jednom riadku: <b>zdroj → spracovanie → v mape</b>. Plná bodka je vlastná vrstva alebo súbor, prázdna bodka to, čím zdroj dopĺňa kartu zámeru.</p>
+</section>
+
+<section class="strana obsah">
+<div class="okraj"><span class="tb-stitok">03 · Tok dát</span><span class="tb-stitok tlm">Zdroj → spracovanie → v mape</span></div>
 <section class="tok">
   <div class="hl">Zdroj</div><div></div><div class="hl">Spracovanie · skripty v <code>dokumenty/</code></div><div></div><div class="hl">V mape</div>
 
@@ -236,9 +271,14 @@
 </div>
 </section>
 
-<section class="sek">
-<div class="tb-riadok"><span class="tb-stitok">Karta zámeru</span><span class="tb-stitok tlm">Pole · zdroj · skript · spoľahlivosť</span></div>
-<h2 class="tb-h2">Čo v karte zámeru odkiaľ je</h2>
+<section class="strana otazka">
+<div class="okraj"><span class="tb-stitok">04 · Karta zámeru</span><span class="tb-stitok tlm">Pole · zdroj · skript · spoľahlivosť</span></div>
+<h2 class="otazka-h">Čo v karte zámeru odkiaľ je?</h2>
+<p class="odpoved">Kostru karty dáva <b>register EIA</b>. Obchodný názov, polohu, fázu a skupinu dopĺňajú ďalšie zdroje — pri každom poli je uvedené, odkiaľ je a ako je spoľahlivé.</p>
+</section>
+
+<section class="strana obsah">
+<div class="okraj"><span class="tb-stitok">04 · Karta zámeru</span><span class="tb-stitok tlm">Pole · zdroj · skript · spoľahlivosť</span></div>
 <table class="tb-tab">
 <tr><th>pole v karte</th><th>zdroj</th><th>skript</th><th>ako spoľahlivé</th></tr>
 <tr><td>názov, investor, IČO, povoľujúci úrad, stav konania, spis</td><td><span class="z" style="background:#000000"></span>Enviroportál</td><td><code>zamery.py</code>, <code>obohat_mapu.py</code></td><td>úradné podanie — vysoká; chýba všetko pod prahom EIA</td></tr>
@@ -253,9 +293,14 @@
 <p class="pozn">Register EIA je spoľahlivý, ale nie úplný: stavby pod 10 000 m² hrubej podlažnej plochy v zastavanom území (1 000 m² mimo neho) a pod 200 parkovacích stojísk doň nejdú. Tú dieru čiastočne kryjú vyhlášky z tabúľ a staveniská z OSM.</p>
 </section>
 
-<section class="sek">
-<div class="tb-riadok"><span class="tb-stitok">Strom</span><span class="tb-stitok tlm">Zber → skript → súbor → mapa</span></div>
-<h2 class="tb-h2">Strom po zdrojoch</h2>
+<section class="strana otazka">
+<div class="okraj"><span class="tb-stitok">05 · Strom</span><span class="tb-stitok tlm">Zber → skript → súbor → mapa</span></div>
+<h2 class="otazka-h">Ktorý skript robí čo?</h2>
+<p class="odpoved">Strom po zdrojoch: <b>zber → skript → súbor → čo z toho je v mape</b>. Skripty a poradie ich spúšťania sú v <code>dokumenty/README.md</code>.</p>
+</section>
+
+<section class="strana obsah">
+<div class="okraj"><span class="tb-stitok">05 · Strom</span><span class="tb-stitok tlm">Zber → skript → súbor → mapa</span></div>
 <div class="strom">
 <details open><summary><span class="z" style="background:#000000"></span>Enviroportál — register EIA</summary><ul>
 <li><b>zber</b> celého registra (10 min) → 2 303 bratislavských do detailu (30 min) → <code>eia_detaily/</code> <span class="kam">lokálne</span></li>
@@ -300,10 +345,14 @@
 </div>
 </section>
 
-<section class="sek">
-<div class="tb-riadok"><span class="tb-stitok">Nástroj a mapa</span><span class="tb-stitok tlm">Deväť zdrojov</span></div>
-<h2 class="tb-h2" id="nastroj">Zdroje nástroja Kto stojí za projektom — čo z nich ide do mapy</h2>
-<p class="pozn" style="margin-bottom:18px;max-width:900px">Nástroj <a href="../#zdroje" style="color:var(--tx2)">Kto stojí za projektom</a> číta deväť zdrojov, ale <b>pri jednom dopyte na jeden projekt</b> — to je iný režim než mapa, ktorá potrebuje hromadné dáta pre 988 zámerov každý týždeň. Preto v schéme vyššie nie sú všetky. Tu je, ktoré áno, ktoré nie a prečo.</p>
+<section class="strana otazka" id="nastroj">
+<div class="okraj"><span class="tb-stitok">06 · Nástroj a mapa</span><span class="tb-stitok tlm">Deväť zdrojov</span></div>
+<h2 class="otazka-h">Prečo z nástroja nejde do mapy všetko?</h2>
+<p class="odpoved">Nástroj <a href="../#zdroje">Kto stojí za projektom</a> číta deväť zdrojov, ale <b>pri jednom dopyte na jeden projekt</b>. Mapa potrebuje hromadné dáta pre 988 zámerov každý týždeň — preto v toku vyššie nie sú všetky. Tu je, ktoré áno, ktoré nie a prečo.</p>
+</section>
+
+<section class="strana obsah">
+<div class="okraj"><span class="tb-stitok">06 · Nástroj a mapa</span><span class="tb-stitok tlm">Zdroj · v nástroji · v mape · prečo</span></div>
 <table class="tb-tab">
 <tr><th>zdroj</th><th>v nástroji</th><th>v mape</th><th>prečo</th></tr>
 <tr><td><b>Enviroportál</b> — register EIA</td><td>jeden zámer pri dopyte</td><td><span class="z" style="background:#000000"></span>áno, kostra mapy</td><td>verejné JSON API, hromadný zber 2 303 bratislavských zámerov (= „miestny index zámerov“ nástroja je ten istý zber)</td></tr>
@@ -319,9 +368,14 @@
 <p class="pozn">Skratka: do mapy idú zdroje s hromadným verejným prístupom (API alebo export) a bez osobných údajov. Zdroje, ktoré sa dajú čítať len po jednom (ORSR, Yimba, stránky projektov), ostávajú v nástroji na dopyt — z rovnakých dôvodov, prečo nástroj sám radšej odmietne výsledok, než by obchádzal ochranu servera.</p>
 </section>
 
-<section class="sek">
-<div class="tb-riadok"><span class="tb-stitok">Stavebné úrady</span><span class="tb-stitok tlm">17 úradov · infožiadosť 211/2000</span></div>
-<h2 class="tb-h2" id="urady">Čo chýba: história stavebných úradov</h2>
+<section class="strana otazka" id="urady">
+<div class="okraj"><span class="tb-stitok">07 · Stavebné úrady</span><span class="tb-stitok tlm">17 úradov · infožiadosť 211/2000</span></div>
+<h2 class="otazka-h">Čo v mape chýba a ako to získať?</h2>
+<p class="odpoved">História stavebných úradov. Povolenia vydáva 17 úradov mestských častí, <b>žiadny nepublikuje zoznam</b> a vyhláška z tabule zmizne po 15 dňoch. Cesta: infožiadosť podľa zákona 211/2000 Z. z. — generátor je na ďalšej strane.</p>
+</section>
+
+<section class="strana obsah">
+<div class="okraj"><span class="tb-stitok">07 · Stavebné úrady</span><span class="tb-stitok tlm">Prečo chýbajú · ako ich získať · generátor</span></div>
 <div class="urady tb-grid">
   <div class="info tb-s4"><h4>Prečo v mape nie sú všetky povolené stavby</h4>
     <p>Stavebné povolenia vydáva 17 stavebných úradov mestských častí, každý si ich eviduje po svojom a <b>žiadny nepublikuje zoznam</b>. Na úradnej tabuli visí vyhláška 15 dní a zmizne. Register EIA vidí len stavby nad prahom (10 000 m² podlažnej plochy v zastavanom území, 200 stojísk) — menšie bytovky, školy či rekonštrukcie v ňom nie sú.</p>
@@ -362,6 +416,7 @@
 </div>
 </section>
 <p class="pozn" style="margin-top:calc(var(--okraj)*1.5)">Skripty a poradie ich spúšťania: <code>dokumenty/README.md</code> v repe. Odhad práce a stav: <a href="../dokumenty/odhad-prve-doplnenie.html" style="color:var(--tx2)">tabuľka odhadu</a>.</p>
+<div class="pata-strana"><span class="tb-stitok">Metropolitný inštitút Bratislavy</span><span class="tb-stitok tlm">Zámery Bratislavy · Tok dát</span></div>
 </main>
 <script>
 /* Čísla sa počítajú z tých istých súborov, ktoré číta mapa — po každom

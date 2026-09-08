@@ -102,7 +102,7 @@ aside{display:flex;flex-direction:column;min-height:0;border-right:var(--l2);pad
 .viac{margin:16px 0;width:100%}
 
 /* editor: 5 stĺpcov, obsah kotvený hore, celky delené 1 px linkou */
-.editor{overflow:auto;min-height:0;padding:0 0 96px;scroll-snap-type:y proximity;counter-reset:sekcia}
+.editor{overflow:auto;min-height:0;padding:0 0 96px;counter-reset:sekcia}
 .prazdne{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:24px;color:var(--tx2);text-align:left;margin:0;padding-top:36px;height:auto;position:relative}
 .prazdne::before{content:"";position:absolute;left:0;right:0;top:36px;height:1px;background:var(--ciara)}
 .prazdne h2{margin:0;padding-top:32px;color:var(--tx);font-weight:400;font-size:clamp(44px,5.2vw,80px);line-height:1;letter-spacing:-.03em;width:100%}
@@ -110,11 +110,11 @@ aside{display:flex;flex-direction:column;min-height:0;border-right:var(--l2);pad
 .prazdne p b{color:var(--tx);font-weight:500}
 .prazdne p+p{font-size:15px!important;color:var(--tx2)!important;max-width:34em;border-top:var(--l2);padding-top:12px;width:100%}
 /* strana 1 = zámer: mikro-štítky nad linkou, veľký názov, meta dole na linke (ako plagát) */
-.hlava{display:grid;grid-template-columns:auto auto 1fr;grid-template-rows:36px auto 1fr auto;column-gap:20px;align-items:start;align-content:start;margin:0;padding:0 0 24px;border:0;position:relative;min-height:calc(100vh - 124px);scroll-snap-align:start}
+.hlava{display:grid;grid-template-columns:auto auto 1fr;grid-template-rows:36px auto auto;column-gap:20px;align-items:start;align-content:start;margin:0 0 40px;padding:0;border:0;position:relative}
 .hlava::before{content:"";position:absolute;left:0;right:0;top:36px;height:1px;background:var(--ciara)}
 .hlava .stitok{grid-row:1;align-self:center}
-.hlava h2{grid-row:2;grid-column:1/-1;margin:32px 0 0;font-weight:400;font-size:clamp(44px,5vw,80px);line-height:1;letter-spacing:-.03em;max-width:14em}
-.hlava .meta{grid-row:4;grid-column:1/-1;align-self:end;width:100%;font-size:15px;color:var(--tx);display:flex;flex-wrap:wrap;gap:6px 24px;align-items:center;margin:56px 0 0;border-top:var(--l1);padding-top:10px}
+.hlava h2{grid-row:2;grid-column:1/-1;margin:20px 0 0;font-weight:400;font-size:clamp(28px,2.6vw,40px);line-height:1.05;letter-spacing:-.02em;max-width:24em}
+.hlava .meta{grid-row:3;grid-column:1/-1;width:100%;font-size:14px;color:var(--tx2);display:flex;flex-wrap:wrap;gap:6px 20px;align-items:center;margin:14px 0 0;border-top:var(--l2);padding-top:8px}
 .hlava .meta span:empty{display:none}
 .hlava .meta a{color:var(--tx);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.2em}
 .hlava .meta a:hover{color:var(--cervena2)}
@@ -122,11 +122,11 @@ aside{display:flex;flex-direction:column;min-height:0;border-right:var(--l2);pad
 .stitok.red{color:var(--cervena2)}
 .stitok.novy{color:var(--tx)}
 /* ďalšie strany = celky: číslo nad linkou, samostatný veľký nadpis, pod ním vysvetlenie (stav) a obsah */
-.blok{background:transparent;border:0;padding:64px 0 32px;margin:0;position:relative;min-height:calc(100vh - 124px);scroll-snap-align:start;counter-increment:sekcia}
+.blok{background:transparent;border:0;padding:52px 0 0;margin:0 0 56px;position:relative;counter-increment:sekcia}
 .blok::before{content:counter(sekcia,decimal-leading-zero);position:absolute;left:0;top:0;height:36px;display:flex;align-items:center;font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--tx)}
 .blok::after{content:"";position:absolute;left:0;right:0;top:36px;height:1px;background:var(--ciara)}
-.blok h3{display:block;margin:0 0 44px;padding:0;border:0;font-size:clamp(36px,3.8vw,60px);font-weight:400;letter-spacing:-.03em;text-transform:none;line-height:1;color:var(--tx);max-width:14em}
-.blok h3 .stav{display:block;margin:16px 0 0;font-size:18px;font-weight:400;letter-spacing:0;color:var(--tx2);text-align:left;line-height:1.35;max-width:34em}
+.blok h3{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 24px;margin:0 0 24px;padding:0;border:0;font-size:28px;font-weight:400;letter-spacing:-.02em;text-transform:none;line-height:1;color:var(--tx)}
+.blok h3 .stav{display:inline;margin:0;font-size:15px;font-weight:400;letter-spacing:0;color:var(--tx2);text-align:left;line-height:1.35}
 .blok h3 .stav.ok{color:var(--tx)}
 .blok h3 .stav.chyba{color:var(--cervena2)}
 .blok h3 .stav:empty{display:none}
