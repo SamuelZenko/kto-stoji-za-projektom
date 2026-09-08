@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<title>Redakcia — Zámery Bratislavy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
+<style>
+:root{--bg:#0B1117;--panel:#111A22;--karta:#17222C;--karta2:#1E2B36;--ln:rgba(255,255,255,.09);--ln2:rgba(255,255,255,.18);
+  --tx:#F4F7FA;--tx2:#98A6B5;--tx3:#67767F;--ac:#D6165A;--ac2:#E8497F;--ok:#12A67A;--pozor:#E8B44A;--modra:#3B82D9;--r:12px;--r2:8px}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg)}
+body{font:14px/1.5 "Public Sans",system-ui,"Segoe UI",sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+a{color:var(--ac2)}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--tx);background:var(--karta);border:1px solid var(--ln);border-radius:var(--r2);padding:9px 11px;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ac)}
+textarea{min-height:88px;resize:vertical}
+label{display:block;font-size:12px;color:var(--tx2);margin:0 0 5px;font-weight:500}
+.mono{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+.tl{display:inline-flex;align-items:center;gap:7px;background:var(--karta);border:1px solid var(--ln);color:var(--tx);border-radius:var(--r2);padding:8px 13px;font-size:13px;font-weight:500;white-space:nowrap}
+.tl:hover{background:var(--karta2);border-color:var(--ln2)}
+.tl.hl{background:var(--ac);border-color:var(--ac);color:#fff}
+.tl.hl:hover{background:var(--ac2)}
+.tl.hl:disabled{opacity:.45;cursor:default;background:var(--ac)}
+.tl.mala{padding:5px 9px;font-size:12px}
+.tl.duch{background:transparent}
+.tl svg{width:15px;height:15px;flex:none}
+
+/* horná lišta */
+.lista{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--panel);border-bottom:1px solid var(--ln);flex:none;z-index:5}
+.lista h1{font-size:14.5px;margin:0;font-weight:600;white-space:nowrap}
+.lista h1 span{color:var(--tx3);font-weight:500}
+.lista nav{display:flex;gap:16px;margin-left:8px}
+.lista nav a{color:var(--tx2);text-decoration:none;font-size:13px}
+.lista nav a:hover{color:var(--tx)}
+.lista .pravo{margin-left:auto;display:flex;gap:8px;align-items:center}
+.pripoj{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--tx2);padding:6px 10px;border:1px solid var(--ln);border-radius:20px;cursor:pointer;background:transparent}
+.pripoj i{width:8px;height:8px;border-radius:50%;background:var(--tx3);flex:none}
+.pripoj.ok i{background:var(--ok);box-shadow:0 0 0 3px rgba(18,166,122,.2)}
+.pripoj.chyba i{background:var(--ac);box-shadow:0 0 0 3px rgba(214,22,90,.2)}
+.pripoj:hover{border-color:var(--ln2);color:var(--tx)}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:rgba(255,255,255,.16);font-size:11.5px;font-weight:700}
+
+/* rozloženie */
+.rozloz{display:grid;grid-template-columns:380px 1fr;flex:1;min-height:0}
+aside{border-right:1px solid var(--ln);display:flex;flex-direction:column;min-height:0;background:var(--panel)}
+.hlad{padding:12px 14px 8px;display:flex;flex-direction:column;gap:8px}
+.hlad input[type=search]{padding-left:34px;background:var(--karta) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2398A6B5' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") 11px center no-repeat}
+.chipy{display:flex;flex-wrap:wrap;gap:6px}
+.chipy button{background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:20px;padding:4px 11px;font-size:12px}
+.chipy button[aria-pressed=true]{background:rgba(214,22,90,.16);border-color:var(--ac);color:#fff}
+.chipy button b{font-weight:600;color:var(--tx3);margin-left:4px}
+.chipy button[aria-pressed=true] b{color:#F7C7D8}
+.hlad select{padding:7px 10px;font-size:13px}
+.pocet{font-size:12px;color:var(--tx3);padding:0 16px 6px}
+.polozky{overflow:auto;flex:1;padding:0 8px 20px}
+.pol{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 10px;border-radius:var(--r2);cursor:pointer;border:1px solid transparent}
+.pol:hover{background:var(--karta)}
+.pol[aria-selected=true]{background:var(--karta2);border-color:var(--ln2)}
+.pol .n{font-weight:500;font-size:13.5px;line-height:1.3;grid-column:1}
+.pol .m{grid-column:1;font-size:12px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pol .z{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-top:2px}
+.ik{width:8px;height:8px;border-radius:50%;display:inline-block}
+.ik.poloha{background:var(--ok)}
+.ik.poloha.nie{background:transparent;border:1.5px solid var(--tx3)}
+.ik.obr{background:var(--modra)}
+.ik.obr.nie{background:transparent;border:1.5px solid var(--tx3)}
+.ik.zmena{background:var(--pozor)}
+.pol .st{display:flex;gap:4px;align-items:center}
+.viac{margin:8px 10px;width:calc(100% - 20px)}
+
+/* editor */
+.editor{overflow:auto;min-height:0;padding:22px 28px 60px}
+.prazdne{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--tx2);text-align:center;max-width:460px;margin:0 auto}
+.prazdne h2{margin:0;color:var(--tx);font-size:20px}
+.prazdne p{margin:0}
+.hlava{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:flex-start;margin-bottom:18px}
+.hlava h2{margin:0;font-size:22px;line-height:1.25;letter-spacing:-.01em;flex:1 1 420px}
+.hlava .meta{width:100%;font-size:13px;color:var(--tx2);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.stitok{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;padding:3px 8px;border-radius:5px;background:var(--karta2);color:var(--tx2);font-weight:600}
+.stitok.red{background:rgba(214,22,90,.18);color:#F7C7D8}
+.stitok.novy{background:rgba(139,111,212,.22);color:#D8CCF5}
+.blok{background:var(--panel);border:1px solid var(--ln);border-radius:var(--r);padding:18px 20px;margin-bottom:16px}
+.blok h3{margin:0 0 12px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3);font-weight:600;display:flex;align-items:center;gap:10px}
+.blok h3 .stav{margin-left:auto;text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:500;color:var(--tx2)}
+.blok h3 .stav.ok{color:var(--ok)}
+.blok h3 .stav.chyba{color:var(--ac2)}
+.mriezka{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.mriezka .cely{grid-column:1/-1}
+.pomoc{font-size:12px;color:var(--tx3);margin:5px 0 0}
+.pomoc.chyba{color:var(--ac2)}
+.pomoc.ok{color:var(--ok)}
+.poloha-rozloz{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#mini-mapa{height:300px;border-radius:var(--r2);overflow:hidden;border:1px solid var(--ln);background:#0B1117;position:relative}
+.mapa-tl{position:absolute;top:8px;right:8px;z-index:2;display:flex;gap:6px}
+.mapa-tl .tl{padding:5px 9px;font-size:12px;background:rgba(17,26,34,.92)}
+.mapa-tl .tl[aria-pressed=true]{border-color:var(--ac);color:#fff}
+.mapa-pozn{position:absolute;left:8px;bottom:8px;z-index:2;font-size:11.5px;color:#DCE4EC;background:rgba(11,17,23,.75);padding:3px 8px;border-radius:5px;pointer-events:none}
+.riadok-tl{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sur{font-family:"JetBrains Mono",monospace;font-size:13px}
+
+/* obrázky */
+.drop{border:1.5px dashed var(--ln2);border-radius:var(--r2);padding:22px;text-align:center;color:var(--tx2);cursor:pointer;transition:border-color .15s,background .15s;font-size:13px}
+.drop b{color:var(--tx);display:block;font-size:14px;margin-bottom:3px}
+.drop.nad,.drop:hover{border-color:var(--ac);background:rgba(214,22,90,.07)}
+.galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:14px}
+.obr{background:var(--karta);border:1px solid var(--ln);border-radius:var(--r2);overflow:hidden;display:flex;flex-direction:column}
+.obr .nahl{aspect-ratio:4/3;background:#0B1117 center/cover no-repeat;position:relative}
+.obr .nahl .tlac{position:absolute;top:6px;right:6px;display:flex;gap:4px;opacity:0;transition:opacity .15s}
+.obr:hover .nahl .tlac{opacity:1}
+.obr .nahl .tlac button{background:rgba(11,17,23,.85);border:1px solid var(--ln2);color:#fff;border-radius:6px;width:26px;height:26px;display:grid;place-items:center;padding:0}
+.obr .nahl .tlac button:hover{background:var(--ac);border-color:var(--ac)}
+.obr .nahl .druh{position:absolute;left:6px;bottom:6px;font-size:10.5px;background:rgba(11,17,23,.8);padding:2px 6px;border-radius:4px;color:var(--tx2)}
+.obr .nahl .druh.novy{color:#F7C7D8}
+.obr input{border-radius:0;border:0;border-top:1px solid var(--ln);background:transparent;padding:7px 10px;font-size:12.5px}
+.obr input::placeholder{color:var(--tx3)}
+.url-riadok{display:flex;gap:8px;margin-top:10px}
+.url-riadok input{flex:1}
+
+/* päta editora */
+.pata{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12.5px;color:var(--tx3);padding:6px 2px}
+.pata .tl{margin-left:auto}
+
+/* dialógy */
+dialog{background:var(--panel);color:var(--tx);border:1px solid var(--ln2);border-radius:var(--r);padding:0;max-width:560px;width:calc(100% - 32px);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(5,8,12,.7);backdrop-filter:blur(3px)}
+dialog .vn{padding:22px 24px}
+dialog h2{margin:0 0 6px;font-size:18px}
+dialog p{margin:0 0 12px;color:var(--tx2);font-size:13.5px}
+dialog ol{margin:0 0 14px;padding-left:20px;color:var(--tx2);font-size:13.5px;display:flex;flex-direction:column;gap:5px}
+dialog ol b{color:var(--tx)}
+dialog .pole{margin-bottom:12px}
+dialog .tlacidla{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.log{font-family:"JetBrains Mono",monospace;font-size:12.5px;background:#0A1218;border:1px solid var(--ln);border-radius:var(--r2);padding:12px 14px;max-height:280px;overflow:auto;white-space:pre-wrap;color:var(--tx2)}
+.log .ok{color:var(--ok)}
+.log .chyba{color:var(--ac2)}
+#toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);background:var(--karta2);border:1px solid var(--ln2);color:var(--tx);padding:10px 16px;border-radius:var(--r2);font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:20;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:960px){
+  body{overflow:auto;height:auto}
+  .rozloz{grid-template-columns:1fr}
+  aside{max-height:46vh;border-right:0;border-bottom:1px solid var(--ln)}
+  .poloha-rozloz,.mriezka{grid-template-columns:1fr}
+  .lista nav{display:none}
+  .editor{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="lista">
+  <h1>Zámery Bratislavy <span>· redakcia</span></h1>
+  <nav><a href="../mapa-zamerov/">Mapa</a><a href="../tok-dat/">Tok dát</a></nav>
+  <div class="pravo">
+    <button class="pripoj" id="pripoj" title="Pripojenie na GitHub"><i></i><span>bez pripojenia</span></button>
+    <button class="tl" id="tl-novy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+      Nový zámer</button>
+    <button class="tl hl" id="tl-uloz" disabled>Uložiť na GitHub <span class="badge" id="poc-zmien">0</span></button>
+  </div>
+</div>
+
+<div class="rozloz">
+  <aside>
+    <div class="hlad">
+      <input type="search" id="q" placeholder="Hľadať názov, firmu, IČO…" autocomplete="off">
+      <div class="chipy" id="chipy">
+        <button data-f="" aria-pressed="true">Všetky<b></b></button>
+        <button data-f="bez-polohy" aria-pressed="false">Bez polohy<b></b></button>
+        <button data-f="bez-obrazka" aria-pressed="false">Bez obrázka<b></b></button>
+        <button data-f="rozpracovane" aria-pressed="false">Rozpracované<b></b></button>
+        <button data-f="redakcia" aria-pressed="false">Doplnené<b></b></button>
+        <button data-f="nove" aria-pressed="false">Nové<b></b></button>
+      </div>
+      <select id="mc"><option value="">všetky mestské časti</option></select>
+    </div>
+    <div class="pocet" id="pocet">načítavam…</div>
+    <div class="polozky" id="zoznam"></div>
+  </aside>
+
+  <section class="editor" id="editor">
+    <div class="prazdne">
+      <h2>Vyber zámer vľavo</h2>
+      <p>Doplníš mu polohu, obrázky, obchodný názov, fázu alebo architekta. Alebo pridaj <b>Nový zámer</b>, ktorý v registri nie je.</p>
+      <p style="font-size:12.5px;color:var(--tx3)">Zmeny sa priebežne ukladajú v tomto prehliadači. Do mapy sa dostanú tlačidlom <b>Uložiť na GitHub</b>.</p>
+    </div>
+  </section>
+</div>
+
+<dialog id="d-nastav"><div class="vn">
+  <h2>Pripojenie na GitHub</h2>
+  <p>Appka zapisuje priamo do repozitára <span class="mono">SamuelZenko/kto-stoji-za-projektom</span>. Potrebuje tvoj osobný token — vytvor si ho sám a vlož sem, nikam inam sa neposiela.</p>
+  <ol>
+    <li>GitHub → <b>Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</b></li>
+    <li>Repository access: <b>Only select repositories → kto-stoji-za-projektom</b></li>
+    <li>Permissions → Repository permissions → <b>Contents: Read and write</b> (nič iné)</li>
+    <li>Skopíruj token (začína <span class="mono">github_pat_</span>) a vlož ho sem</li>
+  </ol>
+  <div class="pole"><label>Token</label><input type="password" id="n-token" placeholder="github_pat_…" autocomplete="off"></div>
+  <div class="pole"><label>Podpis pri zázname (verejný, napr. iniciály alebo „MIB")</label><input type="text" id="n-kto" placeholder="napr. SZ" maxlength="40"></div>
+  <p class="pomoc" id="n-stav" style="min-height:18px"></p>
+  <p style="font-size:12px;color:var(--tx3)">Token ostáva v tomto prehliadači (localStorage). Na cudzom počítači ho po práci vymaž tlačidlom Odpojiť.</p>
+  <div class="tlacidla">
+    <button class="tl duch" id="n-odpoj">Odpojiť</button>
+    <button class="tl" id="n-zavri">Zavrieť</button>
+    <button class="tl hl" id="n-uloz">Overiť a uložiť</button>
+  </div>
+</div></dialog>
+
+<dialog id="d-uloz"><div class="vn">
+  <h2 id="u-nadpis">Ukladám na GitHub…</h2>
+  <p id="u-pozn">Jeden commit so všetkými zmenami. Mapa sa na webe obnoví zhruba do dvoch minút.</p>
+  <div class="log" id="u-log"></div>
+  <div class="tlacidla"><button class="tl" id="u-zavri" disabled>Zavrieť</button></div>
+</div></dialog>
+
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
+<script src="app.js?v=20260908"></script>
+</body>
+</html>

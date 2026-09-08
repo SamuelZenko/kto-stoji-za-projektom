@@ -214,6 +214,9 @@ body.tiaham .tahadlo-d{transition:background .15s}
 .miesto .na-mape:hover{color:var(--tx)}
 .udaje{display:flex;flex-direction:column;border-top:1px solid var(--ln)}
 .udaje .r{display:flex;gap:16px;padding:9px 0;border-bottom:1px solid var(--ln);font-size:13.5px}
+/* popis od redakcie — jediný voľný text v karte, register popis nemá */
+.detail .popis{font-size:13.5px;line-height:1.55;color:var(--tx2);margin:0 0 14px}
+.detail .popis .pozn-stav{display:block;font-size:12px;color:var(--tx3);margin-top:4px}
 .udaje .k{flex:none;width:118px;color:var(--tx2)}
 .udaje .v{flex:1;min-width:0;color:var(--tx)}
 .udaje .v.chyba{color:var(--tx3);font-style:italic}

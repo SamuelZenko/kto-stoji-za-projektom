@@ -1,0 +1,5 @@
+{
+ "_popis": "Redakčná vrstva — ručné doplnenia z aplikácie /redakcia/. `zamery` sú doplnky k projektom z registra EIA (kľúč = id zámeru): poloha [lon, lat], obchodný názov, fáza, popis, investor, architekt, odkaz, obrázky (súbory v mapa-zamerov/redakcia/). `nove` sú projekty, ktoré v registri nie sú. Mapa ich zlúči pri načítaní; každý údaj z tohto súboru je v karte označený ako doplnený redakciou.",
+ "zamery": {},
+ "nove": {}
+}

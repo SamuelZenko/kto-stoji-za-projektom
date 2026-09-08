@@ -88,13 +88,46 @@
   .cislo span{font-size:13.5px;color:var(--tx)}
   .cislo small{display:block;font-size:12px;color:var(--tx3);margin-top:3px;line-height:1.4}
   .cislo.chyba b{color:#E8B44A}
-  @media (max-width:1100px){.prehlad{grid-template-columns:repeat(2,1fr)}.tok{grid-template-columns:1fr}.tok .hl,.s{display:none}.tok .k{margin-bottom:-6px}.dva{grid-template-columns:1fr}.strom{columns:1}}
+  /* typy stavieb — pruhy sa počítajú zo zamery.geojson */
+  .typy{display:grid;grid-template-columns:1.1fr 2fr;gap:18px;margin:0 0 40px}
+  .typy table{font-size:13.5px}
+  .typy td{padding:8px 10px}
+  .typy td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--tx)}
+  .typy td.pr{width:42%}
+  .typy .pruh{height:8px;border-radius:4px;background:var(--c);opacity:.9}
+  .typy td.pc{color:var(--tx3);font-size:12.5px;white-space:nowrap}
+  .typy .vys{font-size:13.5px;color:var(--tx2)}
+  .typy .vys dt{color:var(--tx);font-weight:600;margin-top:10px;display:flex;align-items:center;gap:8px}
+  .typy .vys dt::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+  .typy .vys dd{margin:2px 0 0 17px}
+  /* stavebné úrady — chýbajúca história a generátor žiadosti */
+  .urady{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+  .urady .info{border-style:solid}
+  .urady ul{margin:8px 0 0;padding-left:18px;color:var(--tx2);font-size:13.5px}
+  .urady li{margin:4px 0}
+  .urady li b{color:var(--tx)}
+  .gen{background:var(--karta);border:1px solid var(--ln);border-radius:var(--r);padding:18px 20px;grid-column:1/-1}
+  .gen .riadok{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+  .gen label{display:block;font-size:12px;color:var(--tx2);margin-bottom:4px}
+  .gen input,.gen select,.gen textarea{width:100%;font:inherit;color:var(--tx);background:#0A1218;border:1px solid var(--ln2);border-radius:8px;padding:8px 10px;font-size:13.5px}
+  .gen textarea{min-height:340px;font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.5;resize:vertical}
+  .gen .tl{display:inline-flex;align-items:center;gap:6px;background:var(--karta2);border:1px solid var(--ln2);color:var(--tx);border-radius:8px;padding:8px 13px;font:inherit;font-size:13px;cursor:pointer;text-decoration:none}
+  .gen .tl.hl{background:#D6165A;border-color:#D6165A;color:#fff}
+  .gen .tlac{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+  .gen .pozn{margin-top:8px}
+  .gen .adr{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--tx2)}
+  .gen .adr.chyba{color:#E8B44A}
+  .tab-mc{margin-top:16px}
+  .tab-mc td{padding:7px 10px;font-size:13px}
+  .tab-mc .ok{color:#12A67A}
+  .tab-mc .nie{color:#E8B44A}
+  @media (max-width:1100px){.prehlad{grid-template-columns:repeat(2,1fr)}.typy,.urady{grid-template-columns:1fr}.gen .riadok{grid-template-columns:1fr 1fr}.tok{grid-template-columns:1fr}.tok .hl,.s{display:none}.tok .k{margin-bottom:-6px}.dva{grid-template-columns:1fr}.strom{columns:1}}
 </style>
 </head>
 <body>
 <div class="lista">
   <h1>Zámery Bratislavy · tok dát</h1>
-  <nav><a href="../mapa-zamerov/">Mapa</a><a href="../">O projekte</a><a href="../doplnit-polohu/">Doplniť polohy</a><a href="../komunita/">Dáta</a></nav>
+  <nav><a href="../mapa-zamerov/">Mapa</a><a href="../redakcia/">Doplniť polohy a obrázky</a></nav>
 </div>
 <main>
 <h2>Odkiaľ dáta prichádzajú a kde v mape končia</h2>
@@ -115,9 +148,25 @@
   <div class="cislo"><b id="p-nazvy">…</b><span>obchodných názvov<small id="p-nazvy-pozn">známky · OSM · ručne</small></span></div>
   <div class="cislo"><b id="p-faza">…</b><span>fáz doložených vyhláškou<small>CUET a úradné tabule MČ</small></span></div>
   <div class="cislo"><b id="p-galeria">…</b><span>s výkresmi zo spisu<small>náhľady z PDF</small></span></div>
-  <div class="cislo"><b id="p-stav">…</b><span>dátum dát<small id="p-stav-pozn">podľa posledného behu</small></span></div>
+  <div class="cislo"><b id="p-redakcia">…</b><span>doplnila redakcia<small id="p-redakcia-pozn">polohy · obrázky · nové zámery</small></span></div>
 </section>
-<p class="pozn" id="p-zdroje" style="margin:-10px 0 40px"></p>
+<p class="pozn" id="p-zdroje" style="margin:-10px 0 28px"></p>
+
+<h3 style="margin-top:0">Typy stavieb v mape</h3>
+<div class="typy">
+  <table id="t-typy"><tr><th>účel stavby</th><th></th><th style="text-align:right">projektov</th><th></th></tr></table>
+  <dl class="vys">
+    <dt style="--c:#3B82D9">Bývanie</dt><dd>bytové domy, obytné súbory, rezidenčné štvrte; aj rodinné domy, ak prešli EIA (zriedka)</dd>
+    <dt style="--c:#D6165A">Polyfunkcia</dt><dd>byty + obchod alebo kancelárie v jednom projekte — typická „polyfunkčná zóna“ či „mestský blok“</dd>
+    <dt style="--c:#12A67A">Administratíva</dt><dd>kancelárske budovy a kampusy</dd>
+    <dt style="--c:#C08A4A">Výroba a sklady</dt><dd>logistické parky, haly, závody, technologické prevádzky — najpočetnejšia skupina v EIA, hlavne Ružinov a DNV</dd>
+    <dt style="--c:#7FC4EA">Vybavenosť</dt><dd>školy, nemocnice, šport, kultúra, hotely</dd>
+    <dt style="--c:#8B6FD4">Obchod a služby</dt><dd>nákupné centrá, predajne, čerpacie stanice, autoservisy</dd>
+    <dt style="--c:#4E9E86">Zeleň a verejný priestor</dt><dd>parky, nábrežia, úpravy verejných priestranstiev</dd>
+    <dt style="--c:#8B98A3">Doprava · Technická infraštruktúra</dt><dd>cesty, križovatky, električkové trate, siete, čistiarne — líniové stavby, v mape vo vlastnej vrstve, nie medzi budovami</dd>
+  </dl>
+</div>
+<p class="pozn" style="margin:-24px 0 40px">Účel určuje skript <code>typy.py</code> z názvu a textu zámeru podľa kľúčových slov; „Iné“ je to, čo nesedelo nikam. Pri zmene názvu v redakcii sa typ nemení.</p>
 
 <section class="tok">
   <div class="hl">Zdroj</div><div></div><div class="hl">Spracovanie · skripty v <code>dokumenty/</code></div><div></div><div class="hl">V mape</div>
@@ -165,11 +214,11 @@
   <div class="k" style="--c:#E8B44A"><h4>Linky MHD, staveniská</h4><div class="chips"><span class="chip subor">mhd.geojson</span><span class="chip subor">osm-staveniska.geojson</span></div><ul class="tagy"><li><b>vrstvy</b> Linky MHD a Staveniská z OpenStreetMap (53, žltý prstenec)</li><li class="karta">karta: 11 obchodných názvov, 14 polôh</li></ul></div>
 
   <!-- ludia -->
-  <div class="k zdroj" style="--c:#D6165A"><h4>Ľudia</h4><p>Developeri, kolegovia, komunita: formulár a hárok (pripravené, zatiaľ prázdne), ručné zápisy obchodných názvov, dopĺňanie polôh.</p><div class="meta">jediný zdroj vizualizácií a stopercentných názvov</div></div>
+  <div class="k zdroj" style="--c:#D6165A"><h4>Redakcia a ľudia</h4><p>Kolegovia, developeri, architekti: aplikácia <a href="../redakcia/" style="color:#F7C7D8">Redakcia</a> — poloha klikom do mapy alebo vložením odkazu, obrázky pretiahnutím, obchodný názov, fáza, architekt, nové zámery mimo registra.</p><div class="meta">jediný zdroj vizualizácií a stopercentných názvov · priebežne</div></div>
   <div class="s" style="--c:#D6165A"></div>
-  <div class="k" style="--c:#D6165A"><h4>Komunitné vstupy</h4><div class="chips"><span class="chip">komunita.json</span><span class="chip">nazvy-obchodne.json</span><span class="chip">doplnit-polohu/zamery.csv</span></div><p>Schválenie je obyčajný stĺpec v hárku. Bod pridaný priamo v mape ostáva zatiaľ v prehliadači a dá sa vyexportovať.</p></div>
+  <div class="k" style="--c:#D6165A"><h4>Zápis do repozitára</h4><div class="chips"><span class="chip">redakcia/app.js</span><span class="chip">GitHub API</span></div><p>Zmeny sa držia v prehliadači a na jedno tlačidlo idú ako jeden commit priamo do repa (token si vkladá redaktor sám). Obrázky sa zmenšia na 1 600 px. Mapa ich zlúči pri načítaní — bez čakania na týždenný beh.</p></div>
   <div class="s" style="--c:#D6165A"></div>
-  <div class="k" style="--c:#D6165A"><h4>Komunitné body, ručné názvy</h4><div class="chips"><span class="chip subor">komunita.json</span></div><ul class="tagy"><li><b>vrstva</b> Komunitné body (fialové)</li><li class="karta">karta: ručný obchodný názov (River Park ↔ CPR), doplnené polohy</li></ul></div>
+  <div class="k" style="--c:#D6165A"><h4>Redakčná vrstva</h4><div class="chips"><span class="chip subor">redakcia.json</span><span class="chip subor">redakcia/*.jpg</span></div><ul class="tagy"><li><b>nové zámery</b> mimo registra ako body mapy so štítkom redakcie</li><li class="karta">karta: poloha, vizualizácie, obchodný názov, fáza, architekt, popis — každé pole s poznámkou „doplnila redakcia“</li></ul></div>
 </section>
 
 <div class="dva">
@@ -234,12 +283,52 @@
 <li>ArcGIS Pro → <code>lod1_export.py</code> (S-JTSK → WGS 84, transformácia S_JTSK_To_ETRS_1989_3) → <code>lod1_dlazdice.py</code> → <code>budovy/</code> 79 dlaždíc <span class="kam">→ vrstva 3D budovy, farba podľa výšky</span></li>
 <li>von ide len pôdorys a výška; nič iné z modelu sa nepublikuje</li>
 </ul></details>
-<details open><summary><span class="z" style="background:#D6165A"></span>Ľudia</summary><ul>
-<li><b>Google formulár + hárok</b> (<code>komunita.json</code>, zatiaľ prázdne) <span class="kam">→ vrstva Komunitné body, schválenie = stĺpec v hárku</span></li>
+<details open><summary><span class="z" style="background:#D6165A"></span>Redakcia a ľudia</summary><ul>
+<li><b>aplikácia Redakcia</b> (<code>redakcia/</code>) → GitHub API → <code>redakcia.json</code> + <code>redakcia/*.jpg</code> <span class="kam">→ mapa zlúči pri načítaní: poloha, obrázky, obchodný názov, fáza, architekt, popis, nové zámery</span></li>
 <li><b>ručné zápisy</b> do <code>nazvy-obchodne.json</code> (River Park ↔ CPR) <span class="kam">→ obchodný názov</span></li>
-<li><b>Doplniť polohy</b> → <code>zamery.csv</code> → späť do <code>zamery.geojson</code></li>
-<li><b>bod pridaný v mape</b> — zatiaľ ostáva v prehliadači, export cez stránku Dáta</li>
+<li><b>Google formulár + hárok</b> (<code>komunita.json</code>, zatiaľ prázdne) <span class="kam">→ vrstva Komunitné body, schválenie = stĺpec v hárku</span></li>
+<li>staršia stránka <b>Doplniť polohy</b> (<code>zamery.csv</code>, Google hárok) ostáva ako záloha</li>
 </ul></details>
+</div>
+
+<h3 id="urady">Čo chýba: história stavebných úradov</h3>
+<div class="urady">
+  <div class="info"><h4>Prečo v mape nie sú všetky povolené stavby</h4>
+    <p>Stavebné povolenia vydáva 17 stavebných úradov mestských častí, každý si ich eviduje po svojom a <b>žiadny nepublikuje zoznam</b>. Na úradnej tabuli visí vyhláška 15 dní a zmizne. Register EIA vidí len stavby nad prahom (10 000 m² podlažnej plochy v zastavanom území, 200 stojísk) — menšie bytovky, školy či rekonštrukcie v ňom nie sú.</p>
+    <ul>
+      <li><b>Od 8. 9. 2026</b> tabule sledujeme týždenne (16 zo 17 MČ, Ružinov nedostupný) — od tohto dátumu história vzniká u nás.</li>
+      <li><b>Pred tým</b> nemáme nič okrem CUET (9 MČ, útržkovito) a troch tabúľ s dlhším archívom: Lamač (~800 záznamov), Čunovo (341), Podunajské Biskupice (100).</li>
+      <li>Koľko stavieb takto chýba, sa z verejných zdrojov <b>nedá zmerať</b> — skúšali sme (<code>cuet_b1.py</code>).</li>
+    </ul></div>
+  <div class="info"><h4>Ako sa dá história získať</h4>
+    <ul>
+      <li><b>Infožiadosť podľa zákona 211/2000 Z. z.</b> každému stavebnému úradu — zoznam rozhodnutí od 1. 1. 2023 v tabuľke. Lehota 8 pracovných dní, odmietnutie musí byť písomné. Generátor nižšie.</li>
+      <li><b>Záväzné stanoviská hlavného mesta</b> k investičnej činnosti — jediný centrálny zoznam väčších stavieb; interne cez sekciu územného rozvoja magistrátu (rozhádzané, ale existuje).</li>
+      <li><b>Úrad pre územné plánovanie a výstavbu SR</b> — nový informačný systém výstavby; spýtať sa na export alebo API pre územie Bratislavy.</li>
+      <li><b>Archívy tabúľ</b> Lamač, Čunovo, Biskupice stiahnuť naraz (jednorazovo, 2–3 h).</li>
+      <li><b>Ružinov</b> (~30 % konaní) — kým server neožije, aspoň infožiadosťou.</li>
+    </ul></div>
+
+  <div class="gen">
+    <h4 style="margin:0 0 4px">Generátor infožiadosti</h4>
+    <p class="pozn" style="margin:0 0 14px">Vyber stavebný úrad — doplní sa názov MČ a e-mail podateľne (z webov MČ k 8. 9. 2026, pred odoslaním over). Univerzálna verzia má namiesto názvu zátvorku. Text sa dá skopírovať alebo otvoriť v pošte.</p>
+    <div class="riadok">
+      <div><label>Stavebný úrad</label><select id="g-mc"><option value="">— univerzálna šablóna —</option></select></div>
+      <div><label>Meno a priezvisko žiadateľa</label><input id="g-meno" placeholder="Meno Priezvisko"></div>
+      <div><label>E-mail pre odpoveď</label><input id="g-mail" placeholder="meno@mib.sk"></div>
+      <div><label>Údaje od</label><input id="g-od" value="1. 1. 2023"></div>
+    </div>
+    <div style="margin-bottom:6px"><span class="adr" id="g-adr"></span></div>
+    <textarea id="g-text" spellcheck="false"></textarea>
+    <div class="tlac">
+      <button class="tl hl" id="g-kopiruj">Kopírovať text</button>
+      <a class="tl" id="g-mailto" href="#">Otvoriť v pošte</a>
+      <button class="tl" id="g-vsetky">Kopírovať všetkých 17 naraz</button>
+      <span class="pozn" id="g-stav" style="margin:0"></span>
+    </div>
+    <table class="tab-mc" id="g-tab"><tr><th>mestská časť</th><th>e-mail podateľne</th><th>tabuľa v sledovači</th><th>archív na webe</th></tr></table>
+    <p class="pozn">Tip: pošli všetkých 17 v jeden deň a do tabuľky si zapíš dátum — lehota beží od doručenia. Údaje o fyzických osobách nežiadame, preto sa úrad nemôže vyhovoriť na ochranu osobných údajov.</p>
+  </div>
 </div>
 <p class="pozn">Skripty a poradie ich spúšťania: <code>dokumenty/README.md</code> v repe. Odhad práce a stav: <a href="../dokumenty/odhad-prve-doplnenie.html" style="color:var(--tx2)">tabuľka odhadu</a>.</p>
 </main>
@@ -272,23 +361,37 @@
     const zdr=[['úradné tabule',stav.tabule,10],['OSM staveniská',stav.osm,40],['register EIA',stav.eia,40],['parcely',stav.parcely,40],['ochranné známky',stav.znamky,60]];
     $('#s-zdroje').innerHTML=zdr.filter(x=>x[1]).map(([n,d,max])=>{ const st=(teraz-new Date(d))/864e5; return '<span class="'+(st>max?'star':'')+'">'+n+' <i>'+sk(d)+'</i></span>'; }).join('');
   })();
-  const [z,osm,tab,naz]=await Promise.all([ber('zamery.geojson'),ber('osm-staveniska.geojson'),ber('tabule-stavby.geojson'),ber('nazvy-obchodne.json')]);
+  const [z,osm,tab,naz,red]=await Promise.all([ber('zamery.geojson'),ber('osm-staveniska.geojson'),ber('tabule-stavby.geojson'),ber('nazvy-obchodne.json'),ber('redakcia.json')]);
   if(!z){ $('#p-projekty').textContent='—'; return; }
+  /* redakčné doplnenia sa počítajú rovnako, ako ich zlúči mapa */
+  const rz=(red&&red.zamery)||{}, rn=(red&&red.nove)||{};
+  const rPol=Object.values(rz).filter(r=>r.poloha).length, rObr=Object.values(rz).concat(Object.values(rn)).filter(r=>r.obrazky&&r.obrazky.length).length;
+  const rNaz=Object.values(rz).filter(r=>r.nazov).length, rNove=Object.keys(rn).length;
+  $('#p-redakcia').textContent=cis(Object.keys(rz).length+rNove);
+  $('#p-redakcia-pozn').textContent=(Object.keys(rz).length+rNove)?'polohy '+rPol+' · obrázky '+rObr+' · názvy '+rNaz+' · nové zámery '+rNove:'zatiaľ nič — appka Redakcia je pripravená';
+  z.features.forEach(f=>{ const r=rz[f.properties.id]; if(!r) return; if(r.poloha){ f.properties.presnost='presná'; f.properties.zdroj_polohy='redakcia'; } if(r.obrazky&&r.obrazky.length) f.properties.obrazky=r.obrazky; });
+  /* typy stavieb — pruhy podľa počtu, líniové zvlášť */
+  const FT={'Bývanie':'#3B82D9','Polyfunkcia':'#D6165A','Administratíva':'#12A67A','Výroba a sklady':'#C08A4A','Vybavenosť':'#7FC4EA','Obchod a služby':'#8B6FD4','Zeleň a verejný priestor':'#4E9E86','Doprava':'#8B98A3','Technická infraštruktúra':'#8B98A3'};
+  const tp={}; z.features.forEach(f=>{ const t=f.properties.typ||'Iné'; tp[t]=(tp[t]||0)+1; });
+  const stav=z.features.filter(f=>!f.properties.lin).length, max=Math.max(...Object.values(tp));
+  $('#t-typy').insertAdjacentHTML('beforeend',Object.entries(tp).sort((a,b)=>b[1]-a[1]).map(([t,n])=>{ const lin=t==='Doprava'||t==='Technická infraštruktúra';
+    return '<tr'+(lin?' style="color:var(--tx3)"':'')+'><td>'+t+(lin?' <small>(vlastná vrstva)</small>':'')+'</td><td class="pr"><div class="pruh" style="--c:'+(FT[t]||'#8B98A3')+';width:'+Math.round(100*n/max)+'%"></div></td><td class="n">'+cis(n)+'</td><td class="pc">'+(lin?'':Math.round(100*n/stav)+' %')+'</td></tr>'; }).join('')
+    +'<tr><td style="color:var(--tx)"><b>Spolu stavby</b></td><td></td><td class="n"><b>'+cis(stav)+'</b></td><td class="pc">100 %</td></tr>');
   const P=z.features.map(f=>f.properties);
   const st=P.filter(p=>!p.lin), lin=P.length-st.length;
   const presne=st.filter(p=>p.presnost==='presná');
-  const zdroj={parcela:0,ulica:0,osm:0,ine:0};
-  presne.forEach(p=>{ if(p.zdroj_polohy==='parcela') zdroj.parcela++; else if(p.zdroj_polohy==='osm') zdroj.osm++; else if(p.ulica||p.zdroj_polohy) zdroj.ulica++; else zdroj.ine++; });
+  const zdroj={parcela:0,ulica:0,osm:0,ine:0,redakcia:0};
+  presne.forEach(p=>{ if(p.zdroj_polohy==='parcela') zdroj.parcela++; else if(p.zdroj_polohy==='osm') zdroj.osm++; else if(p.zdroj_polohy==='redakcia') zdroj.redakcia++; else if(p.ulica||p.zdroj_polohy) zdroj.ulica++; else zdroj.ine++; });
   const nOsm=osm?osm.features.length:0, nTab=tab?tab.features.length:0;
   const nz={znamka:0,osm:0,rucne:0};
   if(naz) Object.entries(naz).forEach(([k,v])=>{ if(k.startsWith('_')) return; if(typeof v==='string') nz.rucne++; else if(/OpenStreetMap/i.test(v.zdroj||'')) nz.osm++; else nz.znamka++; });
   const faza=st.filter(p=>p.faza_zdroj==='tabula').length;
-  const gal=st.filter(p=>p.nahlady&&p.nahlady.length).length;
+  const gal=st.filter(p=>(p.nahlady&&p.nahlady.length)||(p.obrazky&&p.obrazky.length)).length;
   const datum=P.map(p=>p.zmena||'').filter(Boolean).sort().pop()||'';
   $('#p-projekty').textContent=cis(st.length);
   $('#p-projekty-pozn').textContent='z registra EIA · + '+cis(lin)+' dopravných a infraštruktúrnych vo vlastnej vrstve';
   $('#p-poloha').textContent=cis(presne.length)+' ('+Math.round(100*presne.length/st.length)+' %)';
-  $('#p-poloha-pozn').textContent='parcela '+cis(zdroj.parcela)+' · stred ulice '+cis(zdroj.ulica+zdroj.ine)+' · stavenisko OSM '+cis(zdroj.osm);
+  $('#p-poloha-pozn').textContent='parcela '+cis(zdroj.parcela)+' · stred ulice '+cis(zdroj.ulica+zdroj.ine)+' · stavenisko OSM '+cis(zdroj.osm)+(zdroj.redakcia?' · redakcia '+cis(zdroj.redakcia):'');
   $('#p-bez').textContent=cis(st.length-presne.length);
   $('#p-mimo').textContent=cis(nOsm+nTab);
   $('#p-mimo-pozn').textContent='staveniská z OSM '+cis(nOsm)+' · vyhlášky úradov '+cis(nTab);
@@ -300,6 +403,74 @@
   $('#p-stav-pozn').textContent='posledná zmena zámeru v registri';
   const obce={}; st.forEach(p=>{ const o=(p.obec||'').replace('Bratislava - ',''); obce[o]=(obce[o]||0)+1; });
   $('#p-zdroje').textContent='Podľa mestských častí: '+Object.entries(obce).sort((a,b)=>b[1]-a[1]).map(([o,n])=>o+' '+n).join(' · ');
+})();
+
+/* ---------- generátor infožiadosti pre stavebné úrady ----------
+   E-maily sú z webov MČ (8. 9. 2026); kde web neodpovedal alebo adresu
+   neuvádza, je prázdne pole a odkaz na web — treba doplniť ručne. */
+(()=>{
+  const $=id=>document.getElementById(id);
+  const MC=[
+    ['Staré Mesto','podatelna@staremesto.sk','staremesto.sk',1,''],
+    ['Ružinov','','ruzinov.sk',0,'server MČ nedostupný (8. 9.)'],
+    ['Vrakuňa','podatelna@vrakuna.sk','vrakuna.sk',1,''],
+    ['Podunajské Biskupice','sekretariat@mupb.sk','biskupice.sk',1,'RSS ~100 záznamov'],
+    ['Nové Mesto','podatelna@banm.sk','banm.sk',1,''],
+    ['Rača','info@raca.sk','raca.sk',1,''],
+    ['Vajnory','vajnory@vajnory.sk','vajnory.sk',1,'cez CUET'],
+    ['Karlova Ves','','karlovaves.sk',1,'web odmieta automatické čítanie'],
+    ['Dúbravka','info@dubravka.sk','dubravka.sk',1,''],
+    ['Lamač','info@lamac.sk','lamac.sk',1,'archív ~800 záznamov'],
+    ['Devín','stavebnyurad@devin.sk','devin.sk',1,'priamo stavebný úrad'],
+    ['Devínska Nová Ves','mudnv@mudnv.sk','devinskanovaves.sk',1,''],
+    ['Záhorská Bystrica','','zahorskabystrica.sk',1,'web e-mail neuvádza'],
+    ['Petržalka','podatelna@petrzalka.sk','petrzalka.sk',1,''],
+    ['Jarovce','info@jarovce.sk','jarovce.sk',1,'len HTTP'],
+    ['Rusovce','','bratislava-rusovce.sk',1,'web e-mail neuvádza'],
+    ['Čunovo','','cunovo.eu',1,'archív 341 záznamov; web nedostupný (8. 9.)'],
+  ];
+  MC.forEach(m=>$('g-mc').insertAdjacentHTML('beforeend','<option>'+m[0]+'</option>'));
+  $('g-tab').insertAdjacentHTML('beforeend',MC.map(m=>'<tr><td>'+m[0]+'</td><td>'+(m[1]?'<a href="mailto:'+m[1]+'" style="color:var(--tx2)">'+m[1]+'</a>':'<span class="nie">doplniť — <a href="https://www.'+m[2]+'" target="_blank" rel="noopener" style="color:#E8B44A">'+m[2]+'</a></span>')+'</td><td class="'+(m[3]?'ok':'nie')+'">'+(m[3]?'✓ sledujeme':'✗ nedostupná')+'</td><td style="color:var(--tx3)">'+m[4]+'</td></tr>').join(''));
+  const sablona=(mc,meno,mail,od)=>
+`Predmet: Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z. z. — zoznam rozhodnutí stavebného úradu
+
+Vážení,
+
+v zmysle zákona č. 211/2000 Z. z. o slobodnom prístupe k informáciám žiadam o sprístupnenie zoznamu územných rozhodnutí, stavebných povolení, povolení zmeny stavby pred dokončením a kolaudačných rozhodnutí, ktoré vydal stavebný úrad Mestskej časti Bratislava-${mc||'[názov mestskej časti]'} v období od ${od||'1. 1. 2023'} do dňa vybavenia tejto žiadosti, v rozsahu:
+
+- názov stavby
+- druh rozhodnutia (územné rozhodnutie / stavebné povolenie / zmena stavby pred dokončením / kolaudácia)
+- dátum vydania a číslo rozhodnutia
+- adresa alebo parcelné číslo a katastrálne územie
+- stavebník, ak ide o právnickú osobu (názov, IČO)
+- druh stavby (bytový dom, polyfunkčný objekt, občianska vybavenosť, iné)
+
+Údaje o stavebníkoch – fyzických osobách nežiadam; postačuje ich vynechať alebo anonymizovať. Rodinné domy, prípojky a drobné stavby možno vynechať.
+
+Informácie žiadam sprístupniť elektronicky na e-mail ${mail||'[e-mail]'}, najlepšie vo forme tabuľky (XLSX alebo CSV). Ak sa evidencia vedie v inej štruktúre, prosím o sprístupnenie v tvare, v akom je vedená, prípadne o kópie rozhodnutí.
+
+Účel: verejná mapa pripravovanej výstavby v Bratislave (Zámery Bratislavy), ktorú pripravuje Metropolitný inštitút Bratislavy. Register EIA zachytáva len stavby nad zákonným prahom; zoznam rozhodnutí stavebného úradu je jediný zdroj o ostatných.
+
+S pozdravom
+${meno||'[meno a priezvisko]'}
+Metropolitný inštitút Bratislavy
+${mail||'[e-mail]'}`;
+  function obnov(){
+    const i=$('g-mc').selectedIndex-1, m=i>=0?MC[i]:null;
+    const t=sablona(m?m[0]:'',$('g-meno').value.trim(),$('g-mail').value.trim(),$('g-od').value.trim());
+    $('g-text').value=t;
+    const adr=$('g-adr');
+    if(!m){ adr.className='adr'; adr.textContent='Komu: [podateľňa alebo stavebný úrad MČ]'; }
+    else if(m[1]){ adr.className='adr'; adr.textContent='Komu: '+m[1]; }
+    else { adr.className='adr chyba'; adr.textContent='Komu: e-mail podateľne MČ '+m[0]+' sa z webu nepodarilo overiť — nájdi ho na '+m[2]; }
+    const [predmet,...telo]=t.split('\n');
+    $('g-mailto').href='mailto:'+(m&&m[1]?m[1]:'')+'?subject='+encodeURIComponent(predmet.replace(/^Predmet:\s*/,''))+'&body='+encodeURIComponent(telo.join('\n').trim());
+  }
+  ['g-mc','g-meno','g-mail','g-od'].forEach(id=>$(id).addEventListener('input',obnov));
+  const kopiruj=async(txt,sprava)=>{ try{ await navigator.clipboard.writeText(txt); $('g-stav').textContent=sprava; }catch(e){ $('g-text').select(); document.execCommand('copy'); $('g-stav').textContent=sprava+' (cez výber)'; } setTimeout(()=>$('g-stav').textContent='',3000); };
+  $('g-kopiruj').onclick=()=>kopiruj($('g-text').value,'Skopírované.');
+  $('g-vsetky').onclick=()=>kopiruj(MC.map(m=>'='.repeat(70)+'\nKOMU: '+(m[1]||'[doplniť — '+m[2]+']')+'\n'+'='.repeat(70)+'\n'+sablona(m[0],$('g-meno').value.trim(),$('g-mail').value.trim(),$('g-od').value.trim())).join('\n\n'),'Skopírovaných 17 žiadostí.');
+  obnov();
 })();
 </script>
 </body>

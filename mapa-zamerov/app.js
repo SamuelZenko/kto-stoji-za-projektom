@@ -72,7 +72,7 @@ function vyhovuje(p,bez){
   if(bez!=='mc' && filtr.mc && p.obec!==filtr.mc) return false;
   if(bez!=='sk' && filtr.sk && (p.skupina||'')!==filtr.sk) return false;
   if(filtr.pl==='1' && !(p.plany&&p.plany.length)) return false;
-  if(filtr.pl==='2' && !(p.nahlady&&p.nahlady.length)) return false;
+  if(filtr.pl==='2' && !((p.nahlady&&p.nahlady.length)||(p.obrazky&&p.obrazky.length))) return false;
   if(filtr.pl==='3' && p.presnost!=='presná') return false;
   if(filtr.q){
     const h=(p.nazov+' '+(p.nazov_obch||'')+' '+p.firma+' '+p.ico+' '+(p.skupina||'')+' '+p.obec).toLowerCase();
@@ -91,7 +91,7 @@ function obnov(){
     const p=f.properties; if(!vyhovuje(p)) return;
     n++;
     if(p.plany&&p.plany.length) npl++;
-    if(p.nahlady&&p.nahlady.length) nob++;
+    if((p.nahlady&&p.nahlady.length)||(p.obrazky&&p.obrazky.length)) nob++;
     pocFaz[p.faza]=(pocFaz[p.faza]||0)+1;
     if(p.presnost==='presná') presne.push(f);
     else (hromada[p.obec]=hromada[p.obec]||[]).push(p);
@@ -210,25 +210,31 @@ function ukaz(p,z){
     +'<div class="miesto">◉ '+esc(p.obec)
       +'<button class="na-mape" onclick="naMape(\''+esc(p.id)+'\')">⤢ Zobraziť na mape</button></div>'
     +'<div class="udaje">'
-      +riadok('Investor', p.firma?esc(p.firma)+(p.ico?' · IČO '+esc(p.ico):''):null)
+      +riadok('Investor', p.firma?esc(p.firma)+(p.ico?' · IČO '+esc(p.ico):'')
+        +(p.red_investor&&p.zdroj!=='redakcia'?'<span class="pozn-stav">redakcia: '+esc(p.red_investor)+'</span>':''):null, true)
       +riadokSkupiny(p)
-      +riadok('Architekt', null)
+      +riadok('Architekt', p.red_architekt?'<span class="v">'+esc(p.red_architekt)+'<span class="pozn-stav">doplnila redakcia'+(p.red_kedy?' '+esc(p.red_kedy):'')+'</span></span>':null, true)
       +riadok('Typológia', esc(p.typ||''))
       +riadokStavu(p)
-      +riadok('Povoľuje', esc(p.urad||''))
+      +(p.zdroj==='redakcia'?'':riadok('Povoľuje', esc(p.urad||'')))
       +riadokPolohy(p)
       +'<div class="r" id="r-vyska" hidden><span class="k">Výšková regulácia</span><span class="v"></span></div>'
       +riadok('Aktualizované', esc(p.zmena||''))
     +'</div>'
+    +(p.red_popis?'<p class="popis">'+esc(p.red_popis)+'<span class="pozn-stav">popis doplnila redakcia</span></p>':'')
     +dalsieKonania(p)
     +'<div class="zalozky">'
-      +'<button data-z="v" '+(GAL.length?'':'disabled')+'>VIZUALIZÁCIE</button>'
+      +'<button data-z="v" '+(GAL.length?'':'disabled')+'>VIZUALIZÁCIE'+(foto.length?' ('+foto.length+')':'')+'</button>'
       +'<button data-z="d" '+(plany.length?'':'disabled')+'>DOKUMENTY ('+plany.length+')</button>'
     +'</div><div id="obsah-zal"></div>'
-    +'<a class="odkaz" href="https://www.enviroportal.sk/eia/detail/'+esc(p.id)
-      +'" target="_blank" rel="noopener">Detail zámeru na enviroportáli →</a>'
-    +'<p class="pozn">Architekt a harmonogram v registri nie sú — tie vie doplniť '
-    +'len autor projektu cez <a href="../komunita/" style="color:var(--ac2)">komunitné dáta</a>.</p>';
+    +(p.zdroj==='redakcia'?'':'<a class="odkaz" href="https://www.enviroportal.sk/eia/detail/'+esc(p.id)
+      +'" target="_blank" rel="noopener">Detail zámeru na enviroportáli →</a>')
+    +(p.red_odkaz?'<a class="odkaz" href="'+esc(p.red_odkaz)+'" target="_blank" rel="noopener">Web projektu →</a>':'')
+    +(p.zdroj==='redakcia'
+      ?'<p class="pozn">V registri EIA tento projekt nie je — pridala ho redakcia'+(p.red_kedy?' '+esc(p.red_kedy):'')+'. '
+        +'<a href="../redakcia/?id='+encodeURIComponent(p.id)+'" style="color:var(--ac2)">Upraviť →</a></p>'
+      :'<p class="pozn">Architekt, vizualizácie a presná poloha v registri nie sú — '
+        +'<a href="../redakcia/?id='+encodeURIComponent(p.id)+'" style="color:var(--ac2)">doplniť alebo opraviť →</a></p>');
   $('#detail').querySelectorAll('.zalozky button').forEach(b=>b.onclick=()=>{
     aktivnaZal=b.dataset.z; kresliZalozku(p);});
   kresliZalozku(p);
@@ -250,7 +256,8 @@ function riadokSkupiny(p){
 function riadokStavu(p){
   const mc=(p.obec||'').replace(/^Bratislava\s*[-–]\s*/,'');
   let pozn;
-  if(p.faza_zdroj==='tabula') pozn='doložené vyhláškou'+(p.doklad?': '+esc(p.doklad):'');
+  if(p.faza_zdroj==='redakcia') pozn='doplnila redakcia'+(p.red_kedy?' '+esc(p.red_kedy):'')+' — ručne overený údaj, nie z registra';
+  else if(p.faza_zdroj==='tabula') pozn='doložené vyhláškou'+(p.doklad?': '+esc(p.doklad):'');
   else if(!TABULA_MC.has(mc)) pozn='podľa registra EIA — úradná tabuľa MČ '+esc(mc)+' zatiaľ nie je napojená, '
     +'skutočné povolenie odtiaľ nevidíme';
   else pozn='podľa registra EIA — na úradnej tabuli MČ sa vyhláška nenašla (tabule sledujeme od 8. 9. 2026)';
@@ -263,6 +270,9 @@ function riadokStavu(p){
    pozemku), ulica je len priemer adries celej ulice. */
 function riadokPolohy(p){
   if(p.presnost!=='presná') return riadok('Poloha', '<span class="v chyba">nie je známa</span>', true);
+  if(p.zdroj_polohy==='redakcia')
+    return riadok('Poloha', '<span class="v">'+esc(p.poloha_pozn||'ručne umiestnený bod')
+      +'<span class="pozn-stav">doplnila redakcia'+(p.red_kedy?' '+esc(p.red_kedy):'')+'</span></span>', true);
   const parc=pole(p,'parcely')||[];
   if(p.zdroj_polohy==='parcela' && parc.length)
     return riadok('Poloha', '<span class="v">parcely '+esc(parc.join(', '))+(p.ku?' · k. ú. '+esc(p.ku):'')
@@ -555,15 +565,46 @@ const DATA=Promise.all([
   ber('ulice.geojson',null),
   ber('nazvy-obchodne.json',{}),
   ber('osm-staveniska.geojson',null),
-  ber('tabule-stavby.geojson',null)]);
+  ber('tabule-stavby.geojson',null),
+  ber('redakcia.json',null)]);
+
+/* ---------- redakčná vrstva ----------
+   Ručné doplnenia z aplikácie /redakcia/ (poloha, obrázky, obchodný názov,
+   fáza, architekt…) sa zlúčia do bodov až tu, v prehliadači — hneď po
+   uložení, bez čakania na týždenný beh. Každé pole má v karte napísané,
+   že je od redakcie. Nové zámery mimo registra dostanú `zdroj:'redakcia'`. */
+function zlucRedakciu(z,red){
+  if(!red) return;
+  const podla={}; z.features.forEach(f=>podla[f.properties.id]=f);
+  const obr=r=>(r.obrazky||[]).map(o=>({u:o.u||o.s,p:(o.p||'vizualizácia')+(o.z?' — '+o.z:'')}));
+  Object.entries(red.zamery||{}).forEach(([id,r])=>{
+    const f=podla[id]; if(!f) return; const p=f.properties;
+    if(r.poloha){ f.geometry={type:'Point',coordinates:r.poloha}; p.presnost='presná'; p.zdroj_polohy='redakcia'; if(r.poloha_pozn) p.poloha_pozn=r.poloha_pozn; }
+    if(r.nazov){ p.nazov_obch=r.nazov; p.nazov_zdroj='redakcia'+(r.kto?' ('+r.kto+')':''); }
+    if(r.faza){ p.faza=r.faza; p.faza_zdroj='redakcia'; }
+    ['popis','architekt','investor','odkaz'].forEach(k=>{ if(r[k]) p['red_'+k]=r[k]; });
+    if(r.obrazky&&r.obrazky.length) p.obrazky=obr(r);
+    p.red_kedy=r.kedy||''; p.redakcia=1;
+  });
+  Object.entries(red.nove||{}).forEach(([id,r])=>{
+    if(!r.poloha||!r.nazov) return;
+    const p={id:id,nazov:r.nazov,obec:r.obec||'',typ:r.typ||'Iné',faza:r.faza||'zámer',faza_zdroj:'redakcia',
+      firma:r.investor||'',presnost:'presná',zdroj_polohy:'redakcia',zdroj:'redakcia',redakcia:1,
+      zmena:r.kedy||'',red_kedy:r.kedy||'',dok:0};
+    ['popis','architekt','investor','odkaz'].forEach(k=>{ if(r[k]) p['red_'+k]=r[k]; });
+    if(r.poloha_pozn) p.poloha_pozn=r.poloha_pozn;
+    if(r.obrazky&&r.obrazky.length) p.obrazky=obr(r);
+    z.features.push({type:'Feature',geometry:{type:'Point',coordinates:r.poloha},properties:p});
+  });
+}
 
 let spustene=false;
 async function spusti(){
   if(spustene) return; spustene=true;
-  let mc,z,ul,naz,osm,tab;
+  let mc,z,ul,naz,osm,tab,red;
   try{ pridajPodklad(); }
   catch(e){ console.warn('podklad sa nepridal:',e.message); }
-  try{ [KONFIG,mc,z,ul,naz,osm,tab]=await DATA; }
+  try{ [KONFIG,mc,z,ul,naz,osm,tab,red]=await DATA; }
   catch(e){ $('#c-spolu').textContent='Dáta sa nenačítali'; spustene=false; return; }
   Z=z;
   /* komerčné názvy sú ručný zoznam — register ich nepozná a ochranné
@@ -571,6 +612,8 @@ async function spusti(){
   z.features.forEach(f=>{ const n=naz&&naz[f.properties.id]; if(!n) return;
     if(typeof n==='string') f.properties.nazov_obch=n;
     else if(n.nazov){ f.properties.nazov_obch=n.nazov; f.properties.nazov_zdroj=(n.zdroj||'')+(n.istota?' · istota '+n.istota:''); } });
+  /* redakcia prepíše názov aj polohu — je to ručne overený údaj */
+  zlucRedakciu(z,red);
   mc.features.forEach(f=>{
     const a=f.properties||{}, nz=a.NAZOV_ZUJ||a.MC_LABEL||''; if(!nz||!f.geometry) return;
     const g=f.geometry;
@@ -714,6 +757,11 @@ async function spusti(){
 
   obnov(); kresliMoje(); nacitajKomunitu();
 
+  /* ?id=… otvorí kartu zámeru — odkazy z redakcie a zo zoznamov */
+  const chceneId=new URLSearchParams(location.search).get('id');
+  if(chceneId){ const f=z.features.find(x=>x.properties.id===chceneId);
+    if(f){ ukaz(f.properties); if(f.properties.presnost==='presná') map.jumpTo({center:f.geometry.coordinates,zoom:16}); } }
+
   /* ?3d=1 zapne 3D budovy hneď po načítaní — nech sa dá poslať odkaz,
      ktorý ich rovno ukáže, bez hľadania v ponuke Vrstvy */
   if(new URLSearchParams(location.search).get('3d')==='1'){
@@ -758,7 +806,7 @@ function ukazNezname(obec){
     +'<div class="stitky"><span class="stitok b">BEZ ZNÁMEJ POLOHY</span></div>'
     +'<h2>'+esc(obec)+'</h2>'
     +'<div class="miesto">'+z.length+' zámerov, pri ktorých register neuvádza ulicu</div>'
-    +'<a class="odkaz" href="../doplnit-polohu/?mc='+encodeURIComponent(obec)+'">Doplniť polohy →</a>'
+    +'<a class="odkaz" href="../redakcia/?mc='+encodeURIComponent(obec)+'">Doplniť polohy →</a>'
     +'<div class="dok">'+z.slice(0,60).map(f=>'<div class="r" data-id="'+esc(f.properties.id)+'">'
       +'<span class="mini prazdna">'+esc((f.properties.faza||'').slice(0,4))+'</span>'
       +'<span class="nm">'+esc(f.properties.nazov)+'</span></div>').join('')+'</div>';

@@ -165,17 +165,27 @@ json.dump(gj, open(os.path.join(MAPA, "zamery.geojson"), "w", encoding="utf-8"),
           ensure_ascii=False, separators=(",", ":"))
 
 # ── tabulka a zoznam pre doplnanie polohy (ako tabulka.py) ─────────
+# polohy doplnene v aplikacii Redakcia (redakcia.json) sa do geojsonu
+# nezapisuju — mapa ich zluci pri nacitani — ale v tabulkach uz nemaju
+# svietit ako chybajuce
+try:
+    RED = json.load(open(os.path.join(MAPA, "redakcia.json"), encoding="utf-8")).get("zamery", {})
+except (OSError, ValueError):
+    RED = {}
 riadky = []
 for f in F:
     p = f["properties"]
     lon, lat = f["geometry"]["coordinates"]
     presna = p.get("presnost") == "presná"
+    red = RED.get(p["id"]) or {}
+    if red.get("poloha"):
+        lon, lat = red["poloha"]; presna = True
     riadky.append({"id": p["id"], "nazov": p["nazov"], "obec": p.get("obec", ""),
                    "typ": p.get("typ", ""), "faza": p.get("faza", ""),
                    "firma": (p.get("firma") or "").split(",")[0], "ico": p.get("ico", ""),
                    "dok": p.get("dok", 0), "obrazkov": len(p.get("nahlady") or []),
                    "suradnice": ("%.6f, %.6f" % (lat, lon)) if presna else "",
-                   "zdroj": "z názvu ulice" if presna else "",
+                   "zdroj": ("redakcia" if red.get("poloha") else "z názvu ulice") if presna else "",
                    "chyba": "má polohu" if presna else "CHÝBA"})
 riadky.sort(key=lambda r: (r["suradnice"] != "", r["obec"], r["nazov"]))
 with open(os.path.join(DOP, "zamery.csv"), "w", encoding="utf-8-sig", newline="") as fh:
