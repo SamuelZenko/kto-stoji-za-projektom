@@ -199,7 +199,14 @@ function vyber(id){
   miniMapa(id,pol,p);
   obrazky(id,p);
 }
-function prazdny(){ $('#editor').innerHTML='<div class="prazdne"><h2>Vyber zámer vľavo</h2><p>Alebo pridaj nový, ktorý v registri nie je.</p></div>'; }
+function prazdny(){
+  $('#editor').innerHTML='<div class="prazdne"><h2>Vyber zámer vľavo</h2>'
+    +'<p>Doplníš mu polohu, obrázky, obchodný názov, fázu alebo architekta.</p>'
+    +'<button class="tl hl velke" data-novy><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">'
+    +'<path d="M12 5v14M5 12h14"/></svg>Nový zámer, ktorý v registri nie je</button></div>';
+}
+/* tlačidlo v prázdnom stave robí to isté ako „Nový zámer" v lište */
+document.addEventListener('click',e=>{ if(e.target.closest('[data-novy]')) $('#tl-novy').click(); });
 function nastavPolohu(id,s){
   zapis(id,'poloha',[+s[0].toFixed(6),+s[1].toFixed(6)]);
   $('#e-sur').textContent=s[1].toFixed(6)+', '+s[0].toFixed(6);
