@@ -89,7 +89,8 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 /* ---------- hlavička stránky: značka s natiahnutou linkou, navigácia ako mikro-štítky z okrajov plagátov ---------- */
 .tb-lista{display:flex;align-items:center;gap:0;height:76px;padding:0 var(--okraj);
   background:var(--biela);border-bottom:var(--linka) solid var(--ciara);position:sticky;top:0;z-index:20}
-.tb-lista .tb-znacka{font-size:32px;flex:0 0 auto;margin-right:var(--okraj)}
+/* značka je na osi formátu — vycentrovaná v lište, ostatné prvky obtekajú */
+.tb-lista .tb-znacka{font-size:32px;flex:0 0 auto;position:absolute;left:50%;transform:translateX(-50%);margin:0}
 /* v lište má linka pevnú dĺžku (≈ 3,6 × výška písma), nenaťahuje sa cez celú šírku */
 .tb-lista .tb-znacka .l{flex:0 0 auto;width:3.6em;min-width:0}
 .tb-lista nav{display:flex;gap:0;align-items:center;height:100%;margin:0 var(--okraj) 0 auto}
@@ -99,8 +100,28 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .tb-lista .tb-vpravo{margin-left:0;display:flex;align-items:center;gap:8px}
 .tb-lista nav:not(:has(a))+.tb-vpravo,.tb-lista .tb-znacka+.tb-vpravo{margin-left:auto}
 .tb-lista .tb-vpravo>.tb-stitok{color:var(--tx3);font-size:12px}
+/* ---------- burger: na úzkych obrazovkách sa odkazy skryjú pod ikonu ---------- */
+.tb-burger{display:none;align-items:center;justify-content:center;width:44px;height:44px;margin-left:auto;
+  background:transparent;border:0;color:var(--tx);cursor:pointer;padding:0}
+.tb-burger i{display:block;width:22px;height:1.5px;background:currentColor;position:relative;transition:background .15s}
+.tb-burger i::before,.tb-burger i::after{content:"";position:absolute;left:0;width:22px;height:1.5px;background:currentColor;
+  transition:transform .18s cubic-bezier(.4,0,.2,1),top .18s cubic-bezier(.4,0,.2,1)}
+.tb-burger i::before{top:-7px} .tb-burger i::after{top:7px}
+.tb-burger[aria-expanded="true"] i{background:transparent}
+.tb-burger[aria-expanded="true"] i::before{top:0;transform:rotate(45deg)}
+.tb-burger[aria-expanded="true"] i::after{top:0;transform:rotate(-45deg)}
+
 @media (max-width:960px){.tb-lista{height:64px}.tb-lista .tb-znacka{font-size:26px}.tb-lista nav a{padding:0 10px}}
-@media (max-width:760px){.tb-lista{height:56px}.tb-lista .tb-vpravo .tb-stitok{display:none}.tb-lista .tb-znacka{font-size:20px}.tb-lista nav a{padding:0 8px;font-size:11px}}
+@media (max-width:900px){
+  .tb-burger{display:flex}
+  .tb-lista .tb-vpravo>.tb-stitok{display:none}
+  .tb-lista nav,.lista nav{position:absolute;top:100%;left:0;right:0;margin:0;height:auto;z-index:30;
+    display:none;flex-direction:column;align-items:stretch;background:var(--biela);
+    border-bottom:var(--linka) solid var(--ciara)}
+  .tb-lista.otvorene nav,.lista.otvorene nav{display:flex}
+  .tb-lista nav a,.lista nav a{height:auto;padding:16px var(--okraj);border-top:1px solid var(--ciara2)}
+}
+@media (max-width:760px){.tb-lista{height:56px}.tb-lista .tb-znacka{font-size:20px}.tb-lista nav a{font-size:11px}}
 
 /* pätička — mikro-štítky na okraji, rovnaký grid ako hlavička */
 .tb-pata{display:flex;justify-content:space-between;gap:16px;padding:18px var(--okraj);border-top:var(--linka) solid var(--ciara);

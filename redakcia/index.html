@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex">
 <title>Redakcia — Zámery Bratislavy</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
-<link rel="stylesheet" href="../spolocne/tuba.css">
+<link rel="stylesheet" href="../spolocne/tuba.css?v=20260909e">
 <style>
 /* ============================================================
    Redakcia — typografický (swiss) layout podľa plagátov TU—BA
@@ -56,7 +56,8 @@ label{display:block;font-size:11px;font-weight:500;letter-spacing:.08em;text-tra
 
 /* hlavička: logotyp natiahnutý cez voľnú šírku, linka prilepená na Y a B */
 .tb-lista{flex:none;height:76px;gap:0;background:var(--biela);border-bottom:var(--l1)}
-.tb-lista .tb-znacka{flex:0 0 auto;font-size:32px;font-weight:500;letter-spacing:0;color:var(--tx);line-height:1;margin-right:var(--okraj)}
+/* v redakcii je vpravo veľa ovládania, tak značka ostáva vľavo (nie na osi ako inde) */
+.tb-lista .tb-znacka{position:static;transform:none;flex:0 0 auto;font-size:32px;font-weight:500;letter-spacing:0;color:var(--tx);line-height:1;margin-right:var(--okraj)}
 .tb-lista .tb-znacka .l{flex:0 0 auto;width:3.6em;min-width:0;height:.085em;margin:0 -.045em;transform:translateY(-.02em)}
 .tb-lista>.tb-stitok{display:none}
 .tb-lista nav{gap:0;margin:0 var(--okraj) 0 auto;height:100%}
@@ -207,7 +208,6 @@ dialog .tlacidla{display:flex;gap:8px;justify-content:flex-end;margin-top:28px;p
   .rozloz{grid-template-columns:1fr;padding:0 var(--okraj)}
   aside{max-height:46vh;border-right:0;margin-right:0;padding-right:0;border-bottom:var(--l1)}
   .poloha-rozloz,.mriezka{grid-template-columns:1fr}
-  .tb-lista nav{display:none}
   .editor{padding:24px 0 64px}
   .hlava h2{font-size:32px}
   .dm-grid{display:none}
@@ -222,7 +222,7 @@ dialog .tlacidla{display:flex;gap:8px;justify-content:flex-end;margin-top:28px;p
 </head>
 <body>
 
-<div class="dm-grid" id="dm-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="dm-grid" id="dm-grid" hidden aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
 <header class="tb-lista">
   <a class="tb-znacka" href="../mapa-zamerov/">Zámery<span class="l"></span>Bratislavy</a>
@@ -300,9 +300,7 @@ dialog .tlacidla{display:flex;gap:8px;justify-content:flex-end;margin-top:28px;p
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
 <script src="app.js?v=20260908"></script>
-<script>
-/* červený grid podľa manuálu: klávesa G ho skryje/ukáže (mimo textových polí) */
-document.addEventListener('keydown',e=>{ if(e.key.toLowerCase()==='g'&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)){ const g=document.getElementById('dm-grid'); g.hidden=!g.hidden; } });
-</script>
+<!-- klávesa G (červený grid) a burger v lište sú spoločné pre celý web -->
+<script src="../spolocne/tuba.js?v=20260909e" defer></script>
 </body>
 </html>
