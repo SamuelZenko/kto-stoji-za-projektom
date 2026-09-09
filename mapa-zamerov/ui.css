@@ -22,7 +22,8 @@ button,input,select{font-family:inherit}
 .lista{display:flex;align-items:center;gap:0;padding:0 var(--okraj);height:76px;position:relative;
   background:var(--biela);border-bottom:var(--linka) solid var(--ciara);z-index:8;flex:none}
 .znacka{display:flex;align-items:center;gap:12px;padding-right:22px;margin-right:22px;border-right:1px solid var(--ciara2);height:34px}
-.znacka .mib{font-weight:500;font-size:20px;letter-spacing:.06em}
+/* logo MIB z dizajn manuálu (vektor z Loga MIB 2026.ai) */
+.znacka .logo-mib{height:30px;width:auto;display:block}
 .znacka .kto{font-size:10px;line-height:1.2;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
 /* značka: linka má pevnú dĺžku (≈ 3,6 × výška písma) a je prilepená na písmená — rovnako ako .tb-lista v tuba.css */
 /* značka na strede voľného miesta medzi MIB a odkazmi — automatické okraje
