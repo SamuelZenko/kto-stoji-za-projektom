@@ -114,8 +114,8 @@ aside{display:flex;flex-direction:column;min-height:0;border-right:var(--l2);pad
 .viac{margin:16px 0;width:100%}
 
 /* editor: 5 stĺpcov, obsah kotvený hore, celky delené 1 px linkou */
-/* obsah editora sa nesmie lepiť na deliacu linku panela — odsadenie zľava */
-.editor{overflow:auto;min-height:0;padding:0 0 96px var(--okraj);counter-reset:sekcia}
+/* obsah editora sa nelepí na deliacu linku panela ani na pravý okraj s posuvníkom */
+.editor{overflow:auto;min-height:0;padding:0 var(--okraj) 96px;counter-reset:sekcia}
 .prazdne{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:24px;color:var(--tx2);text-align:left;margin:0;padding-top:36px;height:auto;position:relative}
 .prazdne::before{content:"";position:absolute;left:0;right:0;top:36px;height:1px;background:var(--ciara)}
 .prazdne h2{margin:0;padding-top:32px;color:var(--tx);font-weight:400;font-size:clamp(44px,5.2vw,80px);line-height:1;letter-spacing:-.03em;width:100%}
@@ -315,7 +315,7 @@ dialog .tlacidla{display:flex;gap:8px;justify-content:flex-end;margin-top:28px;p
 <div id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260909r"></script>
+<script src="app.js?v=20260909s"></script>
 <!-- klávesa G (červený grid) a burger v lište sú spoločné pre celý web -->
 <script src="../spolocne/tuba.js?v=20260909m" defer></script>
 </body>
