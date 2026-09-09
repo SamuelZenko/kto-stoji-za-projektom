@@ -28,7 +28,8 @@ button,input,select{font-family:inherit}
 /* značka je na osi lišty — vycentrovaná, MIB vľavo a odkazy vpravo ju obtekajú */
 .lista h1{margin:0;position:absolute;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;
   font-size:32px;font-weight:500;letter-spacing:0;text-transform:uppercase;white-space:nowrap;line-height:1}
-.lista h1 .l{display:inline-block;flex:0 0 auto;width:3.6em;height:.085em;background:currentColor;margin:0 -.045em;transform:translateY(-.02em)}
+/* linka musí prekryť postranné vôle písmen (Y má vpravo veľkú) — inak ostane škára */
+.lista h1 .l{display:inline-block;flex:0 0 auto;width:3.6em;height:.085em;background:currentColor;margin:0 -.13em 0 -.26em;transform:translateY(-.02em)}
 .lista .pod{display:none}
 .lista nav{display:flex;gap:0;align-items:center;height:100%;margin-left:auto}
 .lista nav a{display:inline-flex;align-items:center;height:100%;padding:0 14px;font-size:12px;font-weight:500;letter-spacing:.1em;

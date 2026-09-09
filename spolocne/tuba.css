@@ -82,8 +82,10 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .tb-znacka{display:inline-flex;align-items:center;gap:0;font-weight:500;letter-spacing:0;
   text-transform:uppercase;white-space:nowrap;line-height:1}
 /* linka sa natiahne cez voľnú šírku a je prilepená na Y a B — princíp „naťahovanie linky" z manuálu */
+/* záporný okraj musí prekryť postranné vôle písmen (Y má vpravo veľkú),
+   inak medzi linkou a písmenom ostane škára */
 .tb-znacka .l{display:inline-block;height:.085em;min-width:2em;flex:1 1 auto;background:currentColor;
-  margin:0 -.045em;transform:translateY(-.02em)}
+  margin:0 -.13em 0 -.26em;transform:translateY(-.02em)}
 .tb-znacka.velka{font-size:48px}
 
 /* ---------- hlavička stránky: značka s natiahnutou linkou, navigácia ako mikro-štítky z okrajov plagátov ---------- */
