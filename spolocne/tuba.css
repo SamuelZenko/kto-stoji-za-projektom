@@ -111,6 +111,8 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .tb-burger[aria-expanded="true"] i::before{top:0;transform:rotate(45deg)}
 .tb-burger[aria-expanded="true"] i::after{top:0;transform:rotate(-45deg)}
 
+/* na osi je značka len tam, kde má miesto; inak sedí vľavo, nech nelezie do odkazov */
+@media (max-width:1280px){.tb-lista .tb-znacka{position:static;transform:none;margin-right:var(--okraj)}}
 @media (max-width:960px){.tb-lista{height:64px}.tb-lista .tb-znacka{font-size:26px}.tb-lista nav a{padding:0 10px}}
 @media (max-width:900px){
   .tb-burger{display:flex}
