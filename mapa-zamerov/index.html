@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 <link rel="stylesheet" href="../spolocne/tuba.css?v=20260909e">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260909e">
+<link rel="stylesheet" href="ui.css?v=20260909f">
 </head>
 <body>
 
@@ -33,8 +33,8 @@
   <div id="map"></div>
 
   <div class="ovladanie" id="ovladanie">
-   <button class="zbal" id="tl-zbal" title="Skryť panel" aria-label="Skryť panel">
-     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+   <button class="zbal" id="tl-zbal" title="Skryť alebo ukázať panel" aria-label="Skryť alebo ukázať panel" aria-expanded="true">
+     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
    </button>
    <div class="ovl-vnutro">
     <div class="hladanie">
@@ -70,10 +70,6 @@
   </div>
 
   <div class="spodok">
-    <button class="vrstvy-tl" id="tl-panel" aria-pressed="true" title="Skryť alebo ukázať panel s hľadaním, filtrami a kategóriami">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16"/><path d="M9 4v16"/></svg>
-      Panel
-    </button>
     <button class="vrstvy-tl" id="tl-vrstvy">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>
       Vrstvy
@@ -227,15 +223,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
 <script src="app.js?v=20260909a"></script>
 <script>
-/* Panel (hľadanie, filtre, kategórie) sa dá zbaliť do spodnej lišty vedľa Vrstiev
-   a rozbaliť späť — s animáciou; stav si prehliadač pamätá. */
+/* Panel (hľadanie, filtre, kategórie) je prilepený na ľavý okraj a zbaľuje sa
+   úchytkou na svojej hrane; von ostane len tá úchytka. Stav si prehliadač pamätá.
+   Trieda na <body> posúva spodnú lištu a ponuku Vrstiev. */
 (()=>{
-  const p=document.getElementById('ovladanie'), tl=document.getElementById('tl-panel'), zb=document.getElementById('tl-zbal');
-  const nastav=otvor=>{ p.classList.toggle('skryty',!otvor); tl.setAttribute('aria-pressed',otvor); try{ localStorage.setItem('zb-panel',otvor?'1':'0'); }catch(e){} };
+  const p=document.getElementById('ovladanie'), zb=document.getElementById('tl-zbal');
+  const nastav=otvor=>{
+    p.classList.toggle('skryty',!otvor);
+    document.body.classList.toggle('panel-zbaleny',!otvor);
+    zb.setAttribute('aria-expanded',otvor);
+    zb.title=otvor?'Skryť panel':'Ukázať panel';
+    try{ localStorage.setItem('zb-panel',otvor?'1':'0'); }catch(e){}
+  };
   let stav=true; try{ stav=localStorage.getItem('zb-panel')!=='0'; }catch(e){}
   if(!stav){ p.classList.add('bez-animacie'); nastav(false); requestAnimationFrame(()=>requestAnimationFrame(()=>p.classList.remove('bez-animacie'))); }
-  tl.addEventListener('click',()=>nastav(p.classList.contains('skryty')));
-  zb.addEventListener('click',()=>nastav(false));
+  zb.addEventListener('click',()=>nastav(p.classList.contains('skryty')));
 })();
 </script>
 <script src="../spolocne/tuba.js?v=20260909e" defer></script>
