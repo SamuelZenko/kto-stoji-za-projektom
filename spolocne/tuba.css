@@ -116,7 +116,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 /* na osi je značka len tam, kde má miesto; inak sedí vľavo, nech nelezie do odkazov */
 @media (max-width:1280px){.tb-lista .tb-znacka{position:static;transform:none;margin-right:var(--okraj)}}
 @media (max-width:960px){.tb-lista{height:64px}.tb-lista .tb-znacka{font-size:26px}.tb-lista nav a{padding:0 10px}}
-@media (max-width:900px){
+@media (max-width:1150px){
   .tb-burger{display:flex}
   .tb-lista .tb-vpravo>.tb-stitok{display:none}
   .tb-lista nav,.lista nav{position:absolute;top:100%;left:0;right:0;margin:0;height:auto;z-index:30;

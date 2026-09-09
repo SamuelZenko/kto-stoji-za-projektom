@@ -20,8 +20,8 @@
 
   /* ---------- burger ----------
      Tlačidlo sa vloží do lišty pred lupu (ak je) a prepína triedu
-     `otvorene`. Pod 900 px sa navigácia zobrazí ako panel pod lištou;
-     nad 900 px je tlačidlo skryté cez CSS a panel je bežný riadok. */
+     `otvorene`. Pod 1150 px sa navigácia zobrazí ako panel pod lištou;
+     nad 1150 px je tlačidlo skryté cez CSS a panel je bežný riadok. */
   document.querySelectorAll('.tb-lista, .lista').forEach(lista=>{
     const nav=lista.querySelector('nav');
     if(!nav || !nav.querySelector('a') || lista.querySelector('.tb-burger')) return;
@@ -41,6 +41,6 @@
     document.addEventListener('click',e=>{ if(!e.target.closest('.tb-lista, .lista')) prepni(false); });
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') prepni(false); });
     /* po roztiahnutí okna nech neostane visieť otvorený panel */
-    window.addEventListener('resize',()=>{ if(window.innerWidth>900) prepni(false); });
+    window.addEventListener('resize',()=>{ if(window.innerWidth>1150) prepni(false); });
   });
 })();
