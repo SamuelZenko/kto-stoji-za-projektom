@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>Tok dát — Zámery Bratislavy</title>
-<link rel="stylesheet" href="../spolocne/tuba.css?v=20260909m">
+<link rel="stylesheet" href="../spolocne/tuba.css?v=20260909n">
 <style>
-  /* Stránka stojí na dizajn systéme TU—BA (spolocne/tuba.css?v=20260909m); tu sú len
+  /* Stránka stojí na dizajn systéme TU—BA (spolocne/tuba.css?v=20260909n); tu sú len
      rozloženia špecifické pre tok dát. Farby zdrojov: register EIA čierna,
      stavebné úrady červená, ľudia svetlá červená, ostatné odtiene sivej. */
   *{box-sizing:border-box}
@@ -139,6 +139,45 @@
   .obsah .stav{margin-top:var(--okraj)}
   .pata-strana{display:flex;justify-content:space-between;gap:16px;padding-top:8px;border-top:1px solid var(--ciara);margin-top:calc(var(--okraj)*2)}
   .pata-strana .tb-stitok.tlm{color:var(--tx3)}
+
+  /* ── pás pokrytia: 862 stavieb ako jeden riadok, nie štyri čísla ── */
+  .pas{display:flex;height:44px;margin:var(--okraj) 0 0;border:1px solid var(--ciara)}
+  .pas i{display:block;height:100%;position:relative;transition:filter .15s;cursor:default}
+  .pas i+i{border-left:1px solid var(--ciara)}
+  .pas i[data-k="parcela"]{background:var(--cierna)}
+  .pas i[data-k="ulica"]{background:#8A8A86}
+  .pas i[data-k="osm"]{background:var(--cervena)}
+  .pas i[data-k="redakcia"]{background:#F3B0AE}
+  .pas i[data-k="bez"]{background:repeating-linear-gradient(135deg,var(--biela) 0 5px,#E1E1DD 5px 10px)}
+  .pas i.tlm{filter:opacity(.22)}
+  .pas-leg{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:12px}
+  .pas-leg button{display:flex;align-items:baseline;gap:9px;background:transparent;border:0;padding:4px 0;cursor:pointer;
+    font-size:14px;color:var(--tx2);text-align:left}
+  .pas-leg button:hover,.pas-leg button[aria-pressed="true"]{color:var(--tx)}
+  .pas-leg s{width:12px;height:12px;flex:none;text-decoration:none;transform:translateY(1px)}
+  .pas-leg b{font-weight:500;color:var(--tx);font-variant-numeric:tabular-nums}
+  .pas-leg span{color:var(--tx3);font-size:13px}
+
+  /* ── filter zdrojov nad tokom ── */
+  .fz{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 var(--okraj)}
+  .fz button{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;background:transparent;
+    border:1px solid var(--ciara2);color:var(--tx2);font-size:12px;font-weight:500;letter-spacing:.06em;
+    text-transform:uppercase;cursor:pointer}
+  .fz button:hover{border-color:var(--ciara);color:var(--tx)}
+  .fz button[aria-pressed="true"]{background:var(--cierna);border-color:var(--cierna);color:var(--biela)}
+  .fz button s{width:9px;height:9px;border-radius:50%;background:var(--c,var(--tx3));text-decoration:none;flex:none}
+  .fz button[aria-pressed="true"] s{box-shadow:0 0 0 1px var(--biela)}
+  .tok [data-z]{transition:opacity .2s}
+  .tok [data-z].mimo{opacity:.13}
+
+  /* ── čierny predel: jedna otázka na čiernom, aby stránka mala rytmus ── */
+  .strana.tma{background:var(--cierna);color:var(--biela);
+    margin:calc(var(--okraj)*1.2) calc(-1*var(--okraj)) 0;padding:calc(var(--okraj)*2) var(--okraj)}
+  .strana.tma .okraj{border-bottom-color:var(--biela)}
+  .strana.tma .okraj .tb-stitok{color:var(--biela)}
+  .strana.tma .okraj .tb-stitok.tlm{color:var(--siva)}
+  .strana.tma .odpoved{border-top-color:var(--biela);color:var(--biela)}
+  .strana.tma code{background:#1a1a1a;color:var(--siva)}
 </style>
 </head>
 <body>
@@ -173,6 +212,8 @@
   <div class="cislo tb-cifra"><b id="p-galeria">…</b><span>s výkresmi zo spisu<small>náhľady z PDF</small></span></div>
   <div class="cislo tb-cifra"><b id="p-redakcia">…</b><span>doplnila redakcia<small id="p-redakcia-pozn">polohy · obrázky · nové zámery</small></span></div>
 </section>
+<div class="pas" id="pas" role="img" aria-label="Rozdelenie stavieb podľa toho, odkiaľ je ich poloha"></div>
+<div class="pas-leg" id="pas-leg"></div>
 <p class="pozn" id="p-zdroje"></p>
 </section>
 
@@ -208,7 +249,8 @@
 
 <section class="strana obsah">
 <div class="okraj"><span class="tb-stitok">03 · Tok dát</span><span class="tb-stitok tlm">Zdroj → spracovanie → v mape</span></div>
-<section class="tok">
+<div class="fz" id="fz"></div>
+<section class="tok" id="tok">
   <div class="hl">Zdroj</div><div></div><div class="hl">Spracovanie · skripty v <code>dokumenty/</code></div><div></div><div class="hl">V mape</div>
 
   <!-- EIA -->
@@ -312,14 +354,14 @@
 <li><b>výkresy</b> <code>nahlady3.py</code> → <code>nahlady/</code> (381 galérií, 1 038 obrázkov) <span class="kam">→ karta, záložka Dokumenty</span></li>
 <li><b>tabuľky</b> → <code>bez-polohy.json</code>, <code>doplnit-polohu/zamery.csv</code> <span class="kam">→ stránka Doplniť polohy</span></li>
 </ul></details>
-<details open><summary><span class="z" style="background:#F3716D"></span>Stavebné úrady — úradné tabule 16 MČ + CUET</summary><ul>
+<details><summary><span class="z" style="background:#F3716D"></span>Stavebné úrady — úradné tabule 16 MČ + CUET</summary><ul>
 <li><code>tabule_sledovac.py</code> týždenne: RSS alebo HTML podľa systému MČ → <code>tabule_zaznamy.json</code> <span class="kam">len lokálne</span></li>
 <li>z PDF: druh rozhodnutia, názov stavby, stavebník (len firma), parcely + k. ú. → kataster → bod</li>
 <li>sedí na zámer (IČO, parcela, 2 slová) → <b>fáza doložená vyhláškou</b> <span class="kam">→ karta, riadok Stav</span></li>
 <li>nesedí → <code>tabule-stavby.geojson</code> <span class="kam">→ vrstva Vyhlášky stavebných úradov</span></li>
 <li>CUET aj cez <code>obohat_mapu.py</code> (142 doložených fáz z prvého zberu)</li>
 </ul></details>
-<details open><summary><span class="z" style="background:#8A8A86"></span>Mestský geoportál</summary><ul>
+<details><summary><span class="z" style="background:#8A8A86"></span>Mestský geoportál</summary><ul>
 <li><b>adresné body</b> (pozor: celé Slovensko) → <code>oprav_polohy.py</code> ulica v správnej MČ <span class="kam">→ poloha „stred ulice"</span></li>
 <li><b>kataster C a E</b> → <code>parcely_test.py vsetky</code> + <code>parcely_zapis.py</code> <span class="kam">→ poloha „parcely", 349 bodov</span></li>
 <li><b>hranice MČ</b> → <code>mestske-casti.geojson</code> <span class="kam">→ hranice, názvy, ťažiská pre body bez polohy, kontrola každého bodu</span></li>
@@ -327,19 +369,19 @@
 <li><b>žiadosti o zmenu ÚPN</b> 89 → <code>upn-ziadosti.geojson</code> <span class="kam">→ vrstva s kartou</span></li>
 <li><b>podklad OSM (vektor), ortofoto</b> <span class="kam">→ naživo z geoportálu</span></li>
 </ul></details>
-<details open><summary><span class="z" style="background:#55555A"></span>RPO a ÚPV</summary><ul>
+<details><summary><span class="z" style="background:#55555A"></span>RPO a ÚPV</summary><ul>
 <li><b>RPO</b> + ručná tabuľka 17 skupín → <code>skupiny.py</code> → <code>ocisti.py</code> určí istotu <span class="kam">→ karta: „Skupina" / „sídli na adrese skupiny X · indícia"</span></li>
 <li><b>WebRegistre ÚPV</b> podľa majiteľa (415 majiteľov → 861 známok) → <code>znamky_upv.py</code> → <code>znamky_priradenie.py</code> → <code>nazvy-obchodne.json</code> <span class="kam">→ obchodný názov v karte (39), 132 kandidátov v <code>nazvy-navrh.csv</code></span></li>
 </ul></details>
-<details open><summary><span class="z" style="background:#B4B4B0"></span>OpenStreetMap</summary><ul>
+<details><summary><span class="z" style="background:#B4B4B0"></span>OpenStreetMap</summary><ul>
 <li><b>trasy MHD</b> → <code>mhd_osm.py</code>, <code>mhd_zmensi.py</code> → <code>mhd.geojson</code> <span class="kam">→ vrstva Linky MHD</span></li>
 <li><b>pomenované staveniská</b> (77 v BA) → <code>osm_staveniska.py</code>: do 30 m od bodu → obchodný názov (11); rovnaké meno ako zámer bez polohy → poloha (14); bez zámeru → <code>osm-staveniska.geojson</code> <span class="kam">→ vrstva Staveniská z OpenStreetMap (53)</span></li>
 </ul></details>
-<details open><summary><span class="z" style="background:#C6C6C2"></span>3D model LOD1 2021</summary><ul>
+<details><summary><span class="z" style="background:#C6C6C2"></span>3D model LOD1 2021</summary><ul>
 <li>ArcGIS Pro → <code>lod1_export.py</code> (S-JTSK → WGS 84, transformácia S_JTSK_To_ETRS_1989_3) → <code>lod1_dlazdice.py</code> → <code>budovy/</code> 79 dlaždíc <span class="kam">→ vrstva 3D budovy, farba podľa výšky</span></li>
 <li>von ide len pôdorys a výška; nič iné z modelu sa nepublikuje</li>
 </ul></details>
-<details open><summary><span class="z" style="background:#F3B0AE"></span>Redakcia a ľudia</summary><ul>
+<details><summary><span class="z" style="background:#F3B0AE"></span>Redakcia a ľudia</summary><ul>
 <li><b>aplikácia Redakcia</b> (<code>redakcia/</code>) → GitHub API → <code>redakcia.json</code> + <code>redakcia/*.jpg</code> <span class="kam">→ mapa zlúči pri načítaní: poloha, obrázky, obchodný názov, fáza, architekt, popis, nové zámery</span></li>
 <li><b>ručné zápisy</b> do <code>nazvy-obchodne.json</code> (River Park ↔ CPR) <span class="kam">→ obchodný názov</span></li>
 <li><b>Google formulár + hárok</b> (<code>komunita.json</code>, zatiaľ prázdne) <span class="kam">→ vrstva Komunitné body, schválenie = stĺpec v hárku</span></li>
@@ -371,7 +413,7 @@
 <p class="pozn">Skratka: do mapy idú zdroje s hromadným verejným prístupom (API alebo export) a bez osobných údajov. Zdroje, ktoré sa dajú čítať len po jednom (ORSR, Yimba, stránky projektov), ostávajú v nástroji na dopyt — z rovnakých dôvodov, prečo nástroj sám radšej odmietne výsledok, než by obchádzal ochranu servera.</p>
 </section>
 
-<section class="strana otazka" id="urady">
+<section class="strana otazka tma" id="urady">
 <div class="okraj"><span class="tb-stitok">07 · Stavebné úrady</span><span class="tb-stitok tlm">17 úradov · infožiadosť 211/2000</span></div>
 <h2 class="otazka-h">Čo v mape chýba a ako to získať?</h2>
 <p class="odpoved">História stavebných úradov. Povolenia vydáva 17 úradov mestských častí, <b>žiadny nepublikuje zoznam</b> a vyhláška z tabule zmizne po 15 dňoch. Cesta: infožiadosť podľa zákona 211/2000 Z. z. — generátor je na ďalšej strane.</p>
@@ -492,6 +534,53 @@
   $('#p-stav-pozn').textContent='posledná zmena zámeru v registri';
   const obce={}; st.forEach(p=>{ const o=(p.obec||'').replace('Bratislava - ',''); obce[o]=(obce[o]||0)+1; });
   $('#p-zdroje').textContent='Podľa mestských častí: '+Object.entries(obce).sort((a,b)=>b[1]-a[1]).map(([o,n])=>o+' '+n).join(' · ');
+
+  /* pás pokrytia: celá šírka = 862 stavieb, každý diel = odkiaľ je poloha.
+     Klik v legende zvýrazní diel; číslo je vždy vidieť. */
+  const diely=[
+    ['parcela','parcela zo zámeru',zdroj.parcela,'text zámeru → kataster → ťažisko pozemku'],
+    ['ulica','stred ulice',zdroj.ulica+zdroj.ine,'adresné body v správnej mestskej časti — nie konkrétny pozemok'],
+    ['osm','stavenisko z OSM',zdroj.osm,'rovnomenné stavenisko zakreslené komunitou'],
+    ['redakcia','doplnila redakcia',zdroj.redakcia,'ručne umiestnený bod v appke Redakcia'],
+    ['bez','bez polohy',st.length-presne.length,'len ťažisko mestskej časti — čaká na doplnenie'],
+  ].filter(d=>d[2]>0);
+  const pas=$('#pas'), leg=$('#pas-leg');
+  pas.innerHTML=diely.map(([k,n,v])=>'<i data-k="'+k+'" style="width:'+(100*v/st.length)+'%" title="'+n+': '+cis(v)+'"></i>').join('');
+  leg.innerHTML=diely.map(([k,n,v,p])=>'<button data-k="'+k+'" aria-pressed="false">'
+    +'<s data-k="'+k+'" class="pas-vzor"></s><span><b>'+cis(v)+'</b> '+n+' <span>· '+p+'</span></span></button>').join('');
+  /* farbu štvorčeka v legende beriem z toho istého dielu pásu */
+  leg.querySelectorAll('s').forEach(s=>{ const i=pas.querySelector('i[data-k="'+s.dataset.k+'"]');
+    s.style.background=getComputedStyle(i).background; });
+  let vybrany='';
+  const zvyrazni=k=>{
+    vybrany=(k===vybrany)?'':k;
+    pas.querySelectorAll('i').forEach(i=>i.classList.toggle('tlm',!!vybrany&&i.dataset.k!==vybrany));
+    leg.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===vybrany));
+  };
+  leg.addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) zvyrazni(b.dataset.k); });
+  pas.addEventListener('click',e=>{ const i=e.target.closest('i'); if(i) zvyrazni(i.dataset.k); });
+})();
+
+/* ---------- filter zdrojov v toku ----------
+   Mriežka toku má 5 buniek na riadok (zdroj → šípka → spracovanie → šípka → v mape).
+   Riadky sa označia podľa poradia, klik na chip stlmí ostatné. */
+(()=>{
+  const tok=document.getElementById('tok'), fz=document.getElementById('fz');
+  if(!tok||!fz) return;
+  const ZDROJE=[['eia','Register EIA','#000000'],['tabule','Stavebné úrady','#F3716D'],
+    ['rpo','RPO a známky','#55555A'],['geo','Geoportál','#8A8A86'],
+    ['lod','3D model','#C6C6C2'],['osm','OpenStreetMap','#B4B4B0'],['ludia','Redakcia','#F3B0AE']];
+  /* prvých päť buniek je hlavička mriežky, potom idú riadky po piatich */
+  const bunky=[...tok.children].slice(5);
+  bunky.forEach((el,i)=>{ const z=ZDROJE[Math.floor(i/5)]; if(z) el.dataset.z=z[0]; });
+  fz.innerHTML='<button data-z="" aria-pressed="true">Všetky zdroje</button>'
+    +ZDROJE.map(([k,n,c])=>'<button data-z="'+k+'" aria-pressed="false" style="--c:'+c+'"><s></s>'+n+'</button>').join('');
+  fz.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    const z=b.dataset.z;
+    bunky.forEach(el=>el.classList.toggle('mimo',!!z&&el.dataset.z!==z));
+    fz.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.z===z));
+  });
 })();
 
 /* ---------- generátor infožiadosti pre stavebné úrady ----------
@@ -562,6 +651,6 @@ ${mail||'[e-mail]'}`;
   obnov();
 })();
 </script>
-<script src="../spolocne/tuba.js?v=20260909m" defer></script>
+<script src="../spolocne/tuba.js?v=20260909n" defer></script>
 </body>
 </html>
