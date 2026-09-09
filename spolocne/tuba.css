@@ -89,12 +89,14 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 /* ---------- hlavička stránky: značka s natiahnutou linkou, navigácia ako mikro-štítky z okrajov plagátov ---------- */
 .tb-lista{display:flex;align-items:center;gap:0;height:76px;padding:0 var(--okraj);
   background:var(--biela);border-bottom:var(--linka) solid var(--ciara);position:sticky;top:0;z-index:20}
-.tb-lista .tb-znacka{font-size:32px;flex:1 1 auto;min-width:0;margin-right:var(--okraj)}
+.tb-lista .tb-znacka{font-size:32px;flex:0 0 auto;margin-right:var(--okraj)}
+/* v lište má linka pevnú dĺžku (≈ 3,6 × výška písma), nenaťahuje sa cez celú šírku */
+.tb-lista .tb-znacka .l{flex:0 0 auto;width:3.6em;min-width:0}
 .tb-lista nav{display:flex;gap:0;align-items:center;height:100%;margin:0 var(--okraj) 0 0}
 .tb-lista nav a{display:inline-flex;align-items:center;height:100%;padding:0 14px;font-size:12px;font-weight:500;
   letter-spacing:.1em;text-transform:uppercase;color:var(--tx);border:0}
 .tb-lista nav a:hover,.tb-lista nav a[aria-current="page"]{color:var(--cervena2)}
-.tb-lista .tb-vpravo{margin-left:0;display:flex;align-items:center;gap:8px}
+.tb-lista .tb-vpravo{margin-left:auto;display:flex;align-items:center;gap:8px}
 .tb-lista .tb-vpravo>.tb-stitok{color:var(--tx3);font-size:12px}
 @media (max-width:960px){.tb-lista{height:64px}.tb-lista .tb-znacka{font-size:26px}.tb-lista nav a{padding:0 10px}}
 @media (max-width:760px){.tb-lista{height:56px}.tb-lista .tb-vpravo .tb-stitok{display:none}.tb-lista .tb-znacka{font-size:20px}.tb-lista nav a{padding:0 8px;font-size:11px}}

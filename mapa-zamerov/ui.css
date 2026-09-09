@@ -22,12 +22,12 @@ button,input,select{font-family:inherit}
 .znacka{display:flex;align-items:center;gap:12px;padding-right:22px;margin-right:22px;border-right:1px solid var(--ciara2);height:34px}
 .znacka .mib{font-weight:500;font-size:20px;letter-spacing:.06em}
 .znacka .kto{font-size:10px;line-height:1.2;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
-/* značka: linka sa natiahne cez voľnú šírku lišty a je prilepená na písmená */
-.lista h1{margin:0 var(--okraj) 0 0;display:inline-flex;align-items:center;flex:1 1 auto;min-width:0;font-size:32px;font-weight:500;
+/* značka: linka má pevnú dĺžku (≈ 3,6 × výška písma) a je prilepená na písmená — rovnako ako .tb-lista v tuba.css */
+.lista h1{margin:0 var(--okraj) 0 0;display:inline-flex;align-items:center;flex:0 0 auto;font-size:32px;font-weight:500;
   letter-spacing:0;text-transform:uppercase;white-space:nowrap;line-height:1}
-.lista h1 .l{display:inline-block;flex:1 1 auto;min-width:2em;height:.085em;background:currentColor;margin:0 -.045em;transform:translateY(-.02em)}
+.lista h1 .l{display:inline-block;flex:0 0 auto;width:3.6em;height:.085em;background:currentColor;margin:0 -.045em;transform:translateY(-.02em)}
 .lista .pod{display:none}
-.lista nav{display:flex;gap:0;align-items:center;height:100%}
+.lista nav{display:flex;gap:0;align-items:center;height:100%;margin-left:auto}
 .lista nav a{display:inline-flex;align-items:center;height:100%;padding:0 14px;font-size:12px;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;color:var(--tx);border:0}
 .lista nav a:hover,.lista nav a[aria-current="page"]{color:var(--cervena2)}
