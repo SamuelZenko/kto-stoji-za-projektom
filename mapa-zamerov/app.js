@@ -714,10 +714,10 @@ async function spusti(){
     /* zdroj sa nesmie volať 'osm' — tak sa volá podkladová vektorová mapa */
     map.addSource('osm-st',{type:'geojson',data:osm});
     map.addLayer({id:'osm-b',type:'symbol',source:'osm-st',
-      layout:{'icon-image':'stvorec-cerveny','icon-allow-overlap':true,
+      layout:{visibility:$('#v-osm').checked?'visible':'none','icon-image':'stvorec-cerveny','icon-allow-overlap':true,
         'icon-size':['interpolate',['linear'],['zoom'],10,.45,14,.7,18,1]}});
     map.addLayer({id:'osm-txt',type:'symbol',source:'osm-st',minzoom:13,
-      layout:{'text-field':['get','n'],'text-size':11,'text-anchor':'left',
+      layout:{visibility:$('#v-osm').checked?'visible':'none','text-field':['get','n'],'text-size':11,'text-anchor':'left',
         'text-offset':[1.1,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
         'text-optional':true,'icon-image':'bublina','icon-text-fit':'both','icon-text-fit-padding':[4,8,4,8]},
       paint:{'text-color':'#E4534F'}});
@@ -733,10 +733,10 @@ async function spusti(){
   if(tab && tab.features){
     map.addSource('tab-st',{type:'geojson',data:tab});
     map.addLayer({id:'tab-b',type:'symbol',source:'tab-st',
-      layout:{'icon-image':'stvorec-cierny','icon-allow-overlap':true,
+      layout:{visibility:$('#v-tabule').checked?'visible':'none','icon-image':'stvorec-cierny','icon-allow-overlap':true,
         'icon-size':['interpolate',['linear'],['zoom'],10,.45,14,.7,18,1]}});
     map.addLayer({id:'tab-txt',type:'symbol',source:'tab-st',minzoom:13,
-      layout:{'text-field':['get','n'],'text-size':11,'text-anchor':'left',
+      layout:{visibility:$('#v-tabule').checked?'visible':'none','text-field':['get','n'],'text-size':11,'text-anchor':'left',
         'text-offset':[1.1,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
         'text-optional':true,'icon-image':'bublina','icon-text-fit':'both','icon-text-fit-padding':[4,8,4,8]},
       paint:{'text-color':'#000000'}});

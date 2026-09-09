@@ -41,22 +41,29 @@ button,input,select{font-family:inherit}
 
 /* ---------- panel nad mapou ---------- */
 /* panel sedí na 3 stĺpcoch gridu z manuálu (okraj = kratšia strana/30, 8 stĺpcov) */
+/* panel = 2 stĺpce gridu; dá sa zbaliť (tlačidlo Panel v spodnej lište alebo šípka v rohu) */
 .ovladanie{position:absolute;left:var(--okraj);top:var(--okraj);
-  width:calc(3*(100vw - 9*var(--okraj))/8 + 2*var(--okraj));min-width:300px;max-width:640px;
+  width:calc(2*(100vw - 9*var(--okraj))/8 + var(--okraj));min-width:300px;max-width:420px;
   max-height:calc(100% - 150px);background:var(--biela);border:1px solid var(--ciara2);
-  border-top:var(--linka-hruba) solid var(--ciara);display:flex;z-index:4}
-.ovl-vnutro{flex:1;min-width:0;min-height:0;padding:22px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:18px}
+  border-top:var(--linka-hruba) solid var(--ciara);display:flex;z-index:4;
+  transition:transform .32s cubic-bezier(.4,0,.2,1),opacity .22s ease}
+.ovladanie.skryty{transform:translateX(calc(-100% - var(--okraj) - 12px));opacity:0;pointer-events:none}
+.ovladanie.bez-animacie{transition:none}
+.ovladanie .zbal{position:absolute;top:-1px;right:-1px;width:30px;height:30px;padding:0;background:var(--biela);border:1px solid var(--ciara2);
+  border-top:var(--linka-hruba) solid var(--ciara);color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1}
+.ovladanie .zbal:hover{background:var(--cierna);color:var(--biela);border-color:var(--cierna)}
+.ovl-vnutro{flex:1;min-width:0;min-height:0;padding:16px 18px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
 body.tiaham{cursor:col-resize;user-select:none}
 .hladanie{position:relative}
 .hladanie input{width:100%;background:var(--biela);border:1px solid var(--ciara2);border-radius:var(--r2);
-  color:var(--tx);padding:10px 14px 10px 42px;font-size:16px;height:48px}
+  color:var(--tx);padding:8px 12px 8px 40px;font-size:15px;height:44px}
 .hladanie input::placeholder{color:var(--tx3)}
 .hladanie input:focus{outline:none;border-color:var(--ciara);box-shadow:0 0 0 1px var(--ciara)}
 .hladanie svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--tx2)}
 
-.filtrovat{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:48px;
+.filtrovat{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:44px;
   background:var(--cierna);border:var(--linka) solid var(--cierna);color:var(--biela);border-radius:0;
-  font-size:16px;font-weight:600;cursor:pointer}
+  font-size:15px;font-weight:600;cursor:pointer}
 .filtrovat:hover{background:var(--cervena);border-color:var(--cervena)}
 .filtrovat .n{background:var(--biela);color:var(--cierna);border-radius:20px;min-width:22px;padding:1px 7px;font-size:12px}
 
@@ -68,22 +75,22 @@ body.tiaham{cursor:col-resize;user-select:none}
 .chip b:hover{opacity:1;color:var(--cervena2)}
 
 .cisla{display:flex;flex-direction:column;gap:5px;border-top:var(--linka-hruba) solid var(--ciara);padding-top:12px}
-.cisla .velke{font-size:48px;font-weight:400;letter-spacing:-.025em;line-height:1;display:flex;align-items:baseline;gap:10px;
+.cisla .velke{font-size:36px;font-weight:400;letter-spacing:-.025em;line-height:1;display:flex;align-items:baseline;gap:8px;
   font-variant-numeric:tabular-nums}
-.cisla .velke span{font-size:16px;font-weight:500;color:var(--tx2);letter-spacing:0}
-.cisla .r{display:flex;gap:10px;font-size:15px;color:var(--tx2);align-items:baseline}
-.cisla .r b{font-weight:600;color:var(--tx);font-variant-numeric:tabular-nums;min-width:42px;text-align:right}
+.cisla .velke span{font-size:15px;font-weight:500;color:var(--tx2);letter-spacing:0}
+.cisla .r{display:flex;gap:8px;font-size:14px;color:var(--tx2);align-items:baseline}
+.cisla .r b{font-weight:600;color:var(--tx);font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
 
 .deliac{height:var(--linka-hruba);background:var(--ciara)}
 .kat{display:flex;flex-direction:column}
-.kat .r{display:flex;align-items:center;gap:12px;padding:10px 0;font-size:16px;color:var(--tx2);cursor:pointer;
+.kat .r{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:15px;color:var(--tx2);cursor:pointer;
   border-bottom:1px solid var(--ciara2)}
 .kat .r:last-child{border-bottom:0}
 .kat .r:hover{color:var(--tx)}
 .kat .r[aria-pressed="true"]{color:var(--tx);font-weight:600}
 .kat .t{width:12px;height:12px;border-radius:50%;flex:none;border:1.5px solid var(--cierna)}
 .kat .n{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--tx3);font-size:14px}
-.vsetky{background:transparent;border:0;color:var(--tx);font-size:15px;cursor:pointer;padding:12px 0 0;text-align:left;
+.vsetky{background:transparent;border:0;color:var(--tx);font-size:14px;cursor:pointer;padding:10px 0 0;text-align:left;
   font-weight:600;text-decoration:underline;text-underline-offset:.16em}
 .vsetky:hover{color:var(--cervena2)}
 
@@ -123,6 +130,8 @@ body.pridavam .mapctrl .pridat{background:var(--cervena);border-color:var(--cerv
 .vrstvy-tl{flex:none;background:var(--biela);border:1px solid var(--ciara);color:var(--tx);padding:0 18px;
   font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:9px;white-space:nowrap;height:48px}
 .vrstvy-tl:hover{background:var(--cierna);color:var(--biela)}
+#tl-panel[aria-pressed="true"]{background:var(--cierna);color:var(--biela)}
+#tl-panel[aria-pressed="true"]:hover{background:var(--cervena);border-color:var(--cervena)}
 .pop{position:absolute;left:var(--okraj);bottom:calc(var(--okraj) + 62px);z-index:6;background:var(--biela);border:1px solid var(--ciara);
   padding:18px;width:280px;display:none;flex-direction:column;gap:16px;max-height:calc(100% - 120px);overflow:auto}
 .pop.on{display:flex}

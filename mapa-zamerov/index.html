@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 <link rel="stylesheet" href="../spolocne/tuba.css?v=20260909a">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260909a">
+<link rel="stylesheet" href="ui.css?v=20260909b">
 </head>
 <body>
 
@@ -33,6 +33,9 @@
   <div id="map"></div>
 
   <div class="ovladanie" id="ovladanie">
+   <button class="zbal" id="tl-zbal" title="Skryť panel" aria-label="Skryť panel">
+     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+   </button>
    <div class="ovl-vnutro">
     <div class="hladanie">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -67,6 +70,10 @@
   </div>
 
   <div class="spodok">
+    <button class="vrstvy-tl" id="tl-panel" aria-pressed="true" title="Skryť alebo ukázať panel s hľadaním, filtrami a kategóriami">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16"/><path d="M9 4v16"/></svg>
+      Panel
+    </button>
     <button class="vrstvy-tl" id="tl-vrstvy">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>
       Vrstvy
@@ -119,8 +126,8 @@
     <div>
       <h4>STAVBY</h4>
       <label><input type="checkbox" id="v-liniove"> Doprava a infraštruktúra <span id="stav-lin" style="color:var(--tx3)"></span></label>
-      <label><input type="checkbox" id="v-osm" checked> Staveniská z OpenStreetMap <span id="stav-osm" style="color:var(--tx3)"></span></label>
-      <label><input type="checkbox" id="v-tabule" checked> Vyhlášky stavebných úradov <span id="stav-tabule" style="color:var(--tx3)"></span></label>
+      <label><input type="checkbox" id="v-osm"> Staveniská z OpenStreetMap <span id="stav-osm" style="color:var(--tx3)"></span></label>
+      <label><input type="checkbox" id="v-tabule"> Vyhlášky stavebných úradov <span id="stav-tabule" style="color:var(--tx3)"></span></label>
       <label><input type="checkbox" id="v-komunita" checked> Komunitné body <span id="kom-pocet" style="color:var(--tx3)"></span></label>
     </div>
     <div>
@@ -218,7 +225,19 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260908y"></script>
+<script src="app.js?v=20260909a"></script>
+<script>
+/* Panel (hľadanie, filtre, kategórie) sa dá zbaliť do spodnej lišty vedľa Vrstiev
+   a rozbaliť späť — s animáciou; stav si prehliadač pamätá. */
+(()=>{
+  const p=document.getElementById('ovladanie'), tl=document.getElementById('tl-panel'), zb=document.getElementById('tl-zbal');
+  const nastav=otvor=>{ p.classList.toggle('skryty',!otvor); tl.setAttribute('aria-pressed',otvor); try{ localStorage.setItem('zb-panel',otvor?'1':'0'); }catch(e){} };
+  let stav=true; try{ stav=localStorage.getItem('zb-panel')!=='0'; }catch(e){}
+  if(!stav){ p.classList.add('bez-animacie'); nastav(false); requestAnimationFrame(()=>requestAnimationFrame(()=>p.classList.remove('bez-animacie'))); }
+  tl.addEventListener('click',()=>nastav(p.classList.contains('skryty')));
+  zb.addEventListener('click',()=>nastav(false));
+})();
+</script>
 <script src="../spolocne/tuba.js" defer></script>
 </body>
 </html>
