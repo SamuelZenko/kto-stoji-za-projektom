@@ -111,7 +111,7 @@ function obnov(){
   $('#c-vykresy').textContent=cis(npl);
   $('#c-poloha').textContent=cis(presne.length);
   $('#c-obrazky').textContent=cis(nob);
-  $('#vysledok').textContent=cis(n)+' výsledkov';
+  if($('#vysledok')) $('#vysledok').textContent=cis(n)+' výsledkov';
   const pf=pocetFiltrov();
   $('#pocet-filtrov').hidden=!pf; $('#pocet-filtrov').textContent=pf;
   kresliLegendu(pocFaz, Object.values(hromada).reduce((a,b)=>a+b.length,0));
@@ -173,13 +173,9 @@ function kresliKategorie(){
   $('#vsetky-kat').textContent=vsetkyTypy?'Zobraziť menej ←':'Zobraziť všetky kategórie →';
   $('#vsetky-kat').hidden=TYPY.length<=5;
 }
+/* Filtre sedia priamo v paneli (fáza, účel, MČ, skupina, podklady) —
+   zásuvka „Filtrovať" už nie je, preto sú prvky voliteľné. */
 function kresliSuplik(){
-  const p=poctyTypov(), zoz=vsetkyTypy?TYPY:TYPY.slice(0,6);
-  $('#f-typy').innerHTML=zoz.map(t=>
-    '<label class="volba"><input type="checkbox" data-t="'+esc(t)+'"'
-    +(filtr.typ.has(t)?' checked':'')+'> '+esc(t)+'<span class="n">'+cis(p[t]||0)+'</span></label>').join('');
-  $('#viac-typy').hidden=TYPY.length<=6;
-  $('#viac-typy').textContent=vsetkyTypy?'Zobraziť menej':'Zobraziť všetky';
   const pf={};
   Z.features.forEach(f=>{const x=f.properties;
     if(vyhovuje(x,'faza')) pf[x.faza]=(pf[x.faza]||0)+1;});
@@ -187,7 +183,8 @@ function kresliSuplik(){
     '<button aria-pressed="'+filtr.faza.has(f)+'" data-f="'+esc(f)+'">'
     +f+' '+cis(pf[f]||0)+'</button>').join('');
   ['mc','sk'].forEach(id=>{
-    const sel=$('#f-'+id), bolo=sel.value, poc={}, kl=id==='mc'?'obec':'skupina';
+    const sel=$('#f-'+id); if(!sel) return;
+    const bolo=sel.value, poc={}, kl=id==='mc'?'obec':'skupina';
     Z.features.forEach(f=>{const x=f.properties;
       if(vyhovuje(x,id)){const v=x[kl]||''; if(v) poc[v]=(poc[v]||0)+1;}});
     [...sel.options].forEach(o=>{if(o.value) o.textContent=o.value+' ('+(poc[o.value]||0)+')';});
@@ -862,14 +859,6 @@ $('#aktivne').addEventListener('click',e=>{
   else { filtr[d]=''; const s=$('#f-'+d); if(s) s.value=''; }
   obnov();});
 
-const otvorSuplik=o=>{$('#suplik').classList.toggle('on',o); $('#zavoj').classList.toggle('on',o);};
-$('#otvor-filtre').onclick=()=>otvorSuplik(true);
-$('#zavri-filtre').onclick=()=>otvorSuplik(false);
-$('#zavoj').onclick=()=>otvorSuplik(false);
-$('#viac-typy').onclick=()=>{vsetkyTypy=!vsetkyTypy; kresliSuplik();};
-$('#f-typy').addEventListener('change',e=>{
-  const t=e.target.dataset.t; if(!t) return;
-  e.target.checked?filtr.typ.add(t):filtr.typ.delete(t); obnov();});
 $('#f-fazy').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   filtr.faza.has(b.dataset.f)?filtr.faza.delete(b.dataset.f):filtr.faza.add(b.dataset.f); obnov();});

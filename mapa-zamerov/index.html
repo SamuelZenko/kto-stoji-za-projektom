@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 <link rel="stylesheet" href="../spolocne/tuba.css?v=20260909h">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260909h">
+<link rel="stylesheet" href="ui.css?v=20260909i">
 </head>
 <body>
 
@@ -42,16 +42,6 @@
       <input type="search" id="q" placeholder="Hľadať názov, firmu, lokalitu…">
     </div>
 
-    <button class="filtrovat" id="otvor-filtre">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
-      Filtrovať <span class="n" id="pocet-filtrov" hidden>0</span>
-    </button>
-
-    <div id="blok-aktivne" hidden>
-      <p class="st">AKTÍVNE FILTRE</p>
-      <div class="chipy" id="aktivne" style="margin-top:8px"></div>
-    </div>
-
     <div class="cisla">
       <div class="velke"><span id="c-spolu">—</span></div>
       <div class="r"><b id="c-vykresy">—</b> s výkresmi</div>
@@ -59,13 +49,32 @@
       <div class="r"><b id="c-obrazky">—</b> s obrázkami</div>
     </div>
 
-    <div class="deliac"></div>
+    <div id="blok-aktivne" hidden>
+      <div class="hl-filtre">
+        <p class="st">AKTÍVNE FILTRE <span class="n" id="pocet-filtrov" hidden>0</span></p>
+        <button class="vsetky" id="vymaz">Vymazať všetko</button>
+      </div>
+      <div class="chipy" id="aktivne" style="margin-top:8px"></div>
+    </div>
 
-    <div>
-      <p class="st">KATEGÓRIE ZÁMEROV</p>
-      <div class="kat" id="kategorie" style="margin-top:6px"></div>
+    <!-- filtre sedia priamo v paneli, nie v zásuvke -->
+    <div class="sk"><h4>FÁZA</h4><div class="prep" id="f-fazy"></div></div>
+
+    <div class="sk">
+      <h4>ÚČEL STAVBY</h4>
+      <div class="kat" id="kategorie"></div>
       <button class="vsetky" id="vsetky-kat">Zobraziť všetky kategórie →</button>
     </div>
+
+    <div class="sk"><h4>MESTSKÁ ČASŤ</h4>
+      <select id="f-mc"><option value="">Všetky mestské časti</option></select></div>
+    <div class="sk"><h4>DEVELOPERSKÁ SKUPINA</h4>
+      <select id="f-sk"><option value="">Všetky skupiny</option></select></div>
+    <div class="sk"><h4>PODKLADY</h4>
+      <select id="f-pl"><option value="">Všetky zámery</option>
+        <option value="1">Len s výkresmi</option>
+        <option value="2">Len s obrázkami</option>
+        <option value="3">Len s presnou polohou</option></select></div>
    </div>
   </div>
 
@@ -189,25 +198,6 @@
   <aside class="detail" id="detail"></aside>
 </div>
 
-<div class="zavoj" id="zavoj"></div>
-<aside class="suplik" id="suplik">
-  <div class="hl"><h3>Filtre</h3><button id="vymaz">Vymazať všetko</button></div>
-  <div class="obsah">
-    <div class="sk"><h4>ÚČEL STAVBY</h4><div id="f-typy"></div>
-      <button class="vsetky" id="viac-typy" hidden>Zobraziť všetky</button></div>
-    <div class="sk"><h4>FÁZA</h4><div class="prep" id="f-fazy"></div></div>
-    <div class="sk"><h4>MESTSKÁ ČASŤ</h4>
-      <select id="f-mc"><option value="">Všetky mestské časti</option></select></div>
-    <div class="sk"><h4>DEVELOPERSKÁ SKUPINA</h4>
-      <select id="f-sk"><option value="">Všetky skupiny</option></select></div>
-    <div class="sk"><h4>PODKLADY</h4>
-      <select id="f-pl"><option value="">Všetky zámery</option>
-        <option value="1">Len s výkresmi</option>
-        <option value="2">Len s obrázkami</option>
-        <option value="3">Len s presnou polohou</option></select></div>
-  </div>
-  <div class="pata"><button id="zavri-filtre">Zobraziť <span id="vysledok">—</span></button></div>
-</aside>
 
 <div class="lupa" id="lupa">
   <button class="zavri" onclick="zavriLupu()">×</button>
@@ -221,7 +211,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260909a"></script>
+<script src="app.js?v=20260909i"></script>
 <script>
 /* Panel (hľadanie, filtre, kategórie) je prilepený na ľavý okraj a zbaľuje sa
    úchytkou na svojej hrane; von ostane len tá úchytka. Stav si prehliadač pamätá.
