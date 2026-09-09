@@ -232,11 +232,12 @@ function ukaz(p,z){
     +(p.zdroj==='redakcia'?'':'<a class="odkaz" href="https://www.enviroportal.sk/eia/detail/'+esc(p.id)
       +'" target="_blank" rel="noopener">Detail zámeru na enviroportáli →</a>')
     +(p.red_odkaz?'<a class="odkaz" href="'+esc(p.red_odkaz)+'" target="_blank" rel="noopener">Web projektu →</a>':'')
-    +(p.zdroj==='redakcia'
-      ?'<p class="pozn">V registri EIA tento projekt nie je — pridala ho redakcia'+(p.red_kedy?' '+esc(p.red_kedy):'')+'. '
-        +'<a href="../redakcia/?id='+encodeURIComponent(p.id)+'" style="color:var(--ac2)">Upraviť →</a></p>'
-      :'<p class="pozn">Architekt, vizualizácie a presná poloha v registri nie sú — '
-        +'<a href="../redakcia/?id='+encodeURIComponent(p.id)+'" style="color:var(--ac2)">doplniť alebo opraviť →</a></p>');
+    /* výzva na doplnenie je hlavná akcia karty — preto tlačidlo, nie drobný odkaz */
+    +'<a class="odkaz doplnit" href="../redakcia/?id='+encodeURIComponent(p.id)+'">'
+      +(p.zdroj==='redakcia'?'Upraviť v Redakcii':'Doplniť polohu, obrázky, architekta')
+      +'<span>'+(p.zdroj==='redakcia'
+        ? 'projekt pridala redakcia'+(p.red_kedy?' '+esc(p.red_kedy):'')
+        : 'architekt, vizualizácie ani presná poloha v registri nie sú')+'</span></a>';
   $('#detail').querySelectorAll('.zalozky button').forEach(b=>b.onclick=()=>{
     aktivnaZal=b.dataset.z; kresliZalozku(p);});
   kresliZalozku(p);

@@ -106,6 +106,23 @@ $('#chipy').addEventListener('click',e=>{ const b=e.target.closest('button'); if
 
 /* ---------- editor ---------- */
 function polozka(id){ return polozky().find(p=>p.id===id)||null; }
+/* Otvorený zámer musí byť vidieť aj v zozname vľavo — keď ho filter skrýva,
+   filter sa zruší; keď je ďalej než dokreslených 250 riadkov, zoznam sa predĺži. */
+function ukazVZozname(id){
+  let v=polozky().filter(vyhovuje);
+  if(!v.some(p=>p.id===id)){
+    filtr.f=''; filtr.q=''; filtr.mc='';
+    const q=$('#q'), mc=$('#mc'); if(q) q.value=''; if(mc) mc.value='';
+    $('#chipy').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===''));
+    v=polozky().filter(vyhovuje);
+  }
+  const i=v.findIndex(p=>p.id===id);
+  if(i<0) return;
+  if(i>=limit){ limit=Math.ceil((i+1)/250)*250; }
+  kresliZoznam();
+  const el=$('#zoznam').querySelector('.pol[data-id="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');
+  if(el) el.scrollIntoView({block:'center'});
+}
 /* prvá úprava skopíruje publikovaný záznam do konceptu — koncept je vždy celý záznam */
 function rozprac(id){
   const n=jeNovy(id)?'nove':'zamery';
@@ -172,7 +189,7 @@ function vyber(id){
     +(novy&&!zm&&RED.nove[id]?'<button class="tl duch mala" id="e-zmaz">Odstrániť nový zámer</button>':'')
     +'</div>';
   $('#editor').scrollTop=0;
-  kresliZoznam();
+  ukazVZozname(id);          // označí a doroluje riadok v zozname vľavo
 
   /* polia → koncept */
   const nap=(sel,kluc,fn)=>{ const el=$(sel); if(!el) return; el.addEventListener('input',()=>zapis(id,kluc,fn?fn(el.value):el.value.trim())); };

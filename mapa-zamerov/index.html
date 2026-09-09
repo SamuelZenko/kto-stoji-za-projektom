@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 <link rel="stylesheet" href="../spolocne/tuba.css?v=20260909u">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260909u">
+<link rel="stylesheet" href="ui.css?v=20260909v">
 </head>
 <body>
 
@@ -149,22 +149,18 @@
       <label><input type="checkbox" id="v-3d"> 3D budovy <span id="stav-3d" style="color:var(--tx3)"></span></label>
       <label><input type="checkbox" id="v-nazvy" checked> Názvy zámerov</label>
     </div>
-    <p style="margin:0;font-size:11.5px;color:var(--tx3);line-height:1.5;
-       border-top:1px solid var(--ln);padding-top:12px">
-      Pravý klik na mapu ponúkne, čo sa dá s miestom urobiť.<br>
-      Stlačené koliesko myši alebo <b style="color:var(--tx2)">Shift</b> + ťahanie otáča a nakláňa mapu.<br>
-      3D budovy sú z modelu LOD1 2021 — 91 539 budov celej Bratislavy.
-      Sťahujú sa po dlaždiciach podľa výrezu, tak si najprv priblíž mapu.<br>
-      Linky MHD sú z OpenStreetMap — električka čierna, trolejbus červený,
-      autobus sivý.<br>
-      Výšková regulácia je z územnej štúdie výškového zónovania (5 hladín),
-      žiadosti o zmenu ÚPN z geoportálu — oboje stav k septembru 2026.<br>
-      Staveniská z OpenStreetMap sú rozostavané projekty, ktoré register EIA
-      nevidí (stavby pod zákonným prahom) — zakreslila ich komunita mapperov.<br>
-      Úradné tabule stavebných úradov sledujeme od 8. 9. 2026 pri <b style="color:var(--tx2)">16 zo 17</b> mestských
-      častí (Vajnory cez CUET). <b style="color:var(--tx2)">Ružinov chýba</b> — jeho web neodpovedá;
-      pri ružinovských zámeroch preto fáza „povolené" z tabule chýbať môže.
-    </p>
+    <!-- vysvetlivky boli dlhý blok textu — teraz sú zbalené a drobné -->
+    <details class="vysvetlivky">
+      <summary>Vysvetlivky a ovládanie</summary>
+      <p>Pravý klik na mapu ponúkne, čo sa dá s miestom urobiť. Stlačené koliesko myši
+      alebo <b>Shift</b> + ťahanie otáča a nakláňa mapu.</p>
+      <p>3D budovy sú z modelu LOD1 2021 (91 539 budov) a sťahujú sa po dlaždiciach — najprv si priblíž mapu.
+      Linky MHD sú z OpenStreetMap: električka čierna, trolejbus červený, autobus sivý.</p>
+      <p>Výšková regulácia je z územnej štúdie výškového zónovania, žiadosti o zmenu ÚPN z geoportálu,
+      oboje k septembru 2026. Staveniská z OpenStreetMap sú stavby pod prahom EIA, zakreslené komunitou.</p>
+      <p>Úradné tabule sledujeme od 8. 9. 2026 pri <b>16 zo 17</b> mestských častí.
+      <b>Ružinov chýba</b> — jeho web neodpovedá, pri ružinovských zámeroch preto fáza „povolené“ chýbať môže.</p>
+    </details>
   </div>
 
   <div class="mapctrl">
@@ -211,7 +207,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260909i"></script>
+<script src="app.js?v=20260909v"></script>
 <script>
 /* Panel (hľadanie, filtre, kategórie) je prilepený na ľavý okraj a zbaľuje sa
    úchytkou na svojej hrane; von ostane len tá úchytka. Stav si prehliadač pamätá.
