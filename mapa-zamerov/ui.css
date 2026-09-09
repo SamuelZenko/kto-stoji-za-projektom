@@ -23,7 +23,7 @@ button,input,select{font-family:inherit}
 .znacka .mib{font-weight:500;font-size:20px;letter-spacing:.06em}
 .znacka .kto{font-size:10px;line-height:1.2;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
 /* značka: linka má pevnú dĺžku (≈ 3,6 × výška písma) a je prilepená na písmená — rovnako ako .tb-lista v tuba.css */
-.lista h1{margin:0 var(--okraj) 0 clamp(20px,3vw,48px);display:inline-flex;align-items:center;flex:0 0 auto;font-size:32px;font-weight:500;
+.lista h1{margin:0 var(--okraj) 0 clamp(40px,8vw,130px);display:inline-flex;align-items:center;flex:0 0 auto;font-size:32px;font-weight:500;
   letter-spacing:0;text-transform:uppercase;white-space:nowrap;line-height:1}
 .lista h1 .l{display:inline-block;flex:0 0 auto;width:3.6em;height:.085em;background:currentColor;margin:0 -.045em;transform:translateY(-.02em)}
 .lista .pod{display:none}
