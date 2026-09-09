@@ -25,13 +25,14 @@ button,input,select{font-family:inherit}
 .znacka .mib{font-weight:500;font-size:20px;letter-spacing:.06em}
 .znacka .kto{font-size:10px;line-height:1.2;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
 /* značka: linka má pevnú dĺžku (≈ 3,6 × výška písma) a je prilepená na písmená — rovnako ako .tb-lista v tuba.css */
-/* značka je na osi lišty — vycentrovaná, MIB vľavo a odkazy vpravo ju obtekajú */
-.lista h1{margin:0;position:absolute;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;
+/* značka na strede voľného miesta medzi MIB a odkazmi — automatické okraje
+   ju držia v osi, ale nikdy sa neprekryje s navigáciou */
+.lista h1{margin:0 auto;display:inline-flex;align-items:center;
   font-size:32px;font-weight:500;letter-spacing:0;text-transform:uppercase;white-space:nowrap;line-height:1}
 /* linka musí prekryť postranné vôle písmen (Y má vpravo veľkú) — inak ostane škára */
 .lista h1 .l{display:inline-block;flex:0 0 auto;width:3.6em;height:.085em;background:currentColor;margin:0 -.13em 0 -.26em;transform:translateY(-.02em)}
 .lista .pod{display:none}
-.lista nav{display:flex;gap:0;align-items:center;height:100%;margin-left:auto}
+.lista nav{display:flex;gap:0;align-items:center;height:100%}
 .lista nav a{display:inline-flex;align-items:center;height:100%;padding:0 14px;font-size:12px;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;color:var(--tx);border:0}
 .lista nav a:hover,.lista nav a[aria-current="page"]{color:var(--cervena2)}
@@ -299,8 +300,6 @@ body.tiaham .tahadlo-d{transition:background .15s}
 .form .par{display:flex;gap:10px}
 .form .par>div{flex:1}
 
-/* značka je na osi len pri dosť širokom okne; inak vľavo, nech nekolíduje s odkazmi */
-@media (max-width:1280px){ .lista h1{position:static;transform:none;margin-left:clamp(20px,4vw,56px)} }
 @media (max-width:1100px){ :root{--detail-w:380px} .lista{height:64px} .lista h1{font-size:26px} .lista nav a{padding:0 10px} }
 /* pod 1150 px sa odkazy skryjú pod burger, lupa ostáva v lište.
    Pravidlá musia byť tu, lebo ui.css sa načítava po tuba.css. */
