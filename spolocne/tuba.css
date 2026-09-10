@@ -94,7 +94,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 /* značka je na strede voľného miesta medzi ľavou a pravou skupinou —
    automatické okraje ju držia v osi, ale nikdy nevlezie do odkazov */
 /* logo MIB z dizajn manuálu (vektor z Loga MIB 2026.ai, čierna verzia bez textu) */
-.tb-lista .tb-logo{height:30px;width:auto;flex:0 0 auto;margin-right:22px;padding-right:22px;
+.tb-lista .tb-logo{height:42px;width:auto;flex:0 0 auto;margin-right:22px;padding-right:22px;
   border-right:1px solid var(--ciara2);align-self:center}
 .tb-lista .tb-znacka{font-size:32px;flex:0 0 auto;margin:0 auto}
 /* v lište má linka pevnú dĺžku (≈ 3,6 × výška písma), nenaťahuje sa cez celú šírku */

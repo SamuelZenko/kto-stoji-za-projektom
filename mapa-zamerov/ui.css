@@ -21,10 +21,10 @@ button,input,select{font-family:inherit}
 /* ---------- horná lišta: značka na linke (rovnaká škála ako .tb-lista) ---------- */
 .lista{display:flex;align-items:center;gap:0;padding:0 var(--okraj);height:76px;position:relative;
   background:var(--biela);border-bottom:var(--linka) solid var(--ciara);z-index:8;flex:none}
-.znacka{display:flex;align-items:center;gap:12px;padding-right:22px;margin-right:22px;border-right:1px solid var(--ciara2);height:34px}
+/* len značka MIB, bez názvu inštitútu — v lište 76 px má miesto na 42 px */
+.znacka{display:flex;align-items:center;padding-right:22px;margin-right:22px;border-right:1px solid var(--ciara2);height:46px}
 /* logo MIB z dizajn manuálu (vektor z Loga MIB 2026.ai) */
-.znacka .logo-mib{height:30px;width:auto;display:block}
-.znacka .kto{font-size:10px;line-height:1.2;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
+.znacka .logo-mib{height:42px;width:auto;display:block}
 /* značka: linka má pevnú dĺžku (≈ 3,6 × výška písma) a je prilepená na písmená — rovnako ako .tb-lista v tuba.css */
 /* značka na strede voľného miesta medzi MIB a odkazmi — automatické okraje
    ju držia v osi, ale nikdy sa neprekryje s navigáciou */
@@ -265,7 +265,26 @@ body.tiaham .tahadlo-d{transition:background .15s}
 .dok .mini.prazdna{display:flex;align-items:center;justify-content:center;font-size:9.5px;color:var(--tx3)}
 .dok .nm{flex:1;min-width:0;font-size:13px;color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dok .r:hover .nm{color:var(--tx)}
-.dok .vel{font-size:11px;color:var(--tx3);flex:none}
+.dok .vel{font-size:11px;color:var(--tx3);flex:none;text-align:right;line-height:1.25}
+/* celý spis: hlavička, skupiny podľa krokov konania, obsah archívov */
+.dok-hl{font-size:12.5px;color:var(--tx2);margin:2px 0 14px;line-height:1.4}
+.dok-hl b{font-weight:600;color:var(--tx)}
+.dok-hl span{display:block;font-size:11.5px;color:var(--tx3);margin-top:3px}
+.dok-sk{margin-bottom:16px}
+.dok-sk .st{display:flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:.11em;color:var(--tx3);
+  text-transform:uppercase;margin:0 0 7px;padding-bottom:5px;border-bottom:var(--linka) solid var(--ln)}
+.dok-sk .st i{font-style:normal;color:var(--tx);font-size:10.5px}
+.dok .nm em,.dok .vel em{display:block;font-style:normal;font-size:10.5px;color:var(--tx3);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.dok .r.jezip .nm::before{content:"▸ ";color:var(--cervena)}
+.dok .r.jezip.otvorene .nm::before{content:"▾ "}
+.zip-obsah{display:flex;flex-direction:column;gap:4px;margin:-2px 0 6px 26px;padding-left:12px;
+  border-left:var(--linka) solid var(--ln2)}
+.zip-obsah .r{background:var(--karta2)}
+.dok-sk:not(.rozbalene) .dok>.r.viac{display:none}
+.viac-tl{display:block;width:100%;margin-top:6px;background:transparent;border:var(--linka) dashed var(--ln2);
+  color:var(--tx2);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:8px;cursor:pointer}
+.viac-tl:hover{border-color:var(--cierna);color:var(--tx)}
 .odkaz{display:block;text-align:center;background:var(--cierna);color:var(--biela);padding:14px;font-size:16px;font-weight:600;
   border:var(--linka) solid var(--cierna)}
 .odkaz:hover{background:var(--cervena);border-color:var(--cervena)}

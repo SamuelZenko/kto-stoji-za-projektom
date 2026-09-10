@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>Tok dát — Zámery Bratislavy</title>
-<link rel="stylesheet" href="../spolocne/tuba.css?v=20260909u">
+<link rel="stylesheet" href="../spolocne/tuba.css?v=20260910a">
 <style>
-  /* Stránka stojí na dizajn systéme TU—BA (spolocne/tuba.css?v=20260909u); tu sú len
+  /* Stránka stojí na dizajn systéme TU—BA (spolocne/tuba.css?v=20260910a); tu sú len
      rozloženia špecifické pre tok dát. Farby zdrojov: register EIA čierna,
      stavebné úrady červená, ľudia svetlá červená, ostatné odtiene sivej. */
   *{box-sizing:border-box}
@@ -210,7 +210,8 @@
   <div class="cislo tb-cifra"><b id="p-mimo">…</b><span>stavieb mimo registra<small id="p-mimo-pozn">staveniská z OSM + vyhlášky úradov</small></span></div>
   <div class="cislo tb-cifra"><b id="p-nazvy">…</b><span>obchodných názvov<small id="p-nazvy-pozn">známky · OSM · ručne</small></span></div>
   <div class="cislo tb-cifra"><b id="p-faza">…</b><span>fáz doložených vyhláškou<small>CUET a úradné tabule MČ</small></span></div>
-  <div class="cislo tb-cifra"><b id="p-galeria">…</b><span>s výkresmi zo spisu<small>náhľady z PDF</small></span></div>
+  <div class="cislo tb-cifra"><b id="p-galeria">…</b><span>s výkresmi zo spisu<small>náhľady z PDF a archívov</small></span></div>
+  <div class="cislo tb-cifra"><b id="p-dok">…</b><span>dokumentov v spisoch<small id="p-dok-pozn">celý zoznam je v karte zámeru</small></span></div>
   <div class="cislo tb-cifra"><b id="p-redakcia">…</b><span>doplnila redakcia<small id="p-redakcia-pozn">polohy · obrázky · nové zámery</small></span></div>
 </section>
 <div class="pas" id="pas" role="img" aria-label="Rozdelenie stavieb podľa toho, odkiaľ je ich poloha"></div>
@@ -257,7 +258,7 @@
   <!-- EIA -->
   <div class="k zdroj" style="--c:#000000"><h4>Enviroportál — register EIA</h4><p>Ministerstvo životného prostredia SR. Posudzovanie vplyvov: každá stavba nad zákonným prahom. 18 673 zámerov, 2 303 v Bratislavskom kraji.</p><div class="meta">verejné JSON API · obnova mesačne</div></div>
   <div class="s" style="--c:#000000"></div>
-  <div class="k" style="--c:#000000"><h4>Zber, čistenie, výkresy</h4><div class="chips"><span class="chip">zamery.py</span><span class="chip">obohat_mapu.py</span><span class="chip">typy.py</span><span class="chip">ocisti.py</span><span class="chip">nahlady3.py</span></div><p>Stiahne register a detaily, vyhodí body mimo mesta a územné plány, zlúči duplicitné konania, určí účel stavby, vyrenderuje náhľady z PDF a otočí ich podľa písma.</p></div>
+  <div class="k" style="--c:#000000"><h4>Zber, čistenie, výkresy</h4><div class="chips"><span class="chip">zamery.py</span><span class="chip">obohat_mapu.py</span><span class="chip">typy.py</span><span class="chip">ocisti.py</span><span class="chip">eia_dokumenty.py</span><span class="chip">nahlady4.py</span></div><p>Stiahne register a detaily, vyhodí body mimo mesta a územné plány, zlúči duplicitné konania, určí účel stavby, vypíše celý spis dokumentov, rozbalí archívy a vyrenderuje náhľady výkresov otočené podľa písma.</p></div>
   <div class="s" style="--c:#000000"></div>
   <div class="k" style="--c:#000000"><h4>Body zámerov</h4><div class="chips"><span class="chip subor">zamery.geojson</span><span class="chip subor">nahlady/</span><span class="chip subor">zamery.csv</span></div><ul class="tagy"><li><b>988 projektov</b> — 862 stavieb + 126 v vrstve Doprava a infraštruktúra</li><li>galéria výkresov pri 381 zámeroch</li><li class="karta">karta: názov, investor, IČO, úrad, stav konania, spis, ďalšie konania</li></ul></div>
 
@@ -305,8 +306,9 @@
 </section>
 
 <div class="dva tb-grid">
-  <div class="info tb-s3"><h4>Ako často sa čo obnovuje</h4><p><b>Týždenne:</b> úradné tabule — vyhlášky miznú po 15 dňoch.</p><p><b>Mesačne:</b> register EIA, parcely nových zámerov, ochranné známky, staveniská z OSM.</p><p><b>Pri novom modeli:</b> 3D budovy.</p></div>
-  <div class="info tb-s5"><h4>Čo ostáva len lokálne a nikdy nejde na GitHub</h4><p>Archív vyhlášok <code>tabule_zaznamy.json</code> — názvy dokumentov občas nesú mená osôb. Stiahnuté detaily EIA. Katastrálne dáta z licencovaných zdrojov.</p><p>Náhľady vynechávajú výpisy z LV, plné moci a zmluvy. Stavebník sa ukladá len s právnou formou — živnostník je fyzická osoba.</p></div>
+  <div class="info tb-s2"><h4>Ako často sa čo obnovuje</h4><p><b>Týždenne:</b> úradné tabule — vyhlášky miznú po 15 dňoch.</p><p><b>Mesačne:</b> register EIA, parcely nových zámerov, ochranné známky, staveniská z OSM.</p><p><b>Pri novom modeli:</b> 3D budovy.</p></div>
+  <div class="info tb-s3"><h4>Prečo mapa neukazuje celý spis ako súbory</h4><p>Zoznam dokumentov je v karte úplný, súbory nie. Spisy v Bratislave majú spolu <b>47,9 GB</b>, stránka na GitHub Pages má rozpočet 1 GB. Preto sa sťahujú len náhľady grafiky: obrázok z prvej strany, ostatné otvorí enviroportál.</p><p>Archívy ZIP sa rozbaľujú u nás, do mapy ide zoznam súborov v nich a náhľady výkresov.</p></div>
+  <div class="info tb-s3"><h4>Čo ostáva len lokálne a nikdy nejde na GitHub</h4><p>Archív vyhlášok <code>tabule_zaznamy.json</code> — názvy dokumentov občas nesú mená osôb. Stiahnuté detaily EIA. Katastrálne dáta z licencovaných zdrojov.</p><p>Náhľady vynechávajú výpisy z LV, plné moci a zmluvy. Stavebník sa ukladá len s právnou formou — živnostník je fyzická osoba.</p></div>
 </div>
 
 <div class="legenda">
@@ -333,7 +335,8 @@
 <tr><td>fáza — zámer / posúdené / povolené / dokončené</td><td><span class="z" style="background:#000000"></span>stav konania EIA · <span class="z" style="background:#F3716D"></span>vyhláška z tabule MČ / CUET</td><td><code>obohat_mapu.py</code>, <code>tabule_sledovac.py</code></td><td>doložené vyhláškou len tam, kde to karta výslovne píše</td></tr>
 <tr><td>developerská skupina</td><td><span class="z" style="background:#55555A"></span>RPO + tabuľka skupín</td><td><code>skupiny.py</code>, <code>ocisti.py</code></td><td>doložená (IČO alebo značka) pri 13; 118 je zhoda sídla = indícia</td></tr>
 <tr><td>ďalšie konania k projektu</td><td><span class="z" style="background:#000000"></span>Enviroportál</td><td><code>ocisti.py</code> — zlúčenie duplicít</td><td>rovnaký názov + IČO</td></tr>
-<tr><td>výkresy a náhľady</td><td><span class="z" style="background:#000000"></span>PDF zo spisu</td><td><code>nahlady3.py</code></td><td>len technické podklady; vizualizácie register nemá (6 %)</td></tr>
+<tr><td>zoznam dokumentov spisu</td><td><span class="z" style="background:#000000"></span>Enviroportál API</td><td><code>eia_dokumenty.py</code> → <code>dokumenty.json</code></td><td>všetkých 10 640 dokumentov vrátane ďalších konaní; sťahuje sa až pri otvorení záložky</td></tr>
+<tr><td>výkresy a náhľady</td><td><span class="z" style="background:#000000"></span>PDF a ZIP zo spisu</td><td><code>nahlady4.py</code></td><td>len technické podklady; vizualizácie register nemá (6 %)</td></tr>
 <tr><td>povolená výška</td><td><span class="z" style="background:#8A8A86"></span>územná štúdia výškového zónovania</td><td><code>vyska.geojson</code> + bod v polygóne v prehliadači</td><td>5 hladín, pokrýva časť mesta</td></tr>
 </table>
 <p class="pozn">Register EIA je spoľahlivý, ale nie úplný: stavby pod 10 000 m² hrubej podlažnej plochy v zastavanom území (1 000 m² mimo neho) a pod 200 parkovacích stojísk doň nejdú. Tú dieru čiastočne kryjú vyhlášky z tabúľ a staveniská z OSM.</p>
@@ -531,6 +534,11 @@
   $('#p-nazvy-pozn').textContent='ochranné známky '+nz.znamka+' · OSM '+nz.osm+' · ručne '+nz.rucne;
   $('#p-faza').textContent=cis(faza);
   $('#p-galeria').textContent=cis(gal);
+  /* spis na enviroportáli má oveľa viac dokumentov, než sa dá vyrenderovať —
+     číslo hovorí, koľko ich je celkom, a karta ich vypíše všetky */
+  const dokS=P.reduce((s,p)=>s+(p.dok||0),0), sNah=P.filter(p=>p.nahlady&&p.nahlady.length).length;
+  $('#p-dok').textContent=cis(dokS);
+  $('#p-dok-pozn').textContent='v priemere '+Math.round(dokS/P.length)+' na zámer · náhľad robíme pri '+cis(sNah);
   $('#p-stav').textContent=datum?datum.split('-').reverse().join('. '):'—';
   $('#p-stav-pozn').textContent='posledná zmena zámeru v registri';
   const obce={}; st.forEach(p=>{ const o=(p.obec||'').replace('Bratislava - ',''); obce[o]=(obce[o]||0)+1; });
