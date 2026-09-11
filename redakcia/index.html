@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex">
 <title>Redakcia — Zámery Bratislavy</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
-<link rel="stylesheet" href="../spolocne/tuba.css?v=20260910a">
+<link rel="stylesheet" href="../spolocne/tuba.css?v=20260911a">
 <style>
 /* ============================================================
    Redakcia — typografický (swiss) layout podľa plagátov TU—BA
@@ -65,7 +65,7 @@ label{display:block;font-size:11px;font-weight:500;letter-spacing:.08em;text-tra
 .tb-lista .tb-znacka .l{flex:0 0 auto;width:3.6em;min-width:0;height:.085em;margin:0 -.045em;transform:translateY(-.02em)}
 .tb-lista>.tb-stitok{display:none}
 .tb-lista nav{gap:0;margin:0 var(--okraj) 0 auto;height:100%}
-.tb-lista nav a{display:inline-flex;align-items:center;height:100%;padding:0 14px;border:0;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--tx)}
+.tb-lista nav a{display:inline-flex;align-items:center;height:100%;padding:0 14px;border:0;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--tx);white-space:nowrap}
 .tb-lista nav a:hover,.tb-lista nav a[aria-current="page"]{color:var(--cervena2);border:0}
 .tb-lista .tb-vpravo{margin-left:0;gap:8px}
 .pripoj{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 14px 0 0;background:transparent;border:0;color:var(--tx2);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
@@ -241,7 +241,7 @@ dialog .tlacidla{display:flex;gap:8px;justify-content:flex-end;margin-top:28px;p
 <div class="dm-grid" id="dm-grid" hidden aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
 <header class="tb-lista">
-  <img class="tb-logo" src="../spolocne/logo-mib.svg" alt="Metropolitný inštitút Bratislavy">
+  <div class="tb-mib"><img class="tb-logo" src="../spolocne/logo-mib.svg" alt="MIB"><span>Metropolitný<br>inštitút<br>Bratislavy</span></div>
   <a class="tb-znacka" href="../mapa-zamerov/">Zámery<span class="l"></span>Bratislavy</a>
   <span class="tb-stitok">Redakcia</span>
   <nav><a href="../mapa-zamerov/">Mapa</a><a href="../tok-dat/">Tok dát</a></nav>

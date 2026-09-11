@@ -96,12 +96,20 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 /* logo MIB z dizajn manuálu (vektor z Loga MIB 2026.ai, čierna verzia bez textu) */
 .tb-lista .tb-logo{height:42px;width:auto;flex:0 0 auto;margin-right:22px;padding-right:22px;
   border-right:1px solid var(--ciara2);align-self:center}
+/* lockup podľa manuálu: značka a vpravo hore trojriadkový názov inštitútu.
+   Originálny SVG lockup by mal v 76 px lište text vysoký 6 px — preto je
+   text sádzaný v HTML tým istým písmom a rozložením ako v manuáli. */
+.tb-lista .tb-mib{display:flex;align-items:flex-start;flex:0 0 auto;height:42px;align-self:center;
+  margin-right:22px;padding-right:22px;border-right:1px solid var(--ciara2);color:var(--cierna)}
+.tb-lista .tb-mib .tb-logo{margin:0 12px 0 0;padding:0;border:0;align-self:flex-start}
+.tb-lista .tb-mib span{font-size:11.5px;line-height:1.14;font-weight:500;letter-spacing:0;
+  text-transform:none;white-space:nowrap;margin-top:1px}
 .tb-lista .tb-znacka{font-size:32px;flex:0 0 auto;margin:0 auto}
 /* v lište má linka pevnú dĺžku (≈ 3,6 × výška písma), nenaťahuje sa cez celú šírku */
 .tb-lista .tb-znacka .l{flex:0 0 auto;width:3.6em;min-width:0}
 .tb-lista nav{display:flex;gap:0;align-items:center;height:100%;margin:0 var(--okraj) 0 0}
 .tb-lista nav a{display:inline-flex;align-items:center;height:100%;padding:0 14px;font-size:12px;font-weight:500;
-  letter-spacing:.1em;text-transform:uppercase;color:var(--tx);border:0}
+  letter-spacing:.1em;text-transform:uppercase;color:var(--tx);border:0;white-space:nowrap}
 .tb-lista nav a:hover,.tb-lista nav a[aria-current="page"]{color:var(--cervena2)}
 .tb-lista .tb-vpravo{margin-left:0;display:flex;align-items:center;gap:8px}
 .tb-lista nav:not(:has(a))+.tb-vpravo,.tb-lista .tb-znacka+.tb-vpravo{margin-left:auto}
@@ -128,9 +136,13 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
   .tb-lista.otvorene nav,.lista.otvorene nav{display:flex}
   .tb-lista nav a,.lista nav a{height:auto;padding:16px var(--okraj);border-top:1px solid var(--ciara2)}
 }
-@media (max-width:960px){.tb-lista .tb-logo{height:26px;margin-right:16px;padding-right:16px}}
+@media (max-width:960px){.tb-lista .tb-logo{height:26px;margin-right:16px;padding-right:16px}
+  .tb-lista .tb-mib{height:32px;margin-right:16px;padding-right:16px}.tb-lista .tb-mib .tb-logo{height:32px;margin-right:9px}
+  .tb-lista .tb-mib span{font-size:9.5px}}
 @media (max-width:760px){.tb-lista{height:56px}.tb-lista .tb-znacka{font-size:20px}.tb-lista nav a{font-size:11px}
-  .tb-lista .tb-logo{height:22px;margin-right:12px;padding-right:12px}}
+  .tb-lista .tb-logo{height:22px;margin-right:12px;padding-right:12px}
+  .tb-lista .tb-mib{height:26px;margin-right:12px;padding-right:12px}.tb-lista .tb-mib .tb-logo{height:26px}
+  .tb-lista .tb-mib span{display:none}}
 
 /* pätička — mikro-štítky na okraji, rovnaký grid ako hlavička */
 .tb-pata{display:flex;justify-content:space-between;gap:16px;padding:18px var(--okraj);border-top:var(--linka) solid var(--ciara);
