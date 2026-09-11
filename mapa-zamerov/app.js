@@ -195,10 +195,13 @@ function kresliSuplik(){
 /* ---------- detail ---------- */
 let LUPA=[], lupaI=0, GAL=[], galI=0, aktivnaZal='v';
 function ukaz(p,z){
-  const obr=pole(p,'nahlady')||[], plany=pole(p,'plany')||[], foto=pole(p,'obrazky')||[];
+  /* náhľad je objekt {n,p,u} — obrázok z archívu má iný popis aj odkaz
+     než dokument, ktorý ho niesol. Starší tvar (len cesta) ostáva funkčný. */
+  const obr=(pole(p,'nahlady')||[]).map(x=>typeof x==='string'?{n:x}:x);
+  const plany=pole(p,'plany')||[], foto=pole(p,'obrazky')||[];
   GAL=[].concat(foto.map(x=>({s:x.u,p:x.p,u:x.u})),
-                obr.map((s,i)=>({s:s,p:(plany[i]&&plany[i].p)||'podklad zo spisu',
-                                 u:(plany[i]&&plany[i].u)||s})));
+                obr.map((x,i)=>({s:x.n,p:x.p||(plany[i]&&plany[i].p)||'podklad zo spisu',
+                                 u:x.u||(plany[i]&&plany[i].u)||x.n})));
   galI=0; aktivnaZal=z||'v';
   const chyba='<span class="v chyba">register neuvádza</span>';
   $('#detail').className='detail on'; $('#detail').scrollTop=0;
@@ -227,7 +230,7 @@ function ukaz(p,z){
     +dalsieKonania(p)
     +'<div class="zalozky">'
       +'<button data-z="v" '+(GAL.length?'':'disabled')+'>VIZUALIZÁCIE'+(foto.length?' ('+foto.length+')':'')+'</button>'
-      +'<button data-z="d" '+(plany.length?'':'disabled')+'>DOKUMENTY ('+plany.length+')</button>'
+      +'<button data-z="d" '+(p.dok||plany.length?'':'disabled')+'>DOKUMENTY ('+(p.dok||plany.length)+')</button>'
     +'</div><div id="obsah-zal"></div>'
     +(p.zdroj==='redakcia'?'':'<a class="odkaz" href="https://www.enviroportal.sk/eia/detail/'+esc(p.id)
       +'" target="_blank" rel="noopener">Detail zámeru na enviroportáli →</a>')
@@ -316,16 +319,83 @@ function kresliZalozku(p){
     $('#gal-p').onclick=()=>{galI++; kresliZalozku(p);};
     $('#gal-obr').onclick=()=>{LUPA=GAL; otvorLupu(galI);};
   } else {
-    c.innerHTML='<div class="dok">'+plany.map((x,i)=>'<div class="r" data-i="'+i+'">'
-      +(x.n?'<img class="mini" src="'+esc(x.n)+'" alt="" loading="lazy">'
-           :'<span class="mini prazdna">'+esc((x.t||'PDF').slice(0,4))+'</span>')
-      +'<span class="nm">'+esc(x.p)+'</span>'
-      +'<span class="vel">'+(x.v?(x.v>=1e6?(x.v/1e6).toFixed(1)+' MB':Math.round(x.v/1000)+' kB'):'')+'</span>'
-      +'</div>').join('')+'</div>';
-    c.querySelectorAll('.dok .r').forEach(el=>el.onclick=()=>{
-      LUPA=plany.map(x=>({s:x.n||null,p:x.p,u:x.u}));
-      otvorLupu(+el.dataset.i);});
+    const zoz=(DOKY&&DOKY[p.id]&&DOKY[p.id].d)||null;
+    if(!zoz&&!DOKY){
+      c.innerHTML='<p class="pozn">Načítavam zoznam dokumentov zo spisu…</p>';
+      nacitajDoky().then(()=>{ if(aktivnaZal==='d') kresliZalozku(p); });
+      return;
+    }
+    kresliDokumenty(c,p,zoz||plany.map(x=>({p:x.p,u:(x.u||'').split('/').pop(),v:x.v,t:x.t,n:x.n,k:'Spis'})));
   }
+}
+/* ---------- dokumenty spisu ----------
+   Spis na enviroportáli má často desiatky dokumentov, v mape sme dlho
+   ukazovali len tie grafické. Celý zoznam je vo dokumenty.json a sťahuje
+   sa až pri prvom otvorení záložky — do geojsonu by pridal ~1,5 MB. */
+let DOKY=null, dokyBezi=null;
+function nacitajDoky(){
+  if(DOKY) return Promise.resolve(DOKY);
+  if(dokyBezi) return dokyBezi;
+  dokyBezi=fetch('dokumenty.json').then(r=>r.ok?r.json():{}).catch(()=>({}))
+    .then(d=>{DOKY=d||{}; return DOKY;});
+  return dokyBezi;
+}
+const ODKAZ_DOK=u=>/^https?:/.test(u||'')?u:'https://www.enviroportal.sk/eia/dokument/'+u;
+function velB(v){ return v?(v>=1e6?(v/1e6).toFixed(1)+' MB':Math.round(v/1000)+' kB'):''; }
+function kresliDokumenty(c,p,zoz){
+  if(!zoz||!zoz.length){ c.innerHTML='<p class="pozn">Register k tomuto zámeru neuvádza dokumenty.</p>'; return; }
+  const sk=[];
+  zoz.forEach((d,i)=>{
+    const n=(d.z?'Ďalšie konanie · '+d.z:(d.k||'Spis'))+(d.s?' · '+d.s:'');
+    if(!sk.length||sk[sk.length-1].n!==n) sk.push({n:n,r:[]});
+    sk[sk.length-1].r.push([d,i]);
+  });
+  const sN=zoz.filter(d=>d.n).length, sZ=zoz.filter(d=>(d.t||'')==='ZIP').length;
+  c.innerHTML='<p class="dok-hl">Celý spis: <b>'+zoz.length+' dokumentov</b>'
+    +(sN?' · náhľad máme k '+sN:'')+(sZ?' · '+sZ+'× archív ZIP':'')
+    +'<span>Náhľady robíme len z výkresov, situácií a vizualizácií. Ostatné otvorí enviroportál.</span></p>'
+    /* dlhé kroky (aj 180 dokumentov) sa ukazujú po desiatich, inak je karta stena textu */
+    +sk.map(g=>'<div class="dok-sk"><p class="st">'+esc(g.n.toUpperCase())+' <i>'+g.r.length+'</i></p>'
+      +'<div class="dok">'+g.r.map((x,j)=>riadokDok(x[0],x[1],j>=10)).join('')+'</div>'
+      +(g.r.length>10?'<button class="viac-tl">Zobraziť všetkých '+g.r.length+'</button>':'')
+      +'</div>').join('');
+  c.querySelectorAll('.viac-tl').forEach(b=>b.onclick=()=>{
+    b.parentNode.classList.add('rozbalene'); b.remove();});
+  c.querySelectorAll('.dok .r').forEach(el=>el.onclick=()=>{
+    const d=zoz[+el.dataset.i];
+    if(el.dataset.zip!==undefined){
+      const o=c.querySelector('.zip-obsah[data-pre="'+el.dataset.i+'"]');
+      if(o){ o.hidden=!o.hidden; el.classList.toggle('otvorene',!o.hidden); return; }
+    }
+    if(d.n){
+      const s=zoz.filter(x=>x.n);
+      LUPA=s.map(x=>({s:x.n,p:x.p+(x.k?' · '+x.k:''),u:ODKAZ_DOK(x.u)}));
+      otvorLupu(s.indexOf(d));
+    } else window.open(ODKAZ_DOK(d.u),'_blank','noopener');
+  });
+  c.querySelectorAll('.zip-obsah .r').forEach(el=>el.onclick=e=>{
+    e.stopPropagation();
+    const d=zoz[+el.dataset.pre], v=(d.zc||[]).filter(x=>x.n);
+    const x=(d.zc||[])[+el.dataset.j];
+    if(x&&x.n){ LUPA=v.map(y=>({s:y.n,p:d.p+' → '+y.p,u:ODKAZ_DOK(d.u)})); otvorLupu(v.indexOf(x)); }
+    else window.open(ODKAZ_DOK(d.u),'_blank','noopener');
+  });
+}
+function riadokDok(d,i,skryty){
+  const obs=d.zc||[], zip=(d.t||'')==='ZIP'&&obs.length;
+  return '<div class="r'+(zip?' jezip':'')+(skryty?' viac':'')+'" data-i="'+i+'"'+(zip?' data-zip=""':'')+'>'
+    +(d.n?'<img class="mini" src="'+esc(d.n)+'" alt="" loading="lazy">'
+         :'<span class="mini prazdna">'+esc((d.t||'?').slice(0,4))+'</span>')
+    +'<span class="nm">'+esc(d.p||'bez názvu')
+      +(d.s&&d.s!==d.p?'<em>'+esc(d.s)+(zip?' · '+obs.length+' súborov v archíve':'')+'</em>'
+        :(zip?'<em>'+obs.length+' súborov v archíve</em>':''))+'</span>'
+    +'<span class="vel">'+velB(d.v)+(d.dt?'<em>'+esc(d.dt)+'</em>':'')+'</span></div>'
+    +(zip?'<div class="zip-obsah" data-pre="'+i+'" hidden>'
+      +obs.map((x,j)=>'<div class="r" data-pre="'+i+'" data-j="'+j+'">'
+        +(x.n?'<img class="mini" src="'+esc(x.n)+'" alt="" loading="lazy">'
+             :'<span class="mini prazdna">'+esc((x.p||'').split('.').pop().slice(0,4).toUpperCase())+'</span>')
+        +'<span class="nm">'+esc(x.p)+'</span><span class="vel">'+velB(x.v)+'</span></div>').join('')
+      +'</div>':'');
 }
 function zavriDetail(){ $('#detail').className='detail'; }
 function naMape(id){
