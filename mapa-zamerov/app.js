@@ -14,22 +14,19 @@ const SIVA='#8A8A86';
 const G='https://geoportal.bratislava.sk/hSite/rest/services';
 const EXPORT=s=>G+'/'+s+'/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857'
   +'&imageSR=3857&size=512,512&format=png32&transparent=true&f=image';
-const PODKLAD=['v-zastavane','v-zelen','k-les','k-luka','k-trava','k-zelen','k-sad','k-vinica','k-pole','k-mociar',
-  'v-voda','v-tok','k-potok','v-budovy','v-cesty-lem','v-cesty-male','v-cesty-stredne',
-  'v-cesty-velke','v-zeleznica','v-elektricka','k-stromoradie'];
+const PODKLAD=['v-zastavane','v-zelen','v-zelen-vzor',
+  'v-voda','v-voda-okraj','v-tok','v-budovy-tien','v-budovy','v-cesty-lem','v-cesty-male','v-cesty-stredne',
+  'v-cesty-velke','v-zeleznica','v-elektricka'];
 /* Dve palety podkladu. Farebná je predvolená: zeleň zelená, voda modrá,
    zástavba teplá sivá — stále tlmené, aby body a bubliny ostali najtmavšie
    na mape. Tlmená je pôvodný „papier" v tónoch warm grey. */
 const PALETY={
-  farebna:{pozadie:'#EFEDE6',zastavane:'#E8E5DD',zelen:'#D2DFC4',voda:'#BDD3DF',tok:'#A9C4D3',budovy:'#DBD8CF',
+  farebna:{pozadie:'#EFEDE6',zastavane:'#E8E5DD',zelen:'#CFDFBD',voda:'#BDD3DF',tok:'#A9C4D3',budovy:'#DBD8CF',
     budovyObrys:'#CFCBC1',cesta:'#FFFFFF',lem:'#D9D5CB',zeleznica:'#A9A69E',elektricka:'#B9B6AE',halo:'rgba(255,255,255,.8)',
-    /* využitie krajiny zo ZBGIS */
-    les:'#C3D5AD',lesIhl:'#B4CAA0',luka:'#DFE9CB',trava:'#D8E4C3',zelenV:'#CFDEBC',sad:'#DAE3C1',vinica:'#E3E6BE',
-    pole:'#EEE8D8',mociar:'#CDDBD0',stromoradie:'#98B583',stromy:1},
+    stromy:1,tien:'rgba(120,112,96,.16)',vodaOkraj:'#A8C4D4',vzorZelen:.45},
   tlmena:{pozadie:'#EDEDEA',zastavane:'#E6E6E2',zelen:'#E1E4DD',voda:'#D2D6D4',tok:'#D2D6D4',budovy:'#DADAD6',
     budovyObrys:'#DADAD6',cesta:'#FFFFFF',lem:'#E0E0DC',zeleznica:'#B4B4B0',elektricka:'#BEBEBA',halo:'#EDEDEA',
-    les:'#DDE0D8',lesIhl:'#D7DAD2',luka:'#E6E7E1',trava:'#E3E5DE',zelenV:'#E1E3DC',sad:'#E4E5DE',vinica:'#E6E6DF',
-    pole:'#EAEAE5',mociar:'#DEE1DF',stromoradie:'#C4C7BE',stromy:.45},
+    stromy:.45,tien:'rgba(0,0,0,.05)',vodaOkraj:'#C9CDCB',vzorZelen:.14},
 };
 let paleta='farebna'; try{ if(localStorage.getItem('mib-podklad')==='tlmena') paleta='tlmena'; }catch(e){}
 const DOMOV={center:[17.13,48.15],zoom:10.7};
@@ -75,31 +72,31 @@ function pridajPodklad(){
      plochy a toky, budovy, cestná sieť (triedy _symbol 2–6 podľa rýchlosti)
      a železničná sieť (_symbol 0 vlak, 1 električka). Farby dáva paleta. */
   const P=PALETY[paleta], sirka=(a,b,c)=>['interpolate',['linear'],['zoom'],10,a,14,b,18,c];
-  /* Využitie krajiny a voda zo ZBGIS (Geoportál, vektorové dlaždice do
-     LOD 15, ďalej sa prezoomujú): lesy podľa druhu, lúky, sady, vinice,
-     orná pôda, močiare, potoky, stromoradia a jednotlivé stromy ako body.
-     Ikony stromov kreslí pridajIkony(). */
-  map.addSource('zbgis-vk',{type:'vector',maxzoom:15,
-    tiles:[G+'/Hosted/ZBGIS_Vyu%C5%BEitie_krajiny/VectorTileServer/tile/{z}/{y}/{x}.pbf']});
-  map.addSource('zbgis-voda',{type:'vector',maxzoom:15,
-    tiles:[G+'/Hosted/ZBGIS_Voda/VectorTileServer/tile/{z}/{y}/{x}.pbf']});
+  /* ZBGIS (Využitie krajiny, Voda) sme skúšali — lesy podľa druhu, lúky,
+     sady, vinice. Tie dlaždice ale na Geoportáli žiadajú prihlásenie
+     (vracajú stránku „Sign In"), takže vo verejnej mape sú nepoužiteľné.
+     Krajinu preto kreslíme z podkladovej mapy OSM. */
   pridajIkony();
   [{id:'v-zastavane',type:'fill',source:'osm','source-layer':'zastavané územie',paint:{'fill-color':P.zastavane}},
    {id:'v-zelen',type:'fill',source:'osm','source-layer':'zeleň',paint:{'fill-color':P.zelen}},
-   {id:'k-les',type:'fill',source:'zbgis-vk','source-layer':'Les',
-    paint:{'fill-color':['match',['get','_symbol'],2,P.lesIhl,P.les]}},
-   {id:'k-luka',type:'fill',source:'zbgis-vk','source-layer':'Lúka',paint:{'fill-color':P.luka}},
-   {id:'k-trava',type:'fill',source:'zbgis-vk','source-layer':'Trávnatý porast',paint:{'fill-color':P.trava}},
-   {id:'k-zelen',type:'fill',source:'zbgis-vk','source-layer':'Verejná - úžitková zeleň',paint:{'fill-color':P.zelenV}},
-   {id:'k-sad',type:'fill',source:'zbgis-vk','source-layer':'Ovocný sad, záhrada',paint:{'fill-color':P.sad}},
-   {id:'k-vinica',type:'fill',source:'zbgis-vk','source-layer':'Vinica',paint:{'fill-color':P.vinica}},
-   {id:'k-pole',type:'fill',source:'zbgis-vk','source-layer':'Orná pôda',paint:{'fill-color':P.pole}},
-   {id:'k-mociar',type:'fill',source:'zbgis-voda','source-layer':'Močiar',paint:{'fill-color':P.mociar}},
+   /* kreslená textúra korún v zeleni — tam, kde jednotlivé stromy ešte
+      nevidno; od zoomu 15 sa stráca, vystriedajú ju stromy z pasportu */
+   {id:'v-zelen-vzor',type:'fill',source:'osm','source-layer':'zeleň',maxzoom:16,
+    paint:{'fill-pattern':'vzor-les',
+      'fill-opacity':['interpolate',['linear'],['zoom'],10.5,0,12,P.vzorZelen,14.5,P.vzorZelen,15.8,0]}},
    {id:'v-voda',type:'fill',source:'osm','source-layer':'vodné plochy',paint:{'fill-color':P.voda}},
+   /* breh: tmavšia linka po obvode vody, aby plocha nebola plochá */
+   {id:'v-voda-okraj',type:'line',source:'osm','source-layer':'vodné plochy',
+    layout:{'line-join':'round'},
+    paint:{'line-color':P.vodaOkraj,'line-width':sirka(.6,1.4,3),'line-opacity':.9}},
    {id:'v-tok',type:'line',source:'osm','source-layer':'vodné toky',
+    layout:{'line-cap':'round','line-join':'round'},
     paint:{'line-color':P.tok,'line-width':sirka(.8,1.6,3)}},
-   {id:'k-potok',type:'line',source:'zbgis-voda','source-layer':'Potok (vodný tok)',minzoom:11,
-    paint:{'line-color':P.tok,'line-width':sirka(.4,.9,1.8)}},
+   /* mäkký tieň pod domami — rovnaký smer svetla ako pri korunách stromov */
+   {id:'v-budovy-tien',type:'fill',source:'osm','source-layer':'budovy',minzoom:13,
+    paint:{'fill-color':P.tien,
+      'fill-translate':['interpolate',['linear'],['zoom'],13,['literal',[1,1]],16,['literal',[2,2]],19,['literal',[6,6]]],
+      'fill-translate-anchor':'viewport'}},
    {id:'v-budovy',type:'fill',source:'osm','source-layer':'budovy',minzoom:13,
     paint:{'fill-color':P.budovy,'fill-outline-color':P.budovyObrys}},
    /* lem pod hlavnými cestami dáva mape hĺbku bez ďalšej farby */
@@ -122,8 +119,6 @@ function pridajPodklad(){
    {id:'v-elektricka',type:'line',source:'osm','source-layer':'železničná sieť',minzoom:12,
     filter:['==',['get','_symbol'],1],
     paint:{'line-color':P.elektricka,'line-width':sirka(.6,1,1.8)}},
-   {id:'k-stromoradie',type:'line',source:'zbgis-vk','source-layer':'Živý plot, stromoradie',minzoom:14,
-    paint:{'line-color':P.stromoradie,'line-width':sirka(.5,1.3,2.8),'line-opacity':.8}},
    {id:'orto',type:'raster',source:'orto',layout:{visibility:'none'}},
   ].forEach(v=>map.addLayer(v));
   map.setPaintProperty('pozadie','background-color',P.pozadie);
@@ -140,11 +135,15 @@ async function pridajStromy(){
   if(stromyStav||map.getZoom()<14) return;
   stromyStav='beziem';
   let d; try{ d=await (await fetch('stromy.json',{cache:'force-cache'})).json(); }catch(e){ stromyStav=''; return; }
+  /* ihličnany majú inú korunu — druh pozná pasport len pri 7 640 stromoch,
+     zvyšok kreslíme ako listnatý. „gaštan jedlý" nie je ihličnan. */
+  const IHLICNATE=/borovic|smrek|jedľa|jedla\b|tuja|cyprus|cypru[sš]tek|patis|\btis\b|tisovec|metasekvoj|sekvoj|borievk|cedr|douglas|jalovec/i;
+  const ihl=new Set((d.druhy||[]).map((n,i)=>IHLICNATE.test(n)?i:-1).filter(i=>i>=0));
   const s=d.s, prvky=new Array(s.length/4); let lon=0, lat=0;
   for(let i=0,j=0;i<s.length;i+=4,j++){
     lon+=s[i]; lat+=s[i+1];
     prvky[j]={type:'Feature',geometry:{type:'Point',coordinates:[lon/1e6,lat/1e6]},
-      properties:{h:s[i+2]/10,d:s[i+3],v:j%3}};
+      properties:{h:s[i+2]/10,d:s[i+3],v:j%3,i:ihl.has(s[i+3])?1:0}};
   }
   map.addSource('stromy',{type:'geojson',data:{type:'FeatureCollection',features:prvky},tolerance:.6});
   /* ikona má 64 px, koruna v nej ~30 px. Veľkosť podľa výšky stromu, mierne
@@ -152,7 +151,7 @@ async function pridajStromy(){
      `zoom` smie byť len na vrchu interpolácie — výška je vnútri stupňov. */
   const h=['coalesce',['get','h'],6];
   map.addLayer({id:'k-stromy',type:'symbol',source:'stromy',minzoom:14,
-    layout:{'icon-image':['concat','strom-',['to-string',['get','v']]],
+    layout:{'icon-image':['concat',['case',['==',['get','i'],1],'ihlicnan-','strom-'],['to-string',['get','v']]],
       'icon-allow-overlap':true,'icon-ignore-placement':true,'icon-padding':0,
       'icon-size':['interpolate',['exponential',2],['zoom'],
         14,['max',.07,['*',h,.0035]],16,['max',.17,['*',h,.014]],18,['max',.45,['*',h,.058]]],
@@ -204,10 +203,8 @@ function nastavPaletu(n){
   nastav('v-cesty-lem','line-color',P.lem);
   ['v-cesty-male','v-cesty-stredne','v-cesty-velke'].forEach(l=>nastav(l,'line-color',P.cesta));
   nastav('v-zeleznica','line-color',P.zeleznica); nastav('v-elektricka','line-color',P.elektricka);
-  nastav('k-les','fill-color',['match',['get','_symbol'],2,P.lesIhl,P.les]);
-  [['k-luka',P.luka],['k-trava',P.trava],['k-zelen',P.zelenV],['k-sad',P.sad],['k-vinica',P.vinica],['k-pole',P.pole],['k-mociar',P.mociar]]
-    .forEach(([l,c])=>nastav(l,'fill-color',c));
-  nastav('k-potok','line-color',P.tok); nastav('k-stromoradie','line-color',P.stromoradie);
+  nastav('v-budovy-tien','fill-color',P.tien); nastav('v-voda-okraj','line-color',P.vodaOkraj);
+  nastav('v-zelen-vzor','fill-opacity',['interpolate',['linear'],['zoom'],10.5,0,12,P.vzorZelen,14.5,P.vzorZelen,15.8,0]);
   nastav('k-strom-mesto','icon-opacity',P.stromy);
   nastav('k-stromy','icon-opacity',P.stromy);
   ['mc-txt','ulice-txt'].forEach(l=>nastav(l,'text-halo-color',P.halo));
@@ -1058,7 +1055,10 @@ async function spusti(){
     filter:['all',['!',['has','point_count']],['==',['get','nove'],1]],
     paint:{'circle-color':'#F3716D','circle-radius':['interpolate',['linear'],['zoom'],10,3,14,4,18,5.5],
       'circle-stroke-width':1.5,'circle-stroke-color':'#FFFFFF',
-      'circle-translate':['interpolate',['linear'],['zoom'],10,[4,-4],14,[6,-6],18,[9,-9]]}});
+      /* posun musí byť ['literal',[x,y]] — bez toho MapLibre vrstvu odmietne
+         a odznak sa nikdy nevykreslí */
+      'circle-translate':['interpolate',['linear'],['zoom'],
+        10,['literal',[4,-4]],14,['literal',[6,-6]],18,['literal',[9,-9]]]}});
   /* popisky ako biele pilulky s čiernym rámčekom — ikona sa natiahne na text */
   map.addLayer({id:'bod-txt',type:'symbol',source:'zamery',
     filter:['!',['has','point_count']],minzoom:14.5,
@@ -1209,6 +1209,51 @@ function pridajIkony(){
   [0,.7,1.4].forEach((a,i)=>{ if(!map.hasImage('strom-'+i)) map.addImage('strom-'+i, korunka(24,a,FS), {pixelRatio:px}); });
   if(!map.hasImage('strom-mlady')) map.addImage('strom-mlady',
     korunka(18,.35,{koruna:'#A6CE80',okraj:'#7FAA5E',svetlo:'rgba(225,242,200,.7)'}), {pixelRatio:px});
+  /* ihličnan zhora: hviezdica so zaoblenými vetvami, tmavšia zeleň */
+  const ihlicnan=(R,natocenie)=>platno(64,64,g=>{
+    const c=32, N=9;
+    const tvar=(dx,dy,k,farba)=>{ g.fillStyle=farba; g.beginPath();
+      for(let i=0;i<N*2;i++){ const a=natocenie+i*Math.PI/N, r=(i%2?.34:.78)*R*k;
+        const x=c+dx+r*Math.cos(a), y=dy+c+r*Math.sin(a);
+        i?g.lineTo(x,y):g.moveTo(x,y); }
+      g.closePath(); g.fill(); };
+    tvar(2.2,3.2,1,'rgba(45,65,35,.22)');
+    tvar(0,0,1,'#3F6B33');
+    tvar(0,0,.86,'#5E8C4A');
+    g.fillStyle='rgba(190,220,160,.5)'; g.beginPath(); g.arc(c-.12*R,c-.14*R,.2*R,0,Math.PI*2); g.fill();
+  });
+  [0,.24,.48].forEach((a,i)=>{ if(!map.hasImage('ihlicnan-'+i)) map.addImage('ihlicnan-'+i, ihlicnan(22,a), {pixelRatio:px}); });
+  /* dlaždica zelene: drobné korunky rôznej veľkosti, rozhádzané pseudo-náhodne
+     (pevné semienko, nech je kresba vždy rovnaká). Veľká dlaždica a rozdielne
+     polomery preto, aby opakovanie nevytváralo mriežku. Tvary pri okraji sa
+     zopakujú aj na druhej strane, aby dlaždica nadväzovala. */
+  if(!map.hasImage('vzor-les')) map.addImage('vzor-les', platno(128,128,g=>{
+    const S=128; let semienko=20260911;
+    const rnd=()=>{ semienko=(semienko*1103515245+12345)&0x7fffffff; return semienko/0x7fffffff; };
+    const bodky=[];
+    for(let i=0;i<400&&bodky.length<22;i++){
+      const r=3.4+rnd()*5.6, x=rnd()*S, y=rnd()*S;
+      /* krátka vzdialenosť aj cez okraj dlaždice — inak vznikne šev */
+      const blizko=bodky.some(([bx,by,br])=>{
+        const dx=Math.min(Math.abs(bx-x),S-Math.abs(bx-x)), dy=Math.min(Math.abs(by-y),S-Math.abs(by-y));
+        return Math.hypot(dx,dy)<(br+r)*1.25;
+      });
+      if(!blizko) bodky.push([x,y,r,rnd()]);
+    }
+    const blob=(x,y,r,farba)=>{ g.fillStyle=farba; g.beginPath();
+      for(let i=0;i<5;i++){ const a=i*2*Math.PI/5-Math.PI/2;
+        g.moveTo(x+.4*r*Math.cos(a)+r*.6,y+.4*r*Math.sin(a));
+        g.arc(x+.4*r*Math.cos(a),y+.4*r*Math.sin(a),r*.6,0,Math.PI*2); }
+      g.moveTo(x+r*.68,y); g.arc(x,y,r*.68,0,Math.PI*2); g.fill(); };
+    bodky.forEach(([x,y,r,t])=>{
+      const zelen=t<.33?'rgba(112,148,84,.50)':t<.66?'rgba(96,132,72,.44)':'rgba(126,160,96,.46)';
+      for(const dx of [-S,0,S]) for(const dy of [-S,0,S]){
+        if(x+dx<-r*2||x+dx>S+r*2||y+dy<-r*2||y+dy>S+r*2) continue;
+        blob(x+dx+1.1,y+dy+1.5,r,'rgba(72,96,52,.16)');
+        blob(x+dx,y+dy,r,zelen);
+      }
+    });
+  }), {pixelRatio:px});
   /* čiarkovaný kruh pre „bez známej polohy“ — kreslí sa v 48 px, mierka podľa počtu */
   if(!map.hasImage('kruh-ciarkovany')) map.addImage('kruh-ciarkovany', platno(48,48,g=>{
     g.fillStyle='rgba(255,255,255,.55)'; g.strokeStyle='#8A8A86'; g.lineWidth=1.5; g.setLineDash([3,3]);
