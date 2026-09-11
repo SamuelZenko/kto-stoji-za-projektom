@@ -106,14 +106,15 @@ function pridajPodklad(){
    {id:'v-cesty-lem',type:'line',source:'osm','source-layer':'cestná sieť',minzoom:12,
     filter:['in',['get','_symbol'],['literal',[5,6]]],
     paint:{'line-color':P.lem,'line-width':sirka(2.4,5,15)}},
+   /* oblé konce a spoje — mäkšia, priateľskejšia kresba ciest */
    {id:'v-cesty-male',type:'line',source:'osm','source-layer':'cestná sieť',
-    filter:['in',['get','_symbol'],['literal',[2,3]]],
+    filter:['in',['get','_symbol'],['literal',[2,3]]],layout:{'line-cap':'round','line-join':'round'},
     paint:{'line-color':P.cesta,'line-width':sirka(.3,1.2,5)}},
    {id:'v-cesty-stredne',type:'line',source:'osm','source-layer':'cestná sieť',
-    filter:['==',['get','_symbol'],4],
+    filter:['==',['get','_symbol'],4],layout:{'line-cap':'round','line-join':'round'},
     paint:{'line-color':P.cesta,'line-width':sirka(.8,2.2,8)}},
    {id:'v-cesty-velke',type:'line',source:'osm','source-layer':'cestná sieť',
-    filter:['in',['get','_symbol'],['literal',[5,6]]],
+    filter:['in',['get','_symbol'],['literal',[5,6]]],layout:{'line-cap':'round','line-join':'round'},
     paint:{'line-color':P.cesta,'line-width':sirka(1.5,3.6,12)}},
    {id:'v-zeleznica',type:'line',source:'osm','source-layer':'železničná sieť',
     filter:['==',['get','_symbol'],0],
@@ -143,20 +144,20 @@ async function pridajStromy(){
   for(let i=0,j=0;i<s.length;i+=4,j++){
     lon+=s[i]; lat+=s[i+1];
     prvky[j]={type:'Feature',geometry:{type:'Point',coordinates:[lon/1e6,lat/1e6]},
-      properties:{h:s[i+2]/10,d:s[i+3]}};
+      properties:{h:s[i+2]/10,d:s[i+3],v:j%3}};
   }
   map.addSource('stromy',{type:'geojson',data:{type:'FeatureCollection',features:prvky},tolerance:.6});
-  /* koruna ≈ 0,3 × výška; pri z18 je 1 m ≈ 2,5 px, pri z14 0,16 px — preto exponent 2 */
-  map.addLayer({id:'k-stromy',type:'circle',source:'stromy',minzoom:14,
-    layout:{visibility:$('#v-stromy')&&!$('#v-stromy').checked?'none':'visible'},
-    paint:{'circle-color':'#8DB077','circle-opacity':['*',.85,PALETY[paleta].stromy],
-      'circle-stroke-color':'#5E8249','circle-stroke-width':['interpolate',['linear'],['zoom'],14,0,16,.5,18,.9],
-      'circle-stroke-opacity':['*',.9,PALETY[paleta].stromy],
-      /* `zoom` smie byť len na vrchu interpolácie — preto je výška vnútri každého stupňa */
-      'circle-radius':['interpolate',['exponential',2],['zoom'],
-        14,['max',1,['*',['coalesce',['get','h'],6],.045]],
-        16,['max',1.6,['*',['coalesce',['get','h'],6],.19]],
-        18,['max',2.4,['*',['coalesce',['get','h'],6],.75]]]}},
+  /* ikona má 64 px, koruna v nej ~30 px. Veľkosť podľa výšky stromu, mierne
+     zveličená, nech je mapa ilustrácia: pri z18 má 10 m strom ~28 px.
+     `zoom` smie byť len na vrchu interpolácie — výška je vnútri stupňov. */
+  const h=['coalesce',['get','h'],6];
+  map.addLayer({id:'k-stromy',type:'symbol',source:'stromy',minzoom:14,
+    layout:{'icon-image':['concat','strom-',['to-string',['get','v']]],
+      'icon-allow-overlap':true,'icon-ignore-placement':true,'icon-padding':0,
+      'icon-size':['interpolate',['exponential',2],['zoom'],
+        14,['max',.07,['*',h,.0035]],16,['max',.17,['*',h,.014]],18,['max',.45,['*',h,.058]]],
+      visibility:$('#v-stromy')&&!$('#v-stromy').checked?'none':'visible'},
+    paint:{'icon-opacity':PALETY[paleta].stromy}},
     map.getLayer('k-strom-mesto')?'k-strom-mesto':(map.getLayer('zh')?'zh':undefined));
   stromyStav='hotovo';
   const st=$('#stav-stromy'); if(st) st.textContent='('+cis(d.pocet)+')';
@@ -176,8 +177,8 @@ async function pridajStromyMesta(){
     features:d.s.map(s=>({type:'Feature',geometry:{type:'Point',coordinates:[s[0],s[1]]},
       properties:{d:s[2],r:s[3],p:s[4]}}))}});
   map.addLayer({id:'k-strom-mesto',type:'symbol',source:'stromy-mesta',minzoom:14,
-    layout:{'icon-image':'strom-mlady','icon-allow-overlap':true,
-      'icon-size':['interpolate',['linear'],['zoom'],14,.35,17,.7,19,1.1],
+    layout:{'icon-image':'strom-mlady','icon-allow-overlap':true,'icon-ignore-placement':true,'icon-padding':0,
+      'icon-size':['interpolate',['exponential',2],['zoom'],14,.12,16,.26,18,.65],
       visibility:$('#v-stromy')&&!$('#v-stromy').checked?'none':'visible'},
     paint:{'icon-opacity':PALETY[paleta].stromy}}, map.getLayer('zh')?'zh':undefined);
   /* počet v ponuke patrí pasportu (282 tisíc), mladé stromy sú jeho podmnožina */
@@ -208,7 +209,7 @@ function nastavPaletu(n){
     .forEach(([l,c])=>nastav(l,'fill-color',c));
   nastav('k-potok','line-color',P.tok); nastav('k-stromoradie','line-color',P.stromoradie);
   nastav('k-strom-mesto','icon-opacity',P.stromy);
-  nastav('k-stromy','circle-opacity',['*',.85,P.stromy]); nastav('k-stromy','circle-stroke-opacity',['*',.9,P.stromy]);
+  nastav('k-stromy','icon-opacity',P.stromy);
   ['mc-txt','ulice-txt'].forEach(l=>nastav(l,'text-halo-color',P.halo));
 }
 map.addControl(new maplibregl.ScaleControl({maxWidth:110}),'bottom-right');
@@ -1189,13 +1190,25 @@ function pridajIkony(){
     g.beginPath(); g.rect(3,3,18,18); g.fill(); g.stroke(); });
   if(!map.hasImage('stvorec-cerveny')) map.addImage('stvorec-cerveny', stvorec('#F3716D'), {pixelRatio:px});
   if(!map.hasImage('stvorec-cierny')) map.addImage('stvorec-cierny', stvorec('#000000'), {pixelRatio:px});
-  /* mladý strom vysadený mestom: svetlá koruna s bielym lemom, nech sa
-     dá odlíšiť od korún z pasportu */
-  const koruna=(kresli)=>platno(24,24,g=>{ g.lineWidth=1.2; kresli(g); });
-  if(!map.hasImage('strom-mlady')) map.addImage('strom-mlady', koruna(g=>{
-    g.fillStyle='#FFFFFF'; g.beginPath(); g.arc(12,12,8.5,0,Math.PI*2); g.fill();
-    g.fillStyle='#9CC47A'; g.strokeStyle='#557A40';
-    g.beginPath(); g.arc(12,12,6,0,Math.PI*2); g.fill(); g.stroke(); }), {pixelRatio:px});
+  /* Kreslené koruny stromov zhora: päť lalokov okolo stredu, mäkký tieň
+     vpravo dole, svetlo vľavo hore — ilustrácia, nie technický kruh.
+     Tri natočenia, aby les nevyzeral ako pečiatka; mladý strom mesta je
+     menší a svetlejší. */
+  const korunka=(R,natocenie,f)=>platno(64,64,g=>{
+    const c=32, body=[[0,-1],[.95,-.31],[.59,.81],[-.59,.81],[-.95,-.31]].map(([x,y])=>{
+      const a=natocenie; return [c+.42*R*(x*Math.cos(a)-y*Math.sin(a)), c+.42*R*(x*Math.sin(a)+y*Math.cos(a))]; });
+    const tvar=(dx,dy,r,farba)=>{ g.fillStyle=farba; g.beginPath();
+      body.forEach(([x,y])=>{ g.moveTo(x+dx+r,y+dy); g.arc(x+dx,y+dy,r,0,Math.PI*2); });
+      g.moveTo(c+dx+.72*R,c+dy); g.arc(c+dx,c+dy,.72*R,0,Math.PI*2); g.fill(); };
+    tvar(2.5,3.5,.62*R,'rgba(55,75,40,.22)');
+    tvar(0,0,.62*R,f.okraj);
+    tvar(0,0,.54*R,f.koruna);
+    tvar(-.1*R,-.12*R,.3*R,f.svetlo);
+  });
+  const FS={koruna:'#7AA65E',okraj:'#5A8A44',svetlo:'rgba(196,224,160,.6)'};
+  [0,.7,1.4].forEach((a,i)=>{ if(!map.hasImage('strom-'+i)) map.addImage('strom-'+i, korunka(24,a,FS), {pixelRatio:px}); });
+  if(!map.hasImage('strom-mlady')) map.addImage('strom-mlady',
+    korunka(18,.35,{koruna:'#A6CE80',okraj:'#7FAA5E',svetlo:'rgba(225,242,200,.7)'}), {pixelRatio:px});
   /* čiarkovaný kruh pre „bez známej polohy“ — kreslí sa v 48 px, mierka podľa počtu */
   if(!map.hasImage('kruh-ciarkovany')) map.addImage('kruh-ciarkovany', platno(48,48,g=>{
     g.fillStyle='rgba(255,255,255,.55)'; g.strokeStyle='#8A8A86'; g.lineWidth=1.5; g.setLineDash([3,3]);
