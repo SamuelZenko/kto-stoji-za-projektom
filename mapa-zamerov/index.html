@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 <link rel="stylesheet" href="../spolocne/tuba.css?v=20260911a">
 <!-- ?v= sa mení pri každej zmene, inak prehliadač podá starú verziu -->
-<link rel="stylesheet" href="ui.css?v=20260911a">
+<link rel="stylesheet" href="ui.css?v=20260911b">
 </head>
 <body>
 
@@ -39,8 +39,10 @@
    <div class="ovl-vnutro">
     <div class="hladanie">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input type="search" id="q" placeholder="Hľadať názov, firmu, lokalitu…">
+      <input type="search" id="q" placeholder="Hľadať… napr. byty v Petržalke povolené od 2024">
     </div>
+    <!-- čo z otázky mapa pochopila ako filter -->
+    <div class="rozumiem" id="rozumiem" hidden></div>
 
     <div class="cisla">
       <div class="velke"><span id="c-spolu">—</span></div>
@@ -48,6 +50,9 @@
       <div class="r"><b id="c-poloha">—</b> s presnou polohou</div>
       <div class="r"><b id="c-obrazky">—</b> s obrázkami</div>
     </div>
+    <div class="postup" id="postup"></div>
+
+    <div class="sk novinky" id="novinky"></div>
 
     <div id="blok-aktivne" hidden>
       <div class="hl-filtre">
@@ -129,6 +134,11 @@
       <label><input type="radio" name="farby" value="typ"> Účelu stavby</label>
     </div>
     <div>
+      <h4>ZOBRAZIŤ AKO</h4>
+      <label><input type="radio" name="zobraz" value="body" checked> Body a zhluky</label>
+      <label><input type="radio" name="zobraz" value="teplo"> Teplotnú mapu hustoty</label>
+    </div>
+    <div>
       <h4>STAVBY</h4>
       <label><input type="checkbox" id="v-liniove"> Doprava a infraštruktúra <span id="stav-lin" style="color:var(--tx3)"></span></label>
       <label><input type="checkbox" id="v-osm"> Staveniská z OpenStreetMap <span id="stav-osm" style="color:var(--tx3)"></span></label>
@@ -207,7 +217,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260911c"></script>
+<script src="app.js?v=20260911d"></script>
 <script>
 /* Panel (hľadanie, filtre, kategórie) je prilepený na ľavý okraj a zbaľuje sa
    úchytkou na svojej hrane; von ostane len tá úchytka. Stav si prehliadač pamätá.

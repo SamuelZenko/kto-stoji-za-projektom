@@ -97,6 +97,44 @@ body.tiaham{cursor:col-resize;user-select:none}
 .cisla .r{display:flex;gap:8px;font-size:14px;color:var(--tx2);align-items:baseline}
 .cisla .r b{font-weight:600;color:var(--tx);font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
 
+/* postup dopĺňania: tenký pás, čierna výplň na sivej dráhe */
+.postup .hl{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.postup .hl b{font-weight:600;font-variant-numeric:tabular-nums;font-size:14px}
+.postup .pas{height:6px;background:var(--plocha);border:1px solid var(--ciara2);margin:7px 0 6px}
+.postup .pas i{display:block;height:100%;background:var(--cierna);transition:width .5s}
+.postup p{margin:0;font-size:12px;color:var(--tx3);line-height:1.4}
+.postup a{color:var(--tx);font-weight:600;text-decoration:underline;text-underline-offset:.16em}
+/* čo je nové: tri riadky s počtom, tlačidlo prepne mapu len na novinky */
+.novinky h4 span{font-weight:400;letter-spacing:0;text-transform:none;color:var(--tx3);margin-left:6px}
+.nov{display:flex;flex-direction:column}
+.nov .r{display:flex;align-items:baseline;gap:9px;padding:7px 0;font-size:14px;color:var(--tx2);background:transparent;
+  border:0;border-bottom:1px solid var(--ciara2);cursor:pointer;text-align:left;width:100%;font-family:inherit}
+.nov .r:last-child{border-bottom:0}
+.nov .r:hover{color:var(--tx)}
+.nov .r:disabled{cursor:default;color:var(--tx3)}
+.nov .r b{font-weight:600;color:var(--tx);font-variant-numeric:tabular-nums;min-width:26px;text-align:right}
+.nov .r b::after{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cervena);margin-left:6px;vertical-align:1px}
+.nov .r:disabled b{color:var(--tx3)} .nov .r:disabled b::after{background:var(--ciara2)}
+.nov-mapa{margin-top:8px;background:var(--biela);border:1px solid var(--ciara2);color:var(--tx);padding:8px 12px;
+  font-size:12.5px;cursor:pointer;font-family:inherit;text-align:left}
+.nov-mapa:hover{border-color:var(--ciara)}
+.nov-mapa[aria-pressed="true"]{background:var(--cierna);border-color:var(--cierna);color:#fff}
+/* čo mapa pochopila z otázky */
+.rozumiem{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:-6px;font-size:12px;color:var(--tx3)}
+.rozumiem i{font-style:normal;background:var(--cierna);color:#fff;padding:2px 7px;font-size:11px;letter-spacing:.04em}
+.rozumiem i.txt{background:var(--plocha);color:var(--tx)}
+.rozumiem button{background:transparent;border:0;color:var(--tx3);font-size:11.5px;cursor:pointer;text-decoration:underline;
+  text-underline-offset:.16em;padding:0;margin-left:auto;font-family:inherit}
+.rozumiem button:hover{color:var(--tx)}
+/* zhluk ako HTML značka: bublina s prstencom fáz */
+.donut{cursor:pointer;line-height:0}
+.donut svg{display:block;overflow:visible}
+.donut text{font-family:var(--pismo);fill:#fff;font-weight:500}
+.donut:hover svg>circle:last-of-type{fill:#F3716D}
+/* legenda teplotnej mapy */
+.legenda .teplo-pas{width:110px;height:10px;border:1px solid var(--ciara2);
+  background:linear-gradient(90deg,rgba(251,213,211,.5),#F3B0AE 35%,#F3716D 65%,#000)}
+.legenda .teplo-tx{color:var(--tx3);font-size:12px}
 .deliac{height:var(--linka-hruba);background:var(--ciara)}
 .kat{display:flex;flex-direction:column}
 .kat .r{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:15px;color:var(--tx2);cursor:pointer;

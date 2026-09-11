@@ -3,7 +3,7 @@
 const $=s=>document.querySelector(s);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cis=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
-const sklon=n=>n===1?'zámer':(n<5?'zámery':'zámerov');
+const sklon=n=>n===1?'zámer':(n>=2&&n<5?'zámery':'zámerov');
 /* Fázy podľa dizajn systému TU—BA: význam nesie výplň, nie dúha —
    zámer červená (akcent), posúdené čierna, povolené biela s obrysom,
    dokončené warm grey. Obrys je vždy čierny. */
@@ -20,7 +20,13 @@ const DOMOV={center:[17.13,48.15],zoom:10.7};
 let farbitPodla='faza';
 
 let Z=null, TYPY=[], TAZISKA={}, KONFIG={}, vsetkyTypy=false;
-let filtr={q:'',mc:'',sk:'',pl:'',typ:new Set(),faza:new Set()};
+let filtr={q:'',mc:'',sk:'',pl:'',typ:new Set(),faza:new Set(),nove:false};
+/* filtre vyčítané z hľadania v prirodzenom jazyku („byty v Petržalke
+   povolené od 2024") — držia sa zvlášť, aby neprepisovali ručné voľby */
+const prazdneNl=()=>({typ:new Set(),faza:new Set(),mc:'',pl:'',od:''});
+let nl=prazdneNl(), doslovne=false;
+/* 'body' alebo 'teplo' — body so zhlukmi, alebo teplotná mapa hustoty */
+let zobrazenie='body';
 /* Doprava a technická infraštruktúra sú líniové stavby — bod pre diaľnicu
    zavádza. V dátach majú príznak `lin` a do mapy idú len na vyžiadanie. */
 let ukazLiniove=false;
@@ -79,13 +85,22 @@ function vyhovuje(p,bez){
   if(filtr.pl==='1' && !(p.plany&&p.plany.length)) return false;
   if(filtr.pl==='2' && !((p.nahlady&&p.nahlady.length)||(p.obrazky&&p.obrazky.length))) return false;
   if(filtr.pl==='3' && p.presnost!=='presná') return false;
+  if(filtr.nove && !p.nove) return false;
+  /* z hľadania vyčítané podmienky platia vždy — sú súčasťou otázky */
+  if(nl.typ.size && !nl.typ.has(p.typ||'Iné')) return false;
+  if(nl.faza.size && !nl.faza.has(p.faza)) return false;
+  if(nl.mc && p.obec!==nl.mc) return false;
+  if(nl.pl==='1' && !(p.plany&&p.plany.length)) return false;
+  if(nl.pl==='2' && !((p.nahlady&&p.nahlady.length)||(p.obrazky&&p.obrazky.length))) return false;
+  if(nl.pl==='3' && p.presnost!=='presná') return false;
+  if(nl.od && !((p.zmena||'')>=nl.od)) return false;
   if(filtr.q){
     const h=(p.nazov+' '+(p.nazov_obch||'')+' '+p.firma+' '+p.ico+' '+(p.skupina||'')+' '+p.obec).toLowerCase();
     if(!h.includes(filtr.q)) return false;
   }
   return true;
 }
-const pocetFiltrov=()=>filtr.typ.size+filtr.faza.size+(filtr.mc?1:0)+(filtr.sk?1:0)+(filtr.pl?1:0);
+const pocetFiltrov=()=>filtr.typ.size+filtr.faza.size+(filtr.mc?1:0)+(filtr.sk?1:0)+(filtr.pl?1:0)+(filtr.nove?1:0);
 const pole=(p,k)=>{const v=p[k]; return typeof v==='string'?JSON.parse(v):v;};
 
 function obnov(){
@@ -102,12 +117,14 @@ function obnov(){
     else (hromada[p.obec]=hromada[p.obec]||[]).push(p);
   });
   map.getSource('zamery').setData({type:'FeatureCollection',features:presne});
+  zahodDonuty();          // supercluster po setData prečísluje zhluky
+  if(map.getSource('zamery-h')) map.getSource('zamery-h').setData({type:'FeatureCollection',features:presne});
   map.getSource('nezname').setData({type:'FeatureCollection',
     features:Object.keys(hromada).filter(o=>TAZISKA[o]).map(o=>({type:'Feature',
       geometry:{type:'Point',coordinates:TAZISKA[o]},
       properties:{obec:o,pocet:hromada[o].length}}))});
 
-  $('#c-spolu').innerHTML=cis(n)+' <span>'+(n===1?'zámer':(n<5?'zámery':'zámerov'))+'</span>';
+  $('#c-spolu').innerHTML=cis(n)+' <span>'+sklon(n)+'</span>';
   $('#c-vykresy').textContent=cis(npl);
   $('#c-poloha').textContent=cis(presne.length);
   $('#c-obrazky').textContent=cis(nob);
@@ -115,12 +132,17 @@ function obnov(){
   const pf=pocetFiltrov();
   $('#pocet-filtrov').hidden=!pf; $('#pocet-filtrov').textContent=pf;
   kresliLegendu(pocFaz, Object.values(hromada).reduce((a,b)=>a+b.length,0));
-  kresliAktivne(); kresliKategorie(); kresliSuplik();
+  kresliAktivne(); kresliKategorie(); kresliSuplik(); kresliNovinky();
 }
 
 /* Legenda ukazuje presne tú vlastnosť, podľa ktorej sú body zafarbené —
    inak by farby v paneli tvrdili niečo iné než farby na mape. */
 function kresliLegendu(poc,bez){
+  if(zobrazenie==='teplo'){
+    $('#legenda').innerHTML='<div class="r" style="cursor:default"><span class="teplo-pas"></span>'
+      +'<span class="teplo-tx">menej</span><span class="teplo-tx">viac zámerov na km²</span></div>';
+    return;
+  }
   const podla = farbitPodla==='typ'
     ? TYPY.slice(0,6).map(t=>[t,BARVA_TYPU[t]||SIVA,'typ'])
     : FAZY.map(([f,c])=>[f,c,'faza']);
@@ -149,6 +171,7 @@ function kresliAktivne(){
   if(filtr.mc) k.push(['mc',filtr.mc]);
   if(filtr.sk) k.push(['sk',filtr.sk]);
   if(filtr.pl) k.push(['pl',{'1':'S výkresmi','2':'S obrázkami','3':'S presnou polohou'}[filtr.pl]]);
+  if(filtr.nove) k.push(['nove','Len novinky']);
   $('#blok-aktivne').hidden=!k.length;
   $('#aktivne').innerHTML=k.map(([d,v])=>
     '<span class="chip">'+esc(v)+'<b data-d="'+d+'" data-v="'+esc(v)+'">×</b></span>').join('');
@@ -639,7 +662,8 @@ const DATA=Promise.all([
   ber('nazvy-obchodne.json',{}),
   ber('osm-staveniska.geojson',null),
   ber('tabule-stavby.geojson',null),
-  ber('redakcia.json',null)]);
+  ber('redakcia.json',null),
+  ber('stav.json',{})]);
 
 /* ---------- redakčná vrstva ----------
    Ručné doplnenia z aplikácie /redakcia/ (poloha, obrázky, obchodný názov,
@@ -674,10 +698,10 @@ function zlucRedakciu(z,red){
 let spustene=false;
 async function spusti(){
   if(spustene) return; spustene=true;
-  let mc,z,ul,naz,osm,tab,red;
+  let mc,z,ul,naz,osm,tab,red,stav;
   try{ pridajPodklad(); }
   catch(e){ console.warn('podklad sa nepridal:',e.message); }
-  try{ [KONFIG,mc,z,ul,naz,osm,tab,red]=await DATA; }
+  try{ [KONFIG,mc,z,ul,naz,osm,tab,red,stav]=await DATA; }
   catch(e){ $('#c-spolu').textContent='Dáta sa nenačítali'; spustene=false; return; }
   Z=z;
   /* komerčné názvy sú ručný zoznam — register ich nepozná a ochranné
@@ -687,6 +711,7 @@ async function spusti(){
     else if(n.nazov){ f.properties.nazov_obch=n.nazov; f.properties.nazov_zdroj=(n.zdroj||'')+(n.istota?' · istota '+n.istota:''); } });
   /* redakcia prepíše názov aj polohu — je to ručne overený údaj */
   zlucRedakciu(z,red);
+  oznacNovinky(z,tab,stav);
   mc.features.forEach(f=>{
     const a=f.properties||{}, nz=a.NAZOV_ZUJ||a.MC_LABEL||''; if(!nz||!f.geometry) return;
     const g=f.geometry;
@@ -728,18 +753,28 @@ async function spusti(){
      samostatnými bodmi — vyzeralo to náhodne, lebo o zlúčení rozhodovali
      pixle, nie hustota. Veľkosť bubliny rastie s počtom po krokoch,
      dvojica je sotva väčšia než bod. */
+  /* zhluk si nesie počty fáz — z nich je prstenec okolo bubliny */
+  const sucet=f=>['+',['case',['==',['get','faza'],f],1,0]];
   map.addSource('zamery',{type:'geojson',data:{type:'FeatureCollection',features:[]},
-    cluster:true, clusterRadius:48, clusterMaxZoom:13});
-  /* Zhluk = čierna bublina s číslom — motív bubliny na linke z logotypu.
-     Farba je vyhradená pre význam (fáza / účel), zhluk ho mieša, tak je čierny. */
+    cluster:true, clusterRadius:48, clusterMaxZoom:13,
+    clusterProperties:{f1:sucet('zámer'),f2:sucet('posúdené'),f3:sucet('povolené'),f4:sucet('dokončené')}});
+  /* Zhluk = čierna bublina s číslom — motív bubliny na linke z logotypu —
+     a okolo nej tenký prstenec s pomerom fáz, nech je pomer zámerov
+     a povolených vidno bez rozkliknutia. Prstenec sa nedá nakresliť
+     štýlom, preto sú zhluky HTML značky (kresliDonuty). Vrstva 'zh' ostáva
+     skrytá ako kotva poradia pre plošné vrstvy a pre expanziu po kliku. */
   map.addLayer({id:'zh',type:'circle',source:'zamery',filter:['has','point_count'],
-    paint:{'circle-color':'#000000',
-      'circle-radius':['step',['get','point_count'],10,5,13,10,16,20,20,50,25],
-      'circle-stroke-width':2,'circle-stroke-color':'#FFFFFF'}});
-  map.addLayer({id:'zh-txt',type:'symbol',source:'zamery',filter:['has','point_count'],
-    layout:{'text-field':['get','point_count_abbreviated'],
-      'text-size':['step',['get','point_count'],10.5,10,12,50,13.5],
-      'text-font':['Noto Sans Regular'],'text-allow-overlap':true},paint:{'text-color':'#fff'}});
+    layout:{visibility:'none'},paint:{'circle-color':'#000000','circle-radius':10}});
+  /* teplotná mapa potrebuje surové body, nie zhluky — vlastný zdroj s tými
+     istými dátami; prepína sa v ponuke Vrstvy */
+  map.addSource('zamery-h',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
+  map.addLayer({id:'teplo',type:'heatmap',source:'zamery-h',layout:{visibility:'none'},
+    paint:{'heatmap-weight':1,
+      'heatmap-intensity':['interpolate',['linear'],['zoom'],9,.7,13,1.6,16,3],
+      'heatmap-radius':['interpolate',['linear'],['zoom'],9,16,12,30,15,55],
+      'heatmap-opacity':.85,
+      'heatmap-color':['interpolate',['linear'],['heatmap-density'],
+        0,'rgba(243,113,109,0)',.12,'rgba(251,213,211,.55)',.35,'#F3B0AE',.65,'#F3716D',1,'#000000']}});
   map.addLayer({id:'bod',type:'circle',source:'zamery',filter:['!',['has','point_count']],
     paint:{'circle-color':['match',['get','faza'],'zámer','#F3716D','posúdené','#000000',
         'povolené','#FFFFFF','dokončené','#B4B4B0',SIVA],
@@ -747,6 +782,13 @@ async function spusti(){
       /* líniové stavby majú hrubý sivý prstenec, nech sa dajú od budov rozoznať */
       'circle-stroke-width':['case',['==',['get','lin'],1],3.5,1.5],
       'circle-stroke-color':['case',['==',['get','lin'],1],SIVA,'#000000']}});
+  /* odznak novinky: malá červená bodka vpravo hore pri bode (posun platí
+     pre celú vrstvu, preto je to samostatná vrstva len pre nové) */
+  map.addLayer({id:'bod-nove',type:'circle',source:'zamery',
+    filter:['all',['!',['has','point_count']],['==',['get','nove'],1]],
+    paint:{'circle-color':'#F3716D','circle-radius':['interpolate',['linear'],['zoom'],10,3,14,4,18,5.5],
+      'circle-stroke-width':1.5,'circle-stroke-color':'#FFFFFF',
+      'circle-translate':['interpolate',['linear'],['zoom'],10,[4,-4],14,[6,-6],18,[9,-9]]}});
   /* popisky ako biele pilulky s čiernym rámčekom — ikona sa natiahne na text */
   map.addLayer({id:'bod-txt',type:'symbol',source:'zamery',
     filter:['!',['has','point_count']],minzoom:14.5,
@@ -841,7 +883,8 @@ async function spusti(){
   $('#stav-lin').textContent='('+cis(nl)+')';
   prefarbi();
 
-  obnov(); kresliMoje(); nacitajKomunitu();
+  obnov(); kresliMoje(); nacitajKomunitu(); kresliPostup();
+  map.on('render',()=>{ if(map.getSource('zamery')&&map.isSourceLoaded('zamery')) kresliDonuty(); });
 
   /* ?id=… otvorí kartu zámeru — odkazy z redakcie a zo zoznamov */
   const chceneId=new URLSearchParams(location.search).get('id');
@@ -855,9 +898,6 @@ async function spusti(){
   }
 
   map.on('click',e=>{ if(pridavam) formularBodu(e.lngLat); });
-  map.on('click','zh',e=>{ if(pridavam) return;
-    map.getSource('zamery').getClusterExpansionZoom(e.features[0].properties.cluster_id)
-      .then(zz=>map.easeTo({center:e.features[0].geometry.coordinates,zoom:zz+.4}));});
   map.on('click','bod',e=>{ if(!pridavam) ukaz(e.features[0].properties); });
   map.on('click','nez',e=>{ if(!pridavam) ukazNezname(e.features[0].properties.obec); });
   ['zh','bod','nez','kom','moj'].forEach(l=>{
@@ -921,11 +961,226 @@ function ukazNezname(obec){
     const f=Z.features.find(x=>x.properties.id===el.dataset.id); if(f) ukaz(f.properties);});
 }
 
-/* ---------- ovládanie ---------- */
-$('#q').addEventListener('input',()=>{filtr.q=$('#q').value.trim().toLowerCase(); obnov();
-  /* hľadanie platí aj pre staveniská z OSM */
+/* ---------- čo je nové ----------
+   Okno je 30 dní dozadu od dátumu posledného behu (stav.json), nie od
+   dneška — nech sa zoznam nemení medzi behmi. Zámer je nový, keď sa mu
+   v okne zmenil záznam v registri (`zmena`) alebo ho doplnila redakcia
+   (`red_kedy`). Vyhlášky mimo EIA majú vlastný dátum z tabule. Fázy
+   doložené vyhláškou dátum nemajú — tie sa tu neuvádzajú. */
+const NOVE_DNI=30;
+let NOVINKY={od:'',do:'',register:[],redakcia:[],mimo:[]}, TAB=null;
+function oznacNovinky(z,tab,stav){
+  TAB=tab||null;
+  const doS=(stav&&stav.beh?stav.beh:new Date().toISOString()).slice(0,10);
+  const od=new Date(doS+'T00:00:00Z'); od.setUTCDate(od.getUTCDate()-NOVE_DNI);
+  const odS=od.toISOString().slice(0,10);
+  NOVINKY={od:odS,do:doS,register:[],redakcia:[],mimo:[]};
+  z.features.forEach(f=>{
+    const p=f.properties, co=[];
+    if((p.red_kedy||'').slice(0,10)>=odS){ co.push('redakcia'); NOVINKY.redakcia.push(p); }
+    if(p.zdroj!=='redakcia' && (p.zmena||'').slice(0,10)>=odS){ co.push('register'); NOVINKY.register.push(p); }
+    if(co.length){ p.nove=1; p.nove_co=co.join(','); }
+  });
+  if(tab&&tab.features)
+    NOVINKY.mimo=tab.features.filter(f=>(f.properties.datum||'')>=odS).map(f=>f.properties);
+}
+const datumSk=d=>d?d.slice(8,10).replace(/^0/,'')+'. '+d.slice(5,7).replace(/^0/,'')+'.':'';
+function kresliNovinky(){
+  const el=$('#novinky'); if(!el) return;
+  const reg=NOVINKY.register.filter(p=>vyhovuje(p)), red=NOVINKY.redakcia.filter(p=>vyhovuje(p));
+  const r=(k,n,t)=>'<button class="r" data-n="'+k+'" '+(n?'':'disabled')+'><b>'+cis(n)+'</b>'+t+'</button>';
+  el.innerHTML='<h4>ČO JE NOVÉ <span>od '+datumSk(NOVINKY.od)+' do '+datumSk(NOVINKY.do)+'</span></h4>'
+    +'<div class="nov">'
+    +r('register',reg.length,reg.length===1?'zmena v registri EIA':'zmeny v registri EIA')
+    +r('redakcia',red.length,'doplnila redakcia')
+    +r('mimo',NOVINKY.mimo.length,NOVINKY.mimo.length===1?'vyhláška úradu mimo EIA':'vyhlášky úradov mimo EIA')
+    +'</div>'
+    +'<button class="nov-mapa" id="nov-mapa" aria-pressed="'+filtr.nove+'">'
+      +(filtr.nove?'Ukázať všetky zámery':'Len novinky na mape')+'</button>';
+  el.querySelectorAll('.nov .r').forEach(b=>b.onclick=()=>ukazNovinky(b.dataset.n));
+  $('#nov-mapa').onclick=()=>{ filtr.nove=!filtr.nove; obnov(); };
+}
+function ukazNovinky(druh){
+  const zoz=druh==='register'?NOVINKY.register.filter(p=>vyhovuje(p))
+    :druh==='redakcia'?NOVINKY.redakcia.filter(p=>vyhovuje(p)):NOVINKY.mimo;
+  const nadpis={register:'Zmeny v registri EIA',redakcia:'Doplnila redakcia',mimo:'Vyhlášky úradov mimo EIA'}[druh];
+  $('#detail').className='detail on'; $('#detail').scrollTop=0;
+  $('#detail').innerHTML='<button class="zavri" onclick="zavriDetail()">×</button>'
+    +'<div class="stitky"><span class="stitok" style="background:#F3716D">NOVÉ</span>'
+      +'<span class="stitok b">'+datumSk(NOVINKY.od).toUpperCase()+' – '+datumSk(NOVINKY.do).toUpperCase()+'</span></div>'
+    +'<h2>'+esc(nadpis)+'</h2>'
+    +'<div class="miesto">'+zoz.length+' '+(druh==='mimo'?(zoz.length===1?'vyhláška':zoz.length<5?'vyhlášky':'vyhlášok'):sklon(zoz.length))+'</div>'
+    +'<div class="dok">'+zoz.slice().sort((a,b)=>((b.zmena||b.datum||b.red_kedy||'')).localeCompare(a.zmena||a.datum||a.red_kedy||''))
+      .map((p,i)=>'<div class="r" data-i="'+i+'">'
+        +(p.nahlad?'<img class="mini" src="'+esc(p.nahlad)+'" alt="" loading="lazy">'
+                  :'<span class="mini prazdna">'+esc((p.faza||p.druh||'').slice(0,4))+'</span>')
+        +'<span class="nm">'+esc(p.nazov_obch||p.nazov||p.n||'')+'<em>'+esc(p.obec||p.mc||'')
+          +(druh==='register'?' · '+esc(p.faza||''):'')+'</em></span>'
+        +'<span class="vel">'+esc(datumSk((p.zmena||p.datum||p.red_kedy||'').slice(0,10)))+'</span></div>').join('')
+    +'</div>'
+    +(druh==='mimo'?'<p class="pozn">Povolené stavby pod prahom EIA z úradných tabúľ mestských častí. '
+      +'Na mape sú vo vrstve „Vyhlášky stavebných úradov“.</p>':'');
+  const zor=zoz.slice().sort((a,b)=>((b.zmena||b.datum||b.red_kedy||'')).localeCompare(a.zmena||a.datum||a.red_kedy||''));
+  $('#detail').querySelectorAll('.dok .r').forEach(r=>r.onclick=()=>{
+    const p=zor[+r.dataset.i];
+    if(druh==='mimo'){
+      const c=$('#v-tabule'); if(!c.checked){ c.checked=true; c.dispatchEvent(new Event('change')); }
+      ukazTabulu(p);
+      const f=TAB&&TAB.features.find(x=>x.properties.id===p.id);
+      if(f) map.easeTo({center:f.geometry.coordinates,zoom:Math.max(map.getZoom(),15.5)});
+    } else { ukaz(p); if(p.presnost==='presná') naMape(p.id); }
+  });
+}
+
+/* ---------- zhluky s prstencom fáz ----------
+   Štýl MapLibre nevie nakresliť výseč, tak je každý zhluk HTML značka:
+   čierna bublina s číslom a okolo tenký prstenec rozdelený podľa fáz
+   (pomer zámerov, posúdených, povolených, dokončených). Pri farbení podľa
+   účelu je prstenec prázdny, aby netvrdil niečo iné než legenda. */
+const DONUTY={};
+function zahodDonuty(){ for(const k in DONUTY){ DONUTY[k].marker.remove(); delete DONUTY[k]; } }
+function kresliDonuty(){
+  const vidno={};
+  if(zobrazenie==='body'){
+    let fs=[]; try{ fs=map.querySourceFeatures('zamery',{filter:['has','point_count']}); }catch(e){}
+    for(const f of fs){
+      const p=f.properties, id=p.cluster_id; if(vidno[id]) continue;
+      const kluc=[p.point_count,p.f1,p.f2,p.f3,p.f4,farbitPodla].join('|');
+      let d=DONUTY[id];
+      if(!d||d.kluc!==kluc){
+        if(d) d.marker.remove();
+        const el=donutEl(p);
+        el.onclick=ev=>{ ev.stopPropagation(); if(pridavam) return;
+          map.getSource('zamery').getClusterExpansionZoom(id)
+            .then(zz=>map.easeTo({center:f.geometry.coordinates,zoom:zz+.4})); };
+        d={kluc:kluc,marker:new maplibregl.Marker({element:el}).setLngLat(f.geometry.coordinates)};
+        DONUTY[id]=d;
+      }
+      if(!d.naMape){ d.marker.addTo(map); d.naMape=true; }
+      vidno[id]=1;
+    }
+  }
+  for(const id in DONUTY){ if(!vidno[id]&&DONUTY[id].naMape){ DONUTY[id].marker.remove(); DONUTY[id].naMape=false; } }
+}
+function donutEl(p){
+  const n=p.point_count, r=n<5?10:n<10?13:n<20?16:n<50?20:25;
+  const R=r+4.4, S=2*(r+7), c=S/2, sirka=3.2;
+  const casti=farbitPodla==='faza'?[['zámer',p.f1],['posúdené',p.f2],['povolené',p.f3],['dokončené',p.f4]]:[];
+  const spolu=casti.reduce((s,x)=>s+(+x[1]||0),0);
+  let a=-Math.PI/2, vysece='';
+  const bod=(ang)=>[c+R*Math.cos(ang),c+R*Math.sin(ang)];
+  casti.forEach(([f,k])=>{ k=+k||0; if(!k||!spolu) return;
+    const podiel=k/spolu;
+    if(podiel>=.999){ vysece+='<circle cx="'+c+'" cy="'+c+'" r="'+R+'" fill="none" stroke="'+FARBA[f]+'" stroke-width="'+sirka+'"/>'; return; }
+    const b=a+2*Math.PI*podiel, [x0,y0]=bod(a), [x1,y1]=bod(b);
+    vysece+='<path d="M'+x0.toFixed(2)+' '+y0.toFixed(2)+' A'+R+' '+R+' 0 '+(podiel>.5?1:0)+' 1 '
+      +x1.toFixed(2)+' '+y1.toFixed(2)+'" fill="none" stroke="'+FARBA[f]+'" stroke-width="'+sirka+'"/>';
+    a=b; });
+  const el=document.createElement('div'); el.className='donut';
+  el.innerHTML='<svg width="'+S+'" height="'+S+'" viewBox="0 0 '+S+' '+S+'">'
+    +'<circle cx="'+c+'" cy="'+c+'" r="'+R+'" fill="none" stroke="#D9D9D6" stroke-width="'+sirka+'"/>'
+    +vysece
+    /* dve vlasové linky ohraničia prstenec — inak by biela výseč „povolené" splynula s pozadím */
+    +'<circle cx="'+c+'" cy="'+c+'" r="'+(R-sirka/2-.4)+'" fill="none" stroke="#000" stroke-width=".8"/>'
+    +'<circle cx="'+c+'" cy="'+c+'" r="'+(R+sirka/2+.4)+'" fill="none" stroke="#000" stroke-width=".8"/>'
+    +'<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="#000"/>'
+    +'<text x="'+c+'" y="'+c+'" text-anchor="middle" dominant-baseline="central" font-size="'+(n<10?10.5:n<50?12:13.5)+'">'
+      +(n>=1000?(n/1000).toFixed(1)+'k':n)+'</text></svg>';
+  el.title=n+' '+sklon(n)+(spolu?' · '+casti.filter(x=>+x[1]).map(x=>x[0]+' '+x[1]).join(', '):'');
+  return el;
+}
+
+/* ---------- body alebo teplotná mapa ---------- */
+function nastavZobrazenie(v){
+  zobrazenie=v;
+  const body=v==='body';
+  ['bod','bod-nove'].forEach(l=>map.getLayer(l)&&map.setLayoutProperty(l,'visibility',body?'visible':'none'));
+  if(map.getLayer('bod-txt')) map.setLayoutProperty('bod-txt','visibility',body&&$('#v-nazvy').checked?'visible':'none');
+  if(map.getLayer('nez')) map.setLayoutProperty('nez','visibility',body?'visible':'none');
+  if(map.getLayer('teplo')) map.setLayoutProperty('teplo','visibility',body?'none':'visible');
+  kresliDonuty(); kresliLegendu();
+}
+
+/* ---------- hľadanie v prirodzenom jazyku ----------
+   „byty v Petržalke povolené od 2024" → účel Bývanie, MČ Petržalka, fáza
+   povolené, zmena v registri od 2024; zvyšok slov ide do textového
+   hľadania. Skloňovanie rieši hrubý kmeň bez diakritiky — na názvy
+   mestských častí a pár slov to stačí, model tu netreba. */
+const bezDiak=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const kmen=s=>{ s=bezDiak(s).replace(/^vsi$/,'ves');
+  return s.length>4?s.replace(/(iach|ych|ymi|ych|ach|och|eho|ej|ou|om|im|ich|e|a|y|u|i|o)$/,''):s; };
+const NL_TYPY=[[/^(byt|byvan|bytov|obytn|rezident|dom)/,'Bývanie'],[/^(kancel|administrat|office|biznis|business)/,'Administratíva'],
+  [/^polyfunk/,'Polyfunkcia'],[/^(sklad|vyrob|hal|logist|priemys|fabrik|zavod)/,'Výroba a sklady'],
+  [/^(obchod|sluzb|retail|nakup|predajn)/,'Obchod a služby'],[/^(skol|skolk|nemocnic|vybaven|sport|kultur|zdravot)/,'Vybavenosť'],
+  [/^(zelen|park|namest|verejn)/,'Zeleň a verejný priestor'],[/^(cest|dialnic|doprav|krizovat|most|zeleznic)/,'Doprava'],
+  [/^(kanaliz|vodovod|energet|technick|infrastrukt|plyn)/,'Technická infraštruktúra']];
+const NL_FAZY=[[/^(zamer|navrh|pripravovan|planovan)/,'zámer'],[/^(posuden|posudzovan|hodnoten)/,'posúdené'],
+  [/^(povolen|schvalen|stavebn)/,'povolené'],[/^(dokoncen|hotov|skolaudovan|postaven)/,'dokončené']];
+const NL_STOP=new Set(['v','vo','na','od','do','po','a','s','so','z','zo','len','iba','vsetky','vsetko','zamery','zamer',
+  'projekty','projekt','stavby','stavba','roku','rok','rokov','ktore','co','ktory','mc','casti','cast','mestskej','mestska']);
+function rozumiem(text){
+  const n=prazdneNl(), zvysok=[];
+  const slova=text.split(/\s+/).filter(Boolean);
+  const mcs=[...new Set((Z?Z.features:[]).map(f=>f.properties.obec).filter(Boolean))]
+    .map(o=>({obec:o,kmene:o.replace(/^Bratislava\s*[-–]\s*/,'').split(/\s+/).map(kmen)}));
+  for(let i=0;i<slova.length;i++){
+    const s=slova[i], sk=kmen(s), bd=bezDiak(s);
+    if(/^(20\d\d)$/.test(bd)){ n.od=bd; continue; }
+    if(bd==='tento' && bezDiak(slova[i+1]||'')==='rok'){ n.od=String(new Date().getFullYear()); i++; continue; }
+    /* mestská časť môže mať dve-tri slová */
+    const mc=mcs.find(m=>m.kmene.every((k,j)=>slova[i+j]&&kmen(slova[i+j])===k&&k.length>=3));
+    if(mc){ n.mc=mc.obec; i+=mc.kmene.length-1; continue; }
+    const t=NL_TYPY.find(([re])=>re.test(bd)); if(t){ n.typ.add(t[1]); continue; }
+    const f=NL_FAZY.find(([re])=>re.test(bd)); if(f){ n.faza.add(f[1]); continue; }
+    if(/^(vykres|plan|situac)/.test(bd)){ n.pl='1'; continue; }
+    if(/^(obrazk|obrazok|vizualiz|foto|render)/.test(bd)){ n.pl='2'; continue; }
+    if(/^presn/.test(bd) && /^poloh/.test(bezDiak(slova[i+1]||''))){ n.pl='3'; i++; continue; }
+    if(NL_STOP.has(bd)) continue;
+    zvysok.push(s);
+  }
+  n.typ.forEach(t=>{ if(!TYPY.includes(t)) n.typ.delete(t); });
+  return {nl:n, zvysok:zvysok.join(' ').toLowerCase()};
+}
+function kresliRozumiem(){
+  const el=$('#rozumiem'); if(!el) return;
+  const k=[...nl.typ,...nl.faza];
+  if(nl.mc) k.push(nl.mc.replace(/^Bratislava\s*[-–]\s*/,''));
+  if(nl.pl) k.push({'1':'s výkresmi','2':'s obrázkami','3':'s presnou polohou'}[nl.pl]);
+  if(nl.od) k.push('od '+nl.od);
+  el.hidden=!k.length;
+  el.innerHTML=k.length?'<span>Rozumiem:</span>'+k.map(x=>'<i>'+esc(x)+'</i>').join('')
+    +(filtr.q?'<i class="txt">„'+esc(filtr.q)+'“</i>':'')
+    +'<button id="doslovne">hľadať doslovne</button>':'';
+  const b=$('#doslovne'); if(b) b.onclick=()=>{ doslovne=true; hladaj(); };
+}
+function hladaj(){
+  const t=$('#q').value.trim();
+  if(doslovne||!t){ nl=prazdneNl(); filtr.q=t.toLowerCase(); }
+  else { const r=rozumiem(t); nl=r.nl; filtr.q=r.zvysok; }
+  kresliRozumiem(); obnov();
+  /* hľadanie platí aj pre staveniská z OSM a vyhlášky */
   const fq=filtr.q?['in',filtr.q,['downcase',['get','n']]]:null;
-  ['osm-b','osm-txt','tab-b','tab-txt'].forEach(l=>{ if(map.getLayer(l)) map.setFilter(l,fq); });});
+  ['osm-b','osm-txt','tab-b','tab-txt'].forEach(l=>{ if(map.getLayer(l)) map.setFilter(l,fq); });
+}
+
+/* ---------- postup redakcie ----------
+   Hotový zámer = presná poloha aj obrázok. Číslo hovorí, koľko práce
+   ostáva — nezávisí od filtrov. */
+function kresliPostup(){
+  const el=$('#postup'); if(!el||!Z) return;
+  const st=Z.features.map(f=>f.properties).filter(p=>!p.lin);
+  const maObr=p=>(p.nahlady&&p.nahlady.length)||(p.obrazky&&p.obrazky.length);
+  const hot=st.filter(p=>p.presnost==='presná'&&maObr(p)).length;
+  const bezPol=st.filter(p=>p.presnost!=='presná').length, bezObr=st.filter(p=>!maObr(p)).length;
+  const red=st.filter(p=>p.redakcia).length, pc=Math.round(100*hot/st.length);
+  el.innerHTML='<div class="hl"><span class="st">POSTUP DOPĹŇANIA</span><b>'+cis(hot)+' z '+cis(st.length)+'</b></div>'
+    +'<div class="pas" title="hotový zámer má presnú polohu aj obrázok"><i style="width:'+pc+'%"></i></div>'
+    +'<p>'+pc+' % má polohu aj obrázok · ostáva '+cis(bezPol)+' bez polohy a '+cis(bezObr)+' bez obrázka'
+    +(red?' · redakcia doplnila '+cis(red):'')+' <a href="../redakcia/">doplniť →</a></p>';
+}
+
+/* ---------- ovládanie ---------- */
+$('#q').addEventListener('input',()=>{ doslovne=false; hladaj(); });
 $('#tl-hladaj').onclick=()=>$('#q').focus();
 $('#kategorie').addEventListener('click',e=>{
   const r=e.target.closest('.r'); if(!r) return;
@@ -936,11 +1191,12 @@ $('#legenda').addEventListener('click',e=>{
   const s=filtr[r.dataset.d], v=r.dataset.v;
   s.has(v)?s.delete(v):s.add(v); obnov();});
 document.getElementsByName('farby').forEach(i=>i.onchange=()=>{
-  farbitPodla=i.value; prefarbi(); kresliKategorie();});
+  farbitPodla=i.value; prefarbi(); kresliKategorie(); zahodDonuty(); kresliDonuty();});
 $('#aktivne').addEventListener('click',e=>{
   const b=e.target.closest('b'); if(!b) return;
   const d=b.dataset.d, v=b.dataset.v;
   if(d==='typ') filtr.typ.delete(v); else if(d==='faza') filtr.faza.delete(v);
+  else if(d==='nove') filtr.nove=false;
   else { filtr[d]=''; const s=$('#f-'+d); if(s) s.value=''; }
   obnov();});
 
@@ -949,8 +1205,9 @@ $('#f-fazy').addEventListener('click',e=>{
   filtr.faza.has(b.dataset.f)?filtr.faza.delete(b.dataset.f):filtr.faza.add(b.dataset.f); obnov();});
 ['mc','sk','pl'].forEach(k=>$('#f-'+k).addEventListener('input',e=>{filtr[k]=e.target.value; obnov();}));
 $('#vymaz').onclick=()=>{
-  filtr={q:filtr.q,mc:'',sk:'',pl:'',typ:new Set(),faza:new Set()};
+  filtr={q:filtr.q,mc:'',sk:'',pl:'',typ:new Set(),faza:new Set(),nove:false};
   $('#f-mc').value=''; $('#f-sk').value=''; $('#f-pl').value=''; obnov();};
+document.getElementsByName('zobraz').forEach(i=>i.onchange=()=>nastavZobrazenie(i.value));
 
 $('#tl-vrstvy').onclick=e=>{e.stopPropagation(); $('#pop-vrstvy').classList.toggle('on');};
 document.addEventListener('click',e=>{
@@ -963,7 +1220,8 @@ document.querySelectorAll('input[name=pod]').forEach(r=>r.onchange=()=>{
 const prep=(id,...vrstvy)=>$('#'+id).onchange=e=>vrstvy.forEach(v=>{
   if(map.getLayer(v)) map.setLayoutProperty(v,'visibility',e.target.checked?'visible':'none');});
 prep('v-ulice','ulice-txt'); prep('v-hranice','hranice-c'); prep('v-mc','mc-txt');
-prep('v-nazvy','bod-txt');
+$('#v-nazvy').onchange=e=>{ if(map.getLayer('bod-txt'))
+  map.setLayoutProperty('bod-txt','visibility',e.target.checked&&zobrazenie==='body'?'visible':'none'); };
 
 /* ---------- linky MHD ----------
    Sluzba doprava/Linky_MHD na geoportali ma vrchol kazdych 50 az 150 m
@@ -1404,6 +1662,9 @@ document.addEventListener('mousedown',e=>{
   if(e.button===0 && !e.target.closest('#ponuka')) zavriPonuku();});
 map.on('dragstart',zavriPonuku);
 map.on('zoomstart',zavriPonuku);
+
+/* háčik pre testy (headless harness číta stav mapy cez iframe) */
+window.MAPA={map:map, get nl(){return nl;}, get filtr(){return filtr;}, get novinky(){return NOVINKY;}};
 
 /* odkaz na miesto: #lat,lon,zoom — DOMOV zostáva celé mesto, nech sa
    tlačidlom ⌖ dá vrátiť na prehľad aj po otvorení zdieľaného odkazu */
