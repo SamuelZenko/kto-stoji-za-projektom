@@ -719,19 +719,27 @@ async function spusti(){
      rámček ako v Praha zítra) a štvorce pre stavby mimo registra */
   pridajIkony();
 
+  /* Zhlukovanie — pravidlá, ktoré má čitateľ vidieť bez vysvetľovania:
+       zoom ≤ 13   body do 48 px od seba sú jedna čierna bublina s číslom;
+                   pri pohľade na celé mesto vyjde zhruba jedna na lokalitu
+       zoom 14     každý zámer samostatne (bez názvu)
+       zoom ≥ 14.5 názvy v bielych pilulkách
+     Polomer 20 px z prvej verzie robil desiatky bublín „2“ a „3“ medzi
+     samostatnými bodmi — vyzeralo to náhodne, lebo o zlúčení rozhodovali
+     pixle, nie hustota. Veľkosť bubliny rastie s počtom po krokoch,
+     dvojica je sotva väčšia než bod. */
   map.addSource('zamery',{type:'geojson',data:{type:'FeatureCollection',features:[]},
-    cluster:true, clusterRadius:20, clusterMaxZoom:13});
+    cluster:true, clusterRadius:48, clusterMaxZoom:13});
   /* Zhluk = čierna bublina s číslom — motív bubliny na linke z logotypu.
      Farba je vyhradená pre význam (fáza / účel), zhluk ho mieša, tak je čierny. */
-  map.addLayer({id:'zh-kruh',type:'circle',source:'zamery',filter:['has','point_count'],
-    paint:{'circle-color':'rgba(0,0,0,.08)',
-      'circle-radius':['step',['get','point_count'],18,10,24,100,31]}});
   map.addLayer({id:'zh',type:'circle',source:'zamery',filter:['has','point_count'],
     paint:{'circle-color':'#000000',
-      'circle-radius':['step',['get','point_count'],13,10,17,100,21]}});
+      'circle-radius':['step',['get','point_count'],10,5,13,10,16,20,20,50,25],
+      'circle-stroke-width':2,'circle-stroke-color':'#FFFFFF'}});
   map.addLayer({id:'zh-txt',type:'symbol',source:'zamery',filter:['has','point_count'],
-    layout:{'text-field':['get','point_count_abbreviated'],'text-size':12.5,
-      'text-font':['Noto Sans Regular']},paint:{'text-color':'#fff'}});
+    layout:{'text-field':['get','point_count_abbreviated'],
+      'text-size':['step',['get','point_count'],10.5,10,12,50,13.5],
+      'text-font':['Noto Sans Regular'],'text-allow-overlap':true},paint:{'text-color':'#fff'}});
   map.addLayer({id:'bod',type:'circle',source:'zamery',filter:['!',['has','point_count']],
     paint:{'circle-color':['match',['get','faza'],'zámer','#F3716D','posúdené','#000000',
         'povolené','#FFFFFF','dokončené','#B4B4B0',SIVA],
@@ -748,14 +756,16 @@ async function spusti(){
       'icon-image':'bublina','icon-text-fit':'both','icon-text-fit-padding':[4,8,4,8],'icon-optional':false},
     paint:{'text-color':'#000000'}});
 
+  /* Zámery bez známej polohy: jeden čiarkovaný kruh na mestskú časť, rovnaký
+     znak ako v legende. Len pri pohľade na mesto (do zoomu 12) a pod
+     zhlukmi — v pôvodnej verzii sedeli sivé kruhy „90“ a „47“ cez čierne
+     bubliny a vyzerali ako ďalšie zhluky. */
   map.addSource('nezname',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
-  map.addLayer({id:'nez',type:'circle',source:'nezname',
-    paint:{'circle-color':'rgba(0,0,0,.05)',
-      'circle-radius':['interpolate',['linear'],['get','pocet'],1,14,150,32],
-      'circle-stroke-width':1.2,'circle-stroke-color':'#8A8A86'}});
-  map.addLayer({id:'nez-txt',type:'symbol',source:'nezname',
-    layout:{'text-field':['get','pocet'],'text-size':12,'text-font':['Noto Sans Regular']},
-    paint:{'text-color':'#48484A'}});
+  map.addLayer({id:'nez',type:'symbol',source:'nezname',maxzoom:12,
+    layout:{'icon-image':'kruh-ciarkovany','icon-allow-overlap':true,'text-allow-overlap':true,
+      'icon-size':['interpolate',['linear'],['get','pocet'],1,.55,20,.8,150,1.2],
+      'text-field':['get','pocet'],'text-size':11,'text-font':['Noto Sans Regular']},
+    paint:{'text-color':'#6E6E6A'}},'zh');
 
   map.addSource('komunita',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
   map.addSource('moje',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
@@ -870,6 +880,10 @@ function pridajIkony(){
     g.beginPath(); g.rect(3,3,18,18); g.fill(); g.stroke(); });
   if(!map.hasImage('stvorec-cerveny')) map.addImage('stvorec-cerveny', stvorec('#F3716D'), {pixelRatio:px});
   if(!map.hasImage('stvorec-cierny')) map.addImage('stvorec-cierny', stvorec('#000000'), {pixelRatio:px});
+  /* čiarkovaný kruh pre „bez známej polohy“ — kreslí sa v 48 px, mierka podľa počtu */
+  if(!map.hasImage('kruh-ciarkovany')) map.addImage('kruh-ciarkovany', platno(48,48,g=>{
+    g.fillStyle='rgba(255,255,255,.55)'; g.strokeStyle='#8A8A86'; g.lineWidth=1.5; g.setLineDash([3,3]);
+    g.beginPath(); g.arc(24,24,22,0,Math.PI*2); g.fill(); g.stroke(); }), {pixelRatio:px});
 }
 
 /* 'style.load' príde hneď po rozparsovaní štýlu, 'load' až keď dobehnú
@@ -1127,7 +1141,7 @@ $('#v-vyska').onchange=async e=>{
   try{ g=await nacitajVysku(); }
   catch(err){ e.target.checked=false; $('#legenda-vyska').hidden=true; $('#stav-vyska').textContent='(nedá sa načítať)'; return; }
   map.addSource('vyska',{type:'geojson',data:g});
-  const pod=map.getLayer('zh-kruh')?'zh-kruh':undefined;
+  const pod=map.getLayer('zh')?'zh':undefined;
   map.addLayer({id:'vyska-f',type:'fill',source:'vyska',
     paint:{'fill-color':FARBA_VYSKY,'fill-opacity':.45}}, pod);
   map.addLayer({id:'vyska-l',type:'line',source:'vyska',minzoom:12,
@@ -1176,7 +1190,7 @@ $('#v-upn').onchange=async e=>{
   try{ g=await (await fetch('upn-ziadosti.geojson',{cache:'force-cache'})).json(); }
   catch(err){ e.target.checked=false; $('#stav-upn').textContent='(nedá sa načítať)'; return; }
   map.addSource('upn',{type:'geojson',data:g});
-  const pod=map.getLayer('zh-kruh')?'zh-kruh':undefined;
+  const pod=map.getLayer('zh')?'zh':undefined;
   map.addLayer({id:'upn-f',type:'fill',source:'upn',paint:{'fill-color':'#F3716D','fill-opacity':.22}}, pod);
   map.addLayer({id:'upn-l',type:'line',source:'upn',
     paint:{'line-color':'#000000','line-width':1.4,'line-dasharray':[2,1.5]}}, pod);
