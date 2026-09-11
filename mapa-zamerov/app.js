@@ -116,7 +116,8 @@ function obnov(){
     if(p.presnost==='presná') presne.push(f);
     else (hromada[p.obec]=hromada[p.obec]||[]).push(p);
   });
-  map.getSource('zamery').setData({type:'FeatureCollection',features:presne});
+  const body=rozostup(presne);
+  map.getSource('zamery').setData({type:'FeatureCollection',features:body});
   zahodDonuty();          // supercluster po setData prečísluje zhluky
   if(map.getSource('zamery-h')) map.getSource('zamery-h').setData({type:'FeatureCollection',features:presne});
   map.getSource('nezname').setData({type:'FeatureCollection',
@@ -133,6 +134,28 @@ function obnov(){
   $('#pocet-filtrov').hidden=!pf; $('#pocet-filtrov').textContent=pf;
   kresliLegendu(pocFaz, Object.values(hromada).reduce((a,b)=>a+b.length,0));
   kresliAktivne(); kresliKategorie(); kresliSuplik(); kresliNovinky();
+}
+
+/* Zámery na tom istom bode (stred tej istej ulice, jedna parcela, jeden
+   objekt s viacerými konaniami — 139 zámerov na 53 miestach) by po
+   rozpade zhluku ležali bod na bode: zhluk hlási tri, vidno dva. Preto
+   sa také body rozostúpia po kružnici okolo skutočného miesta. Skutočné
+   súradnice v dátach ostávajú, kópia sa robí len pre vykreslenie. */
+function rozostup(prvky){
+  const skup={};
+  prvky.forEach(f=>{ const c=f.geometry.coordinates, k=c[0].toFixed(5)+','+c[1].toFixed(5);
+    (skup[k]=skup[k]||[]).push(f); });
+  const von=[];
+  prvky.forEach(f=>{
+    const c=f.geometry.coordinates, s=skup[c[0].toFixed(5)+','+c[1].toFixed(5)];
+    if(s.length<2){ f.properties.rozostup=0; von.push(f); return; }
+    const i=s.indexOf(f), n=s.length, r=Math.max(14, 4.5*n);   // metre
+    const a=-Math.PI/2+i*2*Math.PI/n, k=Math.cos(c[1]*Math.PI/180);
+    f.properties.rozostup=n;
+    von.push({type:'Feature',properties:f.properties,
+      geometry:{type:'Point',coordinates:[c[0]+r*Math.cos(a)/(111320*k), c[1]+r*Math.sin(a)/111320]}});
+  });
+  return von;
 }
 
 /* Legenda ukazuje presne tú vlastnosť, podľa ktorej sú body zafarbené —
@@ -246,6 +269,9 @@ function ukaz(p,z){
       +riadokStavu(p)
       +(p.zdroj==='redakcia'?'':riadok('Povoľuje', esc(p.urad||'')))
       +riadokPolohy(p)
+      +(p.rozostup>1?riadok('Na mape','<span class="v">bod je posunutý o pár metrov'
+        +'<span class="pozn-stav">na tom istom mieste '+(p.rozostup===2?'je ešte 1 zámer':'sú ešte '+(p.rozostup-1)+' zámery')
+        +' — body sú rozostúpené, aby ich bolo vidno</span></span>',true):'')
       +'<div class="r" id="r-vyska" hidden><span class="k">Výšková regulácia</span><span class="v"></span></div>'
       +riadok('Aktualizované', esc(p.zmena||''))
     +'</div>'
