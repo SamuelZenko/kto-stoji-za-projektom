@@ -99,6 +99,15 @@ aside{display:flex;flex-direction:column;min-height:0;border-right:var(--l2);pad
 .hlad select{height:44px;font-size:15px}
 /* hlavička zoznamu — bez ďalšej čiary, aby pod filtrom neboli dve pod sebou */
 .pocet{margin:26px 0 2px;padding:0;border:0;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3)}
+/* návrhy z mapy — čakajú na prevzatie */
+.navrhy{margin:22px 0 0;border:1px solid var(--cierna);background:var(--papier);padding:14px 16px 6px}
+.navrhy h3{margin:0 0 4px;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--tx);display:flex;justify-content:space-between}
+.navrhy h3 b{font-weight:500;color:var(--cervena2)}
+.navrhy .nv{padding:12px 0 10px;border-top:var(--l2);font-size:14px}
+.navrhy .nv:first-of-type{border-top:0}
+.navrhy .nv b{display:block;font-weight:500;line-height:1.25}
+.navrhy .nv small{display:block;color:var(--tx3);font-size:12px;margin:3px 0 10px;line-height:1.35}
+.navrhy .nv .tl{margin:0 6px 6px 0}
 .polozky{overflow:auto;flex:1;padding:0 0 32px;border-top:var(--l1)}
 .pol{display:grid;grid-template-columns:1fr auto;gap:3px 12px;padding:14px 0 14px 12px;margin-left:-12px;cursor:pointer;border-left:2px solid transparent;border-bottom:var(--l2)}
 .pol:hover{background:var(--papier)}
@@ -272,6 +281,8 @@ dialog .tlacidla{display:flex;gap:8px;justify-content:flex-end;margin-top:28px;p
       </div>
       <select id="mc"><option value="">všetky mestské časti</option></select>
     </div>
+    <!-- návrhy polohy z mapy (GitHub issues „Návrh polohy: …") -->
+    <div class="navrhy" id="navrhy" hidden></div>
     <div class="pocet" id="pocet">načítavam…</div>
     <div class="polozky" id="zoznam"></div>
   </aside>
@@ -324,7 +335,7 @@ dialog .tlacidla{display:flex;gap:8px;justify-content:flex-end;margin-top:28px;p
 <div id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
-<script src="app.js?v=20260910a"></script>
+<script src="app.js?v=20260911f"></script>
 <!-- klávesa G (červený grid) a burger v lište sú spoločné pre celý web -->
 <script src="../spolocne/tuba.js?v=20260909u" defer></script>
 </body>

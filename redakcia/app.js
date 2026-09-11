@@ -463,11 +463,60 @@ $('#tl-uloz').onclick=async()=>{
 };
 $('#u-zavri').onclick=()=>$('#d-uloz').close();
 
+/* ---------- návrhy z mapy ----------
+   Ktokoľvek môže v mape navrhnúť polohu bodu; návrh príde ako issue
+   „Návrh polohy: …" so strojovým blokom <!-- navrh-polohy {…} -->.
+   Tu sa vypíšu otvorené návrhy; „Prevziať" nastaví polohu do konceptu
+   (s poznámkou, od koho je) a po Uložiť na GitHub sa bod v mape presunie.
+   Issue sa zavrie tokenom, ak má právo na Issues; inak odkazom ručne. */
+const K_PREVZATE='mib-redakcia-prevzate';
+let NAVRHY=[];
+const prevzate=()=>{ try{ return new Set(JSON.parse(localStorage.getItem(K_PREVZATE)||'[]')); }catch(e){ return new Set(); } };
+async function nacitajNavrhy(){
+  const el=$('#navrhy'); if(!el) return;
+  try{
+    const h={Accept:'application/vnd.github+json'}; if(token()) h.Authorization='Bearer '+token();
+    const r=await fetch('https://api.github.com/repos/'+REPO+'/issues?state=open&per_page=100',{headers:h});
+    if(!r.ok) throw new Error('GitHub '+r.status);
+    const iss=await r.json();
+    NAVRHY=iss.filter(i=>!i.pull_request&&/^Návrh polohy:/.test(i.title||'')).map(i=>{
+      const m=(i.body||'').match(/<!--\s*navrh-polohy\s*(\{[\s\S]*?\})\s*-->/); let z=null;
+      try{ z=m?JSON.parse(m[1]):null; }catch(e){}
+      return z&&z.id&&Array.isArray(z.poloha)?{cislo:i.number,url:i.html_url,kedy:(i.created_at||'').slice(0,10),z:z}:null;
+    }).filter(Boolean);
+  }catch(e){ el.hidden=true; return; }
+  kresliNavrhy();
+}
+function kresliNavrhy(){
+  const el=$('#navrhy'), pv=prevzate(), zoz=NAVRHY.filter(n=>!pv.has(n.cislo));
+  el.hidden=!zoz.length; if(!zoz.length) return;
+  el.innerHTML='<h3>Návrhy z mapy <b>'+zoz.length+'</b></h3>'+zoz.map(n=>{
+    const p=Z.find(x=>x.id===n.z.id);
+    return '<div class="nv" data-c="'+n.cislo+'"><b>'+esc(p?(zaznam(p.id)||{}).nazov||p.nazov:n.z.id)+'</b>'
+      +'<small>'+esc(n.z.kto||'')+' · '+esc(n.kedy)+(n.z.pozn?' · '+esc(n.z.pozn):'')+'</small>'
+      +'<button class="tl mala hl" data-a="prevziat"'+(p?'':' disabled')+'>Prevziať polohu</button>'
+      +'<a class="tl mala" href="'+esc(n.url)+'" target="_blank" rel="noopener">Issue #'+n.cislo+'</a>'
+      +'<button class="tl mala duch" data-a="skryt" title="Zamietnuť — v zozname sa už neukáže, issue ostáva otvorené">Zamietnuť</button></div>';
+  }).join('');
+  el.querySelectorAll('[data-a]').forEach(b=>b.onclick=async()=>{
+    const c=+b.closest('.nv').dataset.c, n=NAVRHY.find(x=>x.cislo===c); if(!n) return;
+    if(b.dataset.a==='prevziat'){
+      vyber(n.z.id); ukazVZozname(n.z.id);
+      nastavPolohu(n.z.id,n.z.poloha);
+      zapis(n.z.id,'poloha_pozn','podľa návrhu z mapy'+(n.z.kto?' — '+n.z.kto:'')+(n.z.pozn?': '+n.z.pozn:''));
+      toast('Poloha prevzatá do konceptu. Uložiť na GitHub ju zapíše do mapy.');
+      if(token()){ try{ await gh('/repos/'+REPO+'/issues/'+c,{method:'PATCH',body:JSON.stringify({state:'closed'})}); toast('Poloha prevzatá, issue #'+c+' zavreté.'); }
+        catch(e){ toast('Poloha prevzatá. Issue #'+c+' zavri ručne — token nemá právo na Issues.'); } }
+    }
+    const pv=prevzate(); pv.add(c); localStorage.setItem(K_PREVZATE,JSON.stringify([...pv])); kresliNavrhy();
+  });
+}
+
 /* ---------- drobnosti ---------- */
 let toastT;
 function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('on'),3200); }
 window.addEventListener('beforeunload',e=>{ /* koncept je v localStorage, nič nehrozí — len pripomenutie pri zatváraní s neuloženými */ });
 document.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); if(!$('#tl-uloz').disabled) $('#tl-uloz').click(); } });
 
-nacitaj().catch(e=>{ $('#pocet').textContent='Dáta sa nenačítali: '+e.message; });
+nacitaj().then(nacitajNavrhy).catch(e=>{ $('#pocet').textContent='Dáta sa nenačítali: '+e.message; });
 overPripojenie(true);

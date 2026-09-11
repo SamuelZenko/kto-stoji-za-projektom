@@ -284,6 +284,11 @@ function ukaz(p,z){
     +(p.zdroj==='redakcia'?'':'<a class="odkaz" href="https://www.enviroportal.sk/eia/detail/'+esc(p.id)
       +'" target="_blank" rel="noopener">Detail zámeru na enviroportáli →</a>')
     +(p.red_odkaz?'<a class="odkaz" href="'+esc(p.red_odkaz)+'" target="_blank" rel="noopener">Web projektu →</a>':'')
+    /* presun bodu môže navrhnúť ktokoľvek — bez schválenia sa nič nezmení */
+    +(p.zdroj==='redakcia'?'':'<button class="odkaz presun" onclick="zacniPresun(\''+esc(p.id)+'\')">'
+      +(p.presnost==='presná'?'Bod nesedí? Navrhnúť opravu polohy':'Navrhnúť polohu na mape')
+      +'<span>klikneš tam, kde stavba stojí — návrh ide redakcii na schválenie</span></button>')
+    +(mojeNavrhy()[p.id]?'<div class="cakajuce">Tvoj návrh polohy z '+esc(mojeNavrhy()[p.id].kedy||'')+' čaká na schválenie redakciou.</div>':'')
     /* výzva na doplnenie je hlavná akcia karty — preto tlačidlo, nie drobný odkaz */
     +'<a class="odkaz doplnit" href="../redakcia/?id='+encodeURIComponent(p.id)+'">'
       +(p.zdroj==='redakcia'?'Upraviť v Redakcii':'Doplniť polohu, obrázky, architekta')
@@ -482,6 +487,9 @@ document.addEventListener('keydown',e=>{
    v komunita.json nastavené. Kým nie je, ostane v prehliadači a dá sa
    vyexportovať — nič sa nestratí a nič sa nemusí prepisovať. */
 let pridavam=false, docasnyBod=null;
+/* mapa je „zaneprázdnená", keď sa pridáva bod alebo navrhuje poloha —
+   vtedy klik na mapu nemá otvárať karty */
+const zaneprazdnene=()=>pridavam||!!presuvam;
 const KLUC_MOJE='mib-moje-body';
 const mojeBody=()=>{try{return JSON.parse(localStorage.getItem(KLUC_MOJE)||'[]');}catch(e){return [];}};
 
@@ -568,6 +576,103 @@ function kresliMoje(){
     features:zoz.map((x,i)=>({type:'Feature',geometry:{type:'Point',coordinates:x.suradnice},
       properties:{i:i,nazov:x.nazov,typ:x.typ,faza:x.faza,popis:x.popis,
         autor:x.autor,obrazok:x.obrazok,odkaz:x.odkaz,moj:1}}))});
+}
+
+/* ---------- návrh polohy ----------
+   Ktokoľvek môže bod presunúť tam, kde stavba naozaj je. Nič sa nemení
+   hneď: návrh ide ako verejná položka (issue) do repozitára mapy, redakcia
+   ho v aplikácii Redakcia prevezme jedným klikom a po uložení sa bod
+   presunie. Kto GitHub nemá, skopíruje text a pošle ho mailom. Ak je
+   v komunita.json nastavené `api`, návrh sa pošle tam. */
+let presuvam=null, presunMarker=null;
+const KLUC_NAVRHY='mib-navrhy-polohy', KLUC_KTO='mib-navrh-kto';
+const REPO_MAPY='SamuelZenko/kto-stoji-za-projektom';
+const mojeNavrhy=()=>{try{return JSON.parse(localStorage.getItem(KLUC_NAVRHY)||'{}');}catch(e){return {};}};
+function zacniPresun(id){
+  const f=Z.features.find(x=>x.properties.id===id); if(!f) return;
+  zrusPridavanie(); zavriDetail();
+  presuvam={id:id,p:f.properties,puvod:f.properties.presnost==='presná'?f.geometry.coordinates:null,bod:null};
+  document.body.classList.add('pridavam');
+  $('#navod').classList.add('on');
+  $('#navod-txt').textContent='Klikni na mapu tam, kde „'+(f.properties.nazov_obch||f.properties.nazov).slice(0,48)+'“ naozaj stojí';
+  if(presuvam.puvod) map.easeTo({center:presuvam.puvod,zoom:Math.max(map.getZoom(),15)});
+}
+function polozNavrh(lngLat){
+  const s=[+lngLat.lng.toFixed(6),+lngLat.lat.toFixed(6)];
+  presuvam.bod=s;
+  if(!presunMarker){
+    presunMarker=new maplibregl.Marker({color:'#F3716D',draggable:true}).setLngLat(s).addTo(map);
+    presunMarker.on('dragend',()=>{ const l=presunMarker.getLngLat();
+      presuvam.bod=[+l.lng.toFixed(6),+l.lat.toFixed(6)]; formularNavrhu(); });
+  } else presunMarker.setLngLat(s);
+  $('#navod-txt').textContent='Bod položený — môžeš ho ešte potiahnuť. Potom vyplň, kto návrh posiela.';
+  formularNavrhu();
+}
+function zrusPresun(){
+  presuvam=null;
+  if(presunMarker){ presunMarker.remove(); presunMarker=null; }
+  document.body.classList.remove('pridavam'); $('#navod').classList.remove('on');
+}
+function formularNavrhu(){
+  const p=presuvam.p, s=presuvam.bod;
+  const kto=$('#nv-kto')?$('#nv-kto').value:(localStorage.getItem(KLUC_KTO)||'');
+  const pozn=$('#nv-pozn')?$('#nv-pozn').value:'';
+  const posun=presuvam.puvod?Math.round(vzdialenost(presuvam.puvod[0],presuvam.puvod[1],s[0],s[1])):null;
+  $('#detail').className='detail on'; $('#detail').scrollTop=0;
+  $('#detail').innerHTML='<button class="zavri" onclick="zrusPresun();zavriDetail()">×</button>'
+    +'<div class="stitky"><span class="stitok b">NÁVRH POLOHY</span><span class="stitok">NA SCHVÁLENIE</span></div>'
+    +'<h2>'+esc(p.nazov_obch||p.nazov)+'</h2>'
+    +'<div class="miesto">◉ '+s[1].toFixed(5)+', '+s[0].toFixed(5)
+      +(posun!==null?' · '+cis(posun)+' m od bodu v mape':' · zámer doteraz nemal presnú polohu')+'</div>'
+    +'<div class="form" style="display:flex;flex-direction:column;gap:12px">'
+      +'<div><label>Kto navrhuje *</label><input id="nv-kto" value="'+esc(kto)+'" placeholder="meno, ateliér alebo firma"></div>'
+      +'<div><label>Odkiaľ to vieš (nepovinné)</label><textarea id="nv-pozn" placeholder="napr. stavebné povolenie, tabuľa na plote, vlastný projekt…">'+esc(pozn)+'</textarea></div>'
+    +'</div>'
+    +'<button class="odkaz" id="nv-odosli">'+(KONFIG.api?'Odoslať na schválenie':'Odoslať na schválenie cez GitHub →')+'</button>'
+    +'<button class="odkaz presun" id="nv-kopiruj">Skopírovať text návrhu<span>pre tých, čo GitHub nemajú — pošli ho redakcii mailom</span></button>'
+    +'<p class="pozn">Návrh sa objaví ako verejná položka v repozitári mapy. Redakcia ho prevezme v aplikácii Redakcia '
+    +'a po uložení sa bod presunie. Do mapy sa bez schválenia nič nezapíše.</p>';
+  $('#nv-odosli').onclick=odosliNavrh;
+  $('#nv-kopiruj').onclick=()=>{ const n=zostavNavrh(); if(n) doSchranky(n.text,'Text návrhu skopírovaný'); };
+}
+function zostavNavrh(){
+  const p=presuvam.p, s=presuvam.bod;
+  const kto=$('#nv-kto').value.trim(), pozn=$('#nv-pozn').value.trim();
+  if(!kto){ $('#nv-kto').focus(); hlaska('Napíš, kto návrh posiela.'); return null; }
+  localStorage.setItem(KLUC_KTO,kto);
+  const kedy=new Date().toISOString().slice(0,10);
+  const karta=location.origin+location.pathname+'?id='+encodeURIComponent(p.id);
+  const strojovo=JSON.stringify({id:p.id,poloha:s,kto:kto,pozn:pozn,kedy:kedy});
+  const text='Návrh polohy pre zámer **'+(p.nazov_obch||p.nazov)+'** ('+(p.obec||'')+')\n\n'
+    +'- Karta v mape: '+karta+'\n'
+    +'- Navrhovaná poloha: '+s[1].toFixed(6)+', '+s[0].toFixed(6)
+      +' — https://www.google.com/maps/search/?api=1&query='+s[1].toFixed(6)+','+s[0].toFixed(6)+'\n'
+    +'- Doterajšia poloha v mape: '+(p.presnost==='presná'?'presná ('+(p.zdroj_polohy||'prvý zber')+')':'len ťažisko mestskej časti')+'\n'
+    +'- Navrhuje: '+kto+'\n'+(pozn?'- Poznámka: '+pozn+'\n':'')
+    +'\n<!-- navrh-polohy '+strojovo+' -->\n';
+  return {nazov:'Návrh polohy: '+(p.nazov_obch||p.nazov).slice(0,80)+' ['+p.id+']',text:text,zaznam:{id:p.id,poloha:s,kto:kto,pozn:pozn,kedy:kedy}};
+}
+async function odosliNavrh(){
+  const n=zostavNavrh(); if(!n) return;
+  const id=presuvam.id;
+  if(KONFIG.api){
+    try{
+      const r=await fetch(KONFIG.api,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(Object.assign({druh:'poloha'},n.zaznam))});
+      if(!r.ok) throw new Error('HTTP '+r.status);
+    }catch(e){ hlaska('Server neodpovedal ('+e.message+'), skús GitHub.'); return; }
+  } else {
+    window.open('https://github.com/'+REPO_MAPY+'/issues/new?title='+encodeURIComponent(n.nazov)
+      +'&body='+encodeURIComponent(n.text),'_blank','noopener');
+  }
+  const m=mojeNavrhy(); m[id]=n.zaznam; localStorage.setItem(KLUC_NAVRHY,JSON.stringify(m));
+  zrusPresun();
+  $('#detail').innerHTML='<button class="zavri" onclick="zavriDetail()">×</button>'
+    +'<div class="stitky"><span class="stitok b">NÁVRH POLOHY</span></div>'
+    +'<h2>Ďakujeme</h2>'
+    +'<p class="text">'+(KONFIG.api?'Návrh je odoslaný. ':'V novej karte sa otvoril GitHub s vyplneným návrhom — stačí ho potvrdiť tlačidlom <b>Submit new issue</b>. ')
+    +'Redakcia ho posúdi a po schválení sa bod v mape presunie.</p>'
+    +'<button class="odkaz presun" onclick="doSchranky('+JSON.stringify(n.text).replace(/"/g,'&quot;')+',\'Text návrhu skopírovaný\')">Skopírovať text návrhu<span>keby sa GitHub neotvoril</span></button>';
 }
 
 /* ---------- komunitné body ---------- */
@@ -867,9 +972,9 @@ async function spusti(){
         'text-offset':[1.1,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
         'text-optional':true,'icon-image':'bublina','icon-text-fit':'both','icon-text-fit-padding':[4,8,4,8]},
       paint:{'text-color':'#E4534F'}});
-    map.on('click','osm-b',e=>{ if(!pridavam) ukazOsm(e.features[0].properties); });
-    map.on('mouseenter','osm-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
-    map.on('mouseleave','osm-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
+    map.on('click','osm-b',e=>{ if(!zaneprazdnene()) ukazOsm(e.features[0].properties); });
+    map.on('mouseenter','osm-b',()=>{ if(!zaneprazdnene()) map.getCanvas().style.cursor='pointer';});
+    map.on('mouseleave','osm-b',()=>{ if(!zaneprazdnene()) map.getCanvas().style.cursor='';});
     $('#stav-osm').textContent='('+osm.features.length+')';
     $('#legenda-osm').hidden=!$('#v-osm').checked;
   } else { $('#stav-osm').textContent='(nedá sa načítať)'; }
@@ -886,9 +991,9 @@ async function spusti(){
         'text-offset':[1.1,0],'text-max-width':12,'text-font':['Noto Sans Regular'],
         'text-optional':true,'icon-image':'bublina','icon-text-fit':'both','icon-text-fit-padding':[4,8,4,8]},
       paint:{'text-color':'#000000'}});
-    map.on('click','tab-b',e=>{ if(!pridavam) ukazTabulu(e.features[0].properties); });
-    map.on('mouseenter','tab-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
-    map.on('mouseleave','tab-b',()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
+    map.on('click','tab-b',e=>{ if(!zaneprazdnene()) ukazTabulu(e.features[0].properties); });
+    map.on('mouseenter','tab-b',()=>{ if(!zaneprazdnene()) map.getCanvas().style.cursor='pointer';});
+    map.on('mouseleave','tab-b',()=>{ if(!zaneprazdnene()) map.getCanvas().style.cursor='';});
     $('#stav-tabule').textContent='('+tab.features.length+')';
     $('#legenda-tabule').hidden=!$('#v-tabule').checked;
   } else { $('#stav-tabule').textContent='(nedá sa načítať)'; }
@@ -923,12 +1028,12 @@ async function spusti(){
     const c=$('#v-3d'); c.checked=true; c.dispatchEvent(new Event('change'));
   }
 
-  map.on('click',e=>{ if(pridavam) formularBodu(e.lngLat); });
-  map.on('click','bod',e=>{ if(!pridavam) ukaz(e.features[0].properties); });
-  map.on('click','nez',e=>{ if(!pridavam) ukazNezname(e.features[0].properties.obec); });
+  map.on('click',e=>{ if(pridavam) formularBodu(e.lngLat); else if(presuvam) polozNavrh(e.lngLat); });
+  map.on('click','bod',e=>{ if(!zaneprazdnene()) ukaz(e.features[0].properties); });
+  map.on('click','nez',e=>{ if(!zaneprazdnene()) ukazNezname(e.features[0].properties.obec); });
   ['zh','bod','nez','kom','moj'].forEach(l=>{
-    map.on('mouseenter',l,()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
-    map.on('mouseleave',l,()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
+    map.on('mouseenter',l,()=>{ if(!zaneprazdnene()) map.getCanvas().style.cursor='pointer';});
+    map.on('mouseleave',l,()=>{ if(!zaneprazdnene()) map.getCanvas().style.cursor='';});
   });
 }
 /* Ikony kreslené na plátno — bez externých obrázkov. Bublina je
@@ -1076,7 +1181,7 @@ function kresliDonuty(){
       if(!d||d.kluc!==kluc){
         if(d) d.marker.remove();
         const el=donutEl(p);
-        el.onclick=ev=>{ ev.stopPropagation(); if(pridavam) return;
+        el.onclick=ev=>{ ev.stopPropagation(); if(zaneprazdnene()) return;
           map.getSource('zamery').getClusterExpansionZoom(id)
             .then(zz=>map.easeTo({center:f.geometry.coordinates,zoom:zz+.4})); };
         d={kluc:kluc,marker:new maplibregl.Marker({element:el}).setLngLat(f.geometry.coordinates)};
@@ -1432,7 +1537,7 @@ $('#v-vyska').onchange=async e=>{
     paint:{'line-color':'#000000','line-opacity':.25,'line-width':.6}}, pod);
   $('#stav-vyska').textContent='('+cis(g.features.length)+')';
   map.on('click','vyska-f',ev=>{
-    if(pridavam||nadBodom(ev)) return;
+    if(zaneprazdnene()||nadBodom(ev)) return;
     if(map.getLayer('upn-f') && map.queryRenderedFeatures(ev.point,{layers:['upn-f']}).length) return;
     const p=ev.features[0].properties;
     new maplibregl.Popup({closeButton:false,maxWidth:'280px'}).setLngLat(ev.lngLat)
@@ -1440,8 +1545,8 @@ $('#v-vyska').onchange=async e=>{
         +(p.i?'<br><span style="opacity:.75">'+esc(p.i)+'</span>':'')
         +(p.r?'<br><span style="opacity:.75">'+esc(p.r)+'</span>':'')).addTo(map);
   });
-  map.on('mouseenter','vyska-f',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
-  map.on('mouseleave','vyska-f',()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
+  map.on('mouseenter','vyska-f',()=>{ if(!zaneprazdnene()) map.getCanvas().style.cursor='pointer';});
+  map.on('mouseleave','vyska-f',()=>{ if(!zaneprazdnene()) map.getCanvas().style.cursor='';});
 };
 /* Do karty zámeru s presnou polohou doplní, aká výška je na tom mieste
    povolená. Vrstva sa stiahne až pri prvom takom zámere. */
@@ -1480,8 +1585,8 @@ $('#v-upn').onchange=async e=>{
     paint:{'line-color':'#000000','line-width':1.4,'line-dasharray':[2,1.5]}}, pod);
   $('#stav-upn').textContent='('+g.features.length+')';
   map.on('click','upn-f',ev=>{ if(!pridavam && !nadBodom(ev)) ukazUpn(ev.features[0].properties); });
-  map.on('mouseenter','upn-f',()=>{ if(!pridavam) map.getCanvas().style.cursor='pointer';});
-  map.on('mouseleave','upn-f',()=>{ if(!pridavam) map.getCanvas().style.cursor='';});
+  map.on('mouseenter','upn-f',()=>{ if(!zaneprazdnene()) map.getCanvas().style.cursor='pointer';});
+  map.on('mouseleave','upn-f',()=>{ if(!zaneprazdnene()) map.getCanvas().style.cursor='';});
 };
 function ukazUpn(p){
   $('#detail').className='detail on'; $('#detail').scrollTop=0;
@@ -1507,7 +1612,7 @@ $('#tl-minus').onclick=()=>map.zoomOut();
 $('#tl-domov').onclick=()=>map.easeTo({...DOMOV,bearing:0,pitch:0});
 $('#tl-kompas').onclick=()=>map.easeTo({bearing:0,pitch:0});
 $('#tl-pridat').onclick=()=>pridavam?zrusPridavanie():zacniPridavanie();
-$('#navod-zrus').onclick=()=>{zrusPridavanie(); zavriDetail();};
+$('#navod-zrus').onclick=()=>{zrusPridavanie(); zrusPresun(); zavriDetail();};
 
 /* ---------- šírka panelov ----------
    Ukladá sa, aby si ju nemusel nastavovať pri každom otvorení.
@@ -1681,7 +1786,7 @@ function ukazOkolie(l,zoznam){
 
 map.on('contextmenu',e=>{
   if(e.originalEvent) e.originalEvent.preventDefault();
-  if(!pridavam) ponukaMiesta(e);
+  if(!zaneprazdnene()) ponukaMiesta(e);
 });
 /* zatvára len ľavý klik mimo ponuky — pravý ju práve otvoril */
 document.addEventListener('mousedown',e=>{

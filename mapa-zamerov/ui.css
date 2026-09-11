@@ -335,6 +335,11 @@ body.tiaham .tahadlo-d{transition:background .15s}
 .odkaz.doplnit::after{right:18px;top:50%;transform:translateY(-50%);font-size:19px}
 .odkaz.doplnit span{font-size:12.5px;font-weight:400;opacity:.9;text-transform:none;letter-spacing:0}
 .odkaz.doplnit:hover{background:var(--cierna);border-color:var(--cierna)}
+/* návrh polohy: biele tlačidlo s čiernym rámom, druhá akcia po červenej výzve */
+.odkaz.presun{background:var(--biela);color:var(--tx);border:1px solid var(--cierna);text-align:left;width:100%;
+  display:flex;flex-direction:column;gap:3px;line-height:1.2;cursor:pointer;font-family:inherit;padding:14px 18px}
+.odkaz.presun span{font-size:12.5px;font-weight:400;color:var(--tx2);text-transform:none;letter-spacing:0}
+.odkaz.presun:hover{background:var(--cierna);color:var(--biela)} .odkaz.presun:hover span{color:var(--siva)}
 .pozn{font-size:12px;color:var(--tx3);margin:0}
 .cakajuce{background:var(--plocha);border-left:3px solid var(--cervena);padding:10px 12px;font-size:12.5px;color:var(--tx2)}
 
