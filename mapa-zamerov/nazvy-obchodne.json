@@ -301,5 +301,10 @@
   "nazov": "Dolný Slanec",
   "istota": "stredná",
   "zdroj": "OpenStreetMap — pomenované stavenisko relation/20239642"
+ },
+ "nosny-system-mhd-prevadzkovy-usek-janikov-dvor-safarikovo-namestie-v-b-3": {
+  "nazov": "Nosný systém MHD, prevádzkový úsek Janíkov dvor - Šafárikovo námestie v Bratislave, 2. časť Bosákova ulica - Janíkov dvor",
+  "istota": "stredná",
+  "zdroj": "OpenStreetMap — pomenované stavenisko relation/13765719"
  }
 }
