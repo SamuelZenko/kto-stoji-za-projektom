@@ -1,0 +1,26 @@
+{
+  "_popis": "Ručne overené polohy zámerov. Zapisuje sa skriptom polohy_rucne.py do mapa-zamerov/zamery.geojson. Prepisuje aj polohu označenú ako presná, lebo ručné overenie má najvyššiu dôveru. Každý záznam musí mať zdroj, aby sa dalo spätne skontrolovať.",
+  "zamery": [
+    {
+      "id": "polyfunkcny-komplex-klingerka-bratislava",
+      "nazov": "Klingerka 1 (Polyfunkčný komplex Klingerka)",
+      "bod": [17.133485, 48.142604],
+      "zdroj": "LiDAR DMP 2.0 + OSM: postavená 118 m veža, audit výšok veží 24. 9. 2026",
+      "poznamka": "Automat zahodil polohu: EIA uvádza k. ú. Ružinov (neexistuje, správne je Nivy) a parcely 9247/1, 9247/5 sa v dnešnom katastri nenašli, zrejme prečíslované. Areál je medzi Prístavnou, Súkenníckou, Pláteníckou a Valchárskou. Bod je na postavenej veži."
+    },
+    {
+      "id": "polyfunkcny-subor-stavieb-klingerka-2-polyfunkcny-subor-stavieb-klinge",
+      "nazov": "Klingerka 2 a 3 (Downtown Yards)",
+      "bod": [17.132042, 48.143715],
+      "zdroj": "kataster, ťažisko parciel k. ú. Nivy zo správy o hodnotení (9254/*, 9255/*, 9253/*)",
+      "poznamka": "Automat našiel parcely správne, ale zahodil bod, lebo EIA uvádza mestskú časť Staré Mesto, kým parcely ležia v Ružinove (k. ú. Nivy). Chyba je v zdroji, nie v geokódovaní. Bod je medzi ťažiskom Klingerky 2 a 3."
+    },
+    {
+      "id": "polyfunkcy-subor-stavieb-klingerka-2-stavba-c-5-objekt-so-206-polyfunk",
+      "nazov": "Klingerka 2 a 3, objekty SO 206, SO 301, SO 302",
+      "bod": [17.131759, 48.143017],
+      "zdroj": "kataster, ťažisko parciel Klingerky 3 (9186/45, 9253/5, 9254/1, 9254/6, 9254/15, 9254/17, 9254/18)",
+      "poznamka": "Oznámenie o zmene pre objekty Klingerky 3. SO 302 je 35 až 36 NP veža na nároží Košickej a Prístavnej. Rovnaký dôvod zahodenia ako vyššie: EIA uvádza Staré Mesto."
+    }
+  ]
+}
