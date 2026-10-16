@@ -1,0 +1,182 @@
+/* Dotyková obrazovka 1920 × 1080 nad dizajn systémom TU—BA (../spolocne/tuba.css).
+   Ovláda sa prstom z polmetra, číta sa z dvoch metrov: písmo od 17 px,
+   ovládacie prvky aspoň 56 px, žiadny hover, žiadny scroll stránky. */
+:root{--panel-w:600px;--lista-h:96px}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--plocha)}
+body{font-family:var(--pismo);color:var(--tx);font-size:18px;line-height:1.4;display:flex;flex-direction:column;
+  -webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+button{font-family:inherit;color:inherit;cursor:pointer}
+
+/* ---------- lišta ---------- */
+.lista{flex:none;height:var(--lista-h);display:flex;align-items:stretch;padding:0 0 0 var(--okraj);
+  background:var(--biela);border-bottom:1px solid var(--ciara);z-index:10}
+.znacka{display:flex;align-items:flex-start;align-self:center;height:52px;padding-right:26px;margin-right:26px;border-right:1px solid var(--ciara2)}
+.znacka img{height:52px;margin-right:14px}
+.znacka .kto{font-size:13.5px;line-height:1.14;font-weight:500;white-space:nowrap}
+.lista h1{align-self:center;margin:0 auto 0 0;display:inline-flex;align-items:center;font-size:38px;font-weight:500;
+  text-transform:uppercase;white-space:nowrap;line-height:1}
+.lista h1 .l{display:inline-block;width:3.6em;height:.085em;background:currentColor;margin:0 -.13em 0 -.26em;transform:translateY(-.02em)}
+.rezimy{display:flex}
+.rezimy button{width:248px;border:0;border-left:1px solid var(--ciara);background:var(--biela);padding:0 26px;text-align:left;
+  font-size:30px;font-weight:400;letter-spacing:-.015em;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.rezimy button span{font-size:13px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3)}
+.rezimy button.on{background:var(--cierna);color:var(--biela)}
+.rezimy button.on span{color:var(--siva)}
+
+/* ---------- plocha a mapa ---------- */
+.plocha{flex:1;position:relative;min-height:0}
+#map{position:absolute;inset:0 var(--panel-w) 0 0}
+.maplibregl-ctrl-attrib{font-size:11px}
+
+/* ---------- panel vpravo ---------- */
+.panel{position:absolute;top:0;right:0;bottom:0;width:var(--panel-w);background:var(--biela);border-left:1px solid var(--ciara);
+  display:flex;flex-direction:column}
+.obsah{flex:1;min-height:0;display:flex;flex-direction:column;padding:26px 32px 22px;gap:18px}
+.obsah .stitok{font-size:13px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);margin:0}
+.obsah h2{font-size:46px;font-weight:400;letter-spacing:-.025em;line-height:1;margin:0;text-wrap:balance}
+.obsah h3{font-size:24px;font-weight:400;letter-spacing:-.012em;line-height:1.1;margin:0}
+.obsah p{margin:0}
+.tlm{color:var(--tx3)}
+.pozn{font-size:14px;color:var(--tx3);line-height:1.4}
+.skrol{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;margin:0 -32px;padding:0 32px;
+  scrollbar-width:thin;scrollbar-color:var(--ciara2) transparent}
+.spat{align-self:flex-start;height:56px;padding:0 22px 0 16px;border:1px solid var(--ciara);background:var(--biela);
+  font-size:17px;font-weight:600;display:inline-flex;align-items:center;gap:10px;flex:none}
+.spat:active{background:var(--cierna);color:var(--biela)}
+
+/* veľké čísla — dátum na plagáte */
+.cifry{display:grid;grid-template-columns:repeat(3,1fr);gap:0 22px}
+.cifra{border-top:1px solid var(--ciara);padding-top:10px}
+.cifra b{display:block;font-size:52px;font-weight:400;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.cifra b.cervena{color:var(--cervena2)}
+.cifra span{display:block;font-size:15px;margin-top:6px;line-height:1.25}
+
+/* stĺpcový graf podľa rokov */
+.graf{border-top:1px solid var(--ciara);padding-top:12px}
+.graf svg{display:block;width:100%;height:auto;overflow:visible}
+.graf text{font-family:var(--pismo);font-size:13px;fill:var(--tx3)}
+.graf .os{stroke:var(--ciara)}
+
+/* poradie mestských častí — riadky s pásom */
+.riadky{border-top:1px solid var(--ciara)}
+.riadok{display:grid;grid-template-columns:1fr 64px;align-items:center;gap:12px;min-height:46px;border-bottom:1px solid var(--ciara3);
+  width:100%;background:none;border-left:0;border-right:0;border-top:0;padding:0;text-align:left;font-size:17px}
+.riadok .pas{grid-column:1/-1;height:5px;background:var(--plocha);margin:-6px 0 8px}
+.riadok .pas i{display:block;height:100%;background:var(--cierna)}
+.riadok b{font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+.riadok.on{background:var(--plocha)}
+
+/* fázy — štyri prepínače */
+.fazy{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--ciara)}
+.fazy button{height:64px;border:0;border-left:1px solid var(--ciara);background:var(--biela);font-size:15px;font-weight:500;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.fazy button:first-child{border-left:0}
+.fazy button b{font-size:21px;font-weight:400;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:7px}
+.fazy button.off{color:var(--tx3);background:var(--plocha)}
+.fazy button.off .bod{opacity:.3}
+.bod{display:inline-block;width:13px;height:13px;border-radius:50%;border:1.5px solid #000;flex:none}
+
+/* hľadanie */
+.hladaj{position:relative;flex:none}
+.hladaj input{width:100%;height:60px;border:1px solid var(--ciara);border-radius:0;padding:0 56px 0 52px;font-size:20px;background:var(--biela)}
+.hladaj input:focus{outline:none;box-shadow:0 0 0 1px var(--ciara)}
+.hladaj svg{position:absolute;left:17px;top:50%;transform:translateY(-50%)}
+.hladaj .zmaz{position:absolute;right:0;top:0;width:56px;height:60px;border:0;background:none;font-size:28px;color:var(--tx3)}
+.filtre{display:flex;gap:8px;flex-wrap:wrap;flex:none}
+.filtre button{height:48px;padding:0 16px;border:1px solid var(--ciara2);background:var(--biela);font-size:15px;font-weight:500;
+  display:inline-flex;align-items:center;gap:8px}
+.filtre button.on{background:var(--cierna);color:var(--biela);border-color:var(--cierna)}
+.filtre button b{font-weight:400;opacity:.7}
+
+/* zoznam území: ikona obra VĽAVO od názvu — nič sa neprekrýva */
+.zoznam{display:flex;flex-direction:column}
+.uzemie{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:16px;min-height:76px;padding:8px 0;
+  border:0;border-bottom:1px solid var(--ciara3);background:none;text-align:left;width:100%}
+.uzemie .obor{width:56px;height:56px;display:flex;align-items:center;justify-content:center}
+.uzemie .obor svg{width:52px;height:52px}
+.uzemie .n{font-size:20px;line-height:1.15}
+.uzemie .m{display:block;font-size:14px;color:var(--tx3);margin-top:3px}
+.uzemie .ha{font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.uzemie.on{background:var(--plocha)}
+.uzemie:active{background:var(--plocha)}
+
+/* štítky stavu */
+.stav{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;font-size:13px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;white-space:nowrap}
+.stav.eia{background:var(--cervena);color:var(--biela)}
+.stav.plan{background:var(--biela);border:1px solid var(--ciara)}
+.stav.spi{background:var(--plocha2);color:var(--tx2)}
+
+/* detail — hlavička s obrom vľavo */
+.hlava{display:grid;grid-template-columns:104px 1fr;gap:20px;align-items:end;flex:none}
+.hlava .obor svg{width:104px;height:104px;display:block}
+.udaje{border-top:1px solid var(--ciara)}
+.udaje .r{display:grid;grid-template-columns:170px 1fr;gap:16px;padding:11px 0;border-bottom:1px solid var(--ciara3);font-size:17px}
+.udaje .k{color:var(--tx3)}
+.udaje .v.chyba{color:var(--tx3);font-style:italic}
+.blok{border-top:1px solid var(--ciara);padding-top:12px;display:flex;flex-direction:column;gap:10px}
+.blok.cerveny{border-top:3px solid var(--cervena)}
+.zamer{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline;padding:12px 0;border:0;
+  border-bottom:1px solid var(--ciara3);background:none;text-align:left;width:100%;font-size:18px}
+.zamer .bod{margin-top:3px}
+.zamer .m{grid-column:2;font-size:14.5px;color:var(--tx3)}
+.zamer:last-child{border-bottom:0}
+.qr{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center;border-top:1px solid var(--ciara);padding-top:14px;flex:none}
+.qr .kod{width:120px;height:120px}
+.qr .kod img,.qr .kod canvas{width:120px!important;height:120px!important}
+.qr p{font-size:15px;color:var(--tx2)}
+
+/* investori */
+.investor{display:grid;grid-template-columns:1fr auto;gap:2px 14px;align-items:baseline;padding:13px 0;border:0;
+  border-bottom:1px solid var(--ciara3);background:none;text-align:left;width:100%}
+.investor .n{font-size:19px;line-height:1.2}
+.investor .pocet{font-size:30px;font-weight:400;letter-spacing:-.02em;font-variant-numeric:tabular-nums;grid-row:span 2}
+.investor .m{font-size:14px;color:var(--tx3);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.investor .mini{display:inline-flex;gap:3px}
+.investor .mini i{width:9px;height:9px;border-radius:50%;border:1.2px solid #000;display:inline-block}
+.investor.on{background:var(--plocha)}
+
+/* ---------- spodok mapy: legenda a vrstvy ---------- */
+.spodok{position:absolute;left:var(--okraj);bottom:var(--okraj);right:calc(var(--panel-w) + var(--okraj));
+  display:flex;align-items:flex-end;justify-content:space-between;gap:16px;pointer-events:none}
+.spodok>*{pointer-events:auto}
+.legenda{background:var(--biela);border:1px solid var(--ciara);padding:12px 18px;display:flex;gap:22px;flex-wrap:wrap;align-items:center;font-size:15px}
+.legenda .r{display:inline-flex;align-items:center;gap:9px;white-space:nowrap}
+.legenda .nadpis{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3)}
+.legenda svg{display:block}
+.legenda .kruh{width:18px;height:18px;border-radius:50%;border:1.5px dashed var(--tx3);background:rgba(255,255,255,.6)}
+.vrstvy{display:flex;border:1px solid var(--ciara);background:var(--biela)}
+.vrstvy button{height:56px;padding:0 20px;border:0;border-left:1px solid var(--ciara);background:var(--biela);font-size:16px;font-weight:500;
+  display:inline-flex;align-items:center;gap:10px}
+.vrstvy button:first-child{border-left:0}
+.vrstvy button i{width:18px;height:18px;border:1.5px solid var(--ciara);display:inline-block}
+.vrstvy button.on i{background:var(--cierna);box-shadow:inset 0 0 0 3px var(--biela)}
+
+.mapctrl{position:absolute;top:var(--okraj);right:calc(var(--panel-w) + var(--okraj));display:flex;flex-direction:column;
+  border:1px solid var(--ciara);background:var(--biela)}
+.mapctrl button{width:64px;height:64px;border:0;border-top:1px solid var(--ciara2);background:var(--biela);font-size:30px;line-height:1}
+.mapctrl button:first-child{border-top:0}
+.mapctrl button:active,.vrstvy button:active,.filtre button:active,.fazy button:active{background:var(--cierna);color:var(--biela)}
+
+/* zhluky zámerov — čierna bublina s prstencom fáz (rovnaká ako na mape zámerov) */
+.donut{line-height:0;cursor:pointer}
+.donut svg{display:block;overflow:visible}
+.donut text{font-family:var(--pismo);fill:#fff;font-weight:500}
+
+/* ---------- úvodná obrazovka ---------- */
+.uvod{position:absolute;inset:0;z-index:20;background:var(--papier);padding:calc(var(--okraj)*1.4) calc(var(--okraj)*2);
+  display:grid;grid-template-rows:auto 1fr auto auto auto;gap:28px;cursor:pointer;transition:opacity .4s}
+.uvod[hidden]{display:none}
+.uvod .horny{display:flex;justify-content:space-between;border-bottom:1px solid var(--ciara);padding-bottom:10px;
+  font-size:14px;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
+.uvod h2{align-self:end;font-size:clamp(64px,6.4vw,124px);font-weight:400;letter-spacing:-.035em;line-height:.98;margin:0}
+.uvod p{font-size:26px;line-height:1.32;max-width:40em;margin:0}
+.uvod .cisla{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--okraj)}
+.uvod .cisla .cifra b{font-size:84px}
+.uvod .cisla .cifra span{font-size:19px}
+.uvod .vyzva{display:flex;align-items:center;gap:16px;font-size:20px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  border-top:1px solid var(--ciara);padding-top:16px}
+.uvod .vyzva i{width:18px;height:18px;border-radius:50%;background:var(--cervena);animation:pulz 1.6s ease-in-out infinite}
+@keyframes pulz{50%{transform:scale(1.5);opacity:.5}}
+@media (prefers-reduced-motion:reduce){.uvod .vyzva i{animation:none}}

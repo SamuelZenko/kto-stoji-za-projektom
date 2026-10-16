@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Dotyková obrazovka k makete Bratislavy: kde sa stavia, čo sa deje s brownfieldmi a kto za tým stojí.">
+<title>Zámery Bratislavy · obrazovka</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
+<link rel="stylesheet" href="../spolocne/tuba.css?v=20261016b">
+<link rel="stylesheet" href="obrazovka.css?v=20261016b">
+</head>
+<body>
+
+<div class="lista">
+  <div class="znacka">
+    <img src="../spolocne/logo-mib.svg" alt="MIB">
+    <span class="kto">Metropolitný<br>inštitút<br>Bratislavy</span>
+  </div>
+  <h1>Zámery<span class="l"></span>Bratislavy</h1>
+  <nav class="rezimy" id="rezimy">
+    <button data-rezim="pulz" class="on">Pulz<span>kde a kedy sa stavia</span></button>
+    <button data-rezim="objav">Objav<span>113 nevyužitých území</span></button>
+    <button data-rezim="kto">Kto stavia<span>investori</span></button>
+  </nav>
+</div>
+
+<div class="plocha">
+  <div id="map"></div>
+  <aside class="panel"><div class="obsah" id="obsah"></div></aside>
+
+  <div class="spodok">
+    <div class="legenda" id="legenda"></div>
+    <div class="vrstvy">
+      <button id="v-zamery" class="on" aria-pressed="true"><i></i>Zámery</button>
+      <button id="v-bf" class="on" aria-pressed="true"><i></i>Brownfieldy</button>
+    </div>
+  </div>
+
+  <div class="mapctrl">
+    <button id="tl-plus" aria-label="Priblížiť">+</button>
+    <button id="tl-minus" aria-label="Oddialiť">−</button>
+    <button id="tl-domov" aria-label="Celé mesto">⌖</button>
+  </div>
+
+  <div class="uvod" id="uvod" role="button" tabindex="0" aria-label="Začať">
+    <div class="horny"><span>Metropolitný inštitút Bratislavy · TU—BA</span><span>Register EIA · register brownfieldov MIB 2022</span></div>
+    <h2>Kde sa v Bratislave stavia<br>a kto za tým stojí?</h2>
+    <p>Každý väčší stavebný zámer prejde posudzovaním vplyvov na životné prostredie. Ten register sme položili na mapu, pridali 113 území, ktoré mesto eviduje ako brownfieldy, a ku každému zámeru dohľadali investora.</p>
+    <div class="cisla" id="uvod-cisla"></div>
+    <div class="vyzva"><i></i>Ťukni kdekoľvek</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="obrazovka.js?v=20261016b"></script>
+</body>
+</html>
