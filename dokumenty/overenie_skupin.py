@@ -96,6 +96,7 @@ def skupina_podla_nazvu(meno):
 
 # ---------- vstupy ----------
 R = rpo_cache.nacitaj()
+R.online = "--orsr" in sys.argv      # chýbajúce výpisy doťahovať z www.orsr.sk (pomalé, 3,5 s na dopyt)
 gj = json.load(io.open(os.path.join(MAPA, "zamery.geojson"), encoding="utf-8"))
 tipy = json.load(io.open(os.path.join(TU, "yimba_tipy.json"), encoding="utf-8"))["zamery"] \
     if os.path.exists(os.path.join(TU, "yimba_tipy.json")) else {}
@@ -122,11 +123,24 @@ def over(p):
         if not out["vysledok"]:
             out["pozn"] = "bez IČO v EIA"
         return out
-    retaz = R.retaz(ico)
+    # reťaz sa stavia krok po kroku a končí pri prvej zhode — s ORSR fallbackom
+    # (3,5 s na dopyt) sa tak nedoťahujú výpisy, ktoré už nie sú potrebné
+    retaz, videne, cur = [], set(), ico
+    for _ in range(4):
+        e = R.entita(cur)
+        if not e or cur in videne:
+            break
+        videne.add(cur)
+        firmy = [s for s in e["spolocnici"] if s["ico"]]
+        retaz.append((e, firmy))
+        if any(s["ico"] in g["kotvy"] for s in e["spolocnici"] for g in skupiny.values()) \
+                or any(skupina_podla_nazvu(s["meno"]) for s in e["spolocnici"]) or not firmy:
+            break
+        cur = firmy[0]["ico"]
     if not retaz:
-        out["pozn"] = "výpis RPO nie je v lokálnej kópii"
+        out["pozn"] = "výpis RPO nie je v lokálnej kópii" + (" ani v ORSR" if R.online else "")
         return out
-    out["vypis"] = retaz[0][0]["vypis"]
+    out["vypis"] = retaz[0][0]["vypis"] + (" ORSR" if retaz[0][0].get("zdroj") == "ORSR" else " RPO")
     kroky = []
     for e, firmy in retaz:
         kroky.append(e["meno"])
@@ -193,6 +207,9 @@ for f in gj["features"]:
         do_mapy[p["id"]] = {"skupina": r["skupina_overena"], "dokaz": o["dokaz"], "retaz": o["retaz"],
                             "vypis": o["vypis"], "sila": "štatutári" if "štatutári" in o["vysledok"] else "register"}
 
+if R.online:
+    R.uloz()
+    print("dotiahnuté z ORSR:", R.dotiahnute)
 riadky.sort(key=lambda r: (r["vysledok"] == "", r["vysledok"], r["skupina_overena"], r["zamer"]))
 with io.open(CSV_OUT, "w", encoding="utf-8-sig", newline="") as fh:
     w = csv.DictWriter(fh, fieldnames=list(riadky[0].keys()), delimiter=";")

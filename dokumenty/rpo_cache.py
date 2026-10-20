@@ -51,18 +51,60 @@ def _entita(d, mtime):
     }
 
 
+def _orsr(ico):
+    """Náhrada, keď RPO API neodpovedá (20. 10. 2026): výpis z www.orsr.sk cez parser
+    nástroja mib-register (register_dossier.orsr_ico/orsr_vypis — pauza 3,5 s, cache).
+    Firemný spoločník z ORSR nemá IČO ani štát, len meno — značka v názve stačí."""
+    import sys
+    if MIB not in sys.path:
+        sys.path.insert(0, MIB)
+    import register_dossier as RD
+    RD.HOOK = lambda *a: None
+    try:
+        odkazy = RD.orsr_ico(ico)
+        if not odkazy:
+            return None
+        v = RD.orsr_vypis(odkazy[0][1])
+    except Exception:
+        return None
+    if not v or not v.get("meno"):
+        return None
+    return {
+        "ico": _ico(v.get("ico")) or _ico(ico),
+        "meno": v["meno"], "zanik": "", "sidlo": v.get("sidlo", ""),
+        "statutari": v.get("konatelia", []),
+        "spolocnici": [{"meno": m, "ico": _ico(i), "stat": "", "typ": ""} for m, i in v.get("spolocnici", [])],
+        "vypis": time.strftime("%Y-%m-%d"), "zdroj": "ORSR",
+    }
+
+
 class Register:
     def __init__(self, ent):
         self.ent = ent
+        self.online = False      # True = chýbajúce výpisy doťahovať z ORSR
+        self.dotiahnute = 0
 
     def entita(self, ico):
-        return self.ent.get(_ico(ico))
+        e = self.ent.get(_ico(ico))
+        if e is None and self.online and _ico(ico):
+            e = _orsr(_ico(ico))
+            if e:
+                self.ent[e["ico"]] = e; self.dotiahnute += 1
+                if self.dotiahnute % 10 == 0:
+                    self.uloz()
+            else:
+                self.ent[_ico(ico)] = None   # nenašlo sa — nepýtať sa znova v tomto behu
+        return e
+
+    def uloz(self):
+        json.dump({k: v for k, v in self.ent.items() if v}, io.open(INDEX, "w", encoding="utf-8"),
+                  ensure_ascii=False, indent=0)
 
     def retaz(self, ico, max_hlbka=4):
         """Vlastnícka reťaz nahor: [(entita, spoločník-dict)], kým sú výpisy k dispozícii."""
         von, videne, cur = [], set(), _ico(ico)
         for _ in range(max_hlbka):
-            e = self.ent.get(cur)
+            e = self.entita(cur)
             if not e or cur in videne:
                 break
             videne.add(cur)

@@ -1,816 +1,823 @@
 {
  "zdroj": "RPO (api.statistics.sk) — vlastnícka reťaz spoločníkov; lokálna kópia výpisov nástroja mib-register",
  "zamery": {
+  "-bytovy-objekt-s-vybavenostou-millhaus-": {
+   "skupina": "Immocap",
+   "dokaz": "spoločník Immocap, a.s. (IČO 35944536) je kotva skupiny",
+   "retaz": "BBC Residence, s.r.o. → Central Office II., a.s. → Immocap, a.s.",
+   "vypis": "2026-09-07 RPO",
+   "sila": "register"
+  },
   "-office-pristavna-1-bratislava-": {
    "skupina": "Grafobal Group",
    "dokaz": "spoločník „GRAFOBAL GROUP development, a. s.“ nesie značku skupiny",
    "retaz": "RV Development 2 s. r. o. → GRAFOBAL GROUP development, a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "-pamiatkova-obnova-budovy-pradiarne-bct-bratislava-k-u-ruzinov-zmena-n": {
    "skupina": "YIT Slovakia",
    "dokaz": "značka „yit slovakia“ v názve navrhovateľa",
    "retaz": "YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "-polyfunkcny-objekt-jga": {
    "skupina": "Immocap",
    "dokaz": "spoločník Immocap, a.s. (IČO 35944536) je kotva skupiny",
    "retaz": "Immocap Services, s.r.o. → Immocap, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "-viacpodlazne-parkovisko-jegeho-ulica-bratislava": {
    "skupina": "Immocap",
    "dokaz": "spoločník Immocap, a.s. (IČO 35944536) je kotva skupiny",
    "retaz": "Immocap Services, s.r.o. → Immocap, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "administrativna-budova-bajkalska-31": {
    "skupina": "Metrostav",
    "dokaz": "spoločník „Metrostav Estate a. s.“ nesie značku skupiny",
    "retaz": "PRO TP 08 s. r. o. → Metrostav Estate a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "administrativna-budova-triangel": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE HOLDING LTD“ nesie značku skupiny",
    "retaz": "Ganz house, s.r.o. → JTRE HOLDING LTD",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "administrativna-budova-twin-city-": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Smart City Office s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "administrativna-budova-twin-city-objekt-c34": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Smart City Office s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "architektonicka-studia-navrh-na-zmenu-stavby-pred-jej-dokoncenim-obytn": {
    "skupina": "FINEP",
    "dokaz": "značka „finep“ v názve navrhovateľa",
    "retaz": "FINEP Jégeho alej a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "asanacia-jestvujucich-objektov-areal-byvalej-panelarne-mlynske-nivy-br": {
    "skupina": "YIT Slovakia",
-   "dokaz": "štatutári Mlynárka Land Development s.r.o. sú zároveň štatutármi kotvy skupiny",
-   "retaz": "Mlynárka Land Development s.r.o.",
-   "vypis": "2026-09-07",
-   "sila": "štatutári"
+   "dokaz": "spoločník YIT Slovakia a.s. (IČO 35718625) je kotva skupiny",
+   "retaz": "Mlynárka Land Development s.r.o. → Mlynárka area s.r.o. → YIT Slovakia a.s.",
+   "vypis": "2026-09-07 RPO",
+   "sila": "register"
   },
   "auto-bavaria-bory": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "autocentrum-todos-bratislava-": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bau-land-vzorove-centrum-domov": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bory-byvanie-4a": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „Penta Real Estate Holding Limited“ nesie značku skupiny",
    "retaz": "Bory Home II s.r.o. → Penta Real Estate Holding Limited",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bory-byvanie-4b-obytny-subor-bory-susedske-dvory-": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „Penta Real Estate Holding Limited“ nesie značku skupiny",
    "retaz": "Bory Home II s.r.o. → Penta Real Estate Holding Limited",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bory-byvanie-etapa-6": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory Home s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bory-home-ii-bratislava": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory Home s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bory-home-iii": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory Home s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bory-mall-expanzia-exterierove-parkovisko-bory-byvanie-6-cast-namestie": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory Home s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bory-nadvorie": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory Home s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bory-office-space": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Ubytovne s. r. o. → Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bytovy-dom-fuxova-ul-bratislava-1": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE HOLDING LTD“ nesie značku skupiny",
    "retaz": "FUXTON, s. r. o. → JTRE HOLDING LTD",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bytovy-dom-s-obcianskou-vybavenostou-muchovo-nam-v-mc-bratislava-petrz": {
    "skupina": "VI Group",
    "dokaz": "štatutári VI GROUP Petržalka s. r. o. sú zároveň štatutármi kotvy skupiny",
    "retaz": "VI GROUP Petržalka s. r. o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "štatutári"
   },
   "bytovy-dom-sky-park-tower-": {
    "skupina": "Alto Real Estate",
    "dokaz": "spoločník Alto Real Estate j. s. a. (IČO 54331617) je kotva skupiny",
    "retaz": "SKY PARK TOWER, s. r. o. → Alto Real Estate j. s. a.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bytovy-obciansky-subor-stavieb-devinska-nova-ves-pod-srdcom-": {
    "skupina": "Proxenta",
    "dokaz": "značka „proxenta“ v názve navrhovateľa",
    "retaz": "PROXENTA Private Equity, s. r. o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "bytovy-subor-hrube-luky-agatova-bratislava--1": {
    "skupina": "Corwin",
    "dokaz": "spoločník „CORWIN j. s. a.“ nesie značku skupiny",
    "retaz": "CC THETA, s.r.o. → CORWIN j. s. a.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "citypark-ruzinov-so-201-d-polyfunkcny-objekt-d-s-podzemnymi-parkovacim": {
    "skupina": "Metrostav",
    "dokaz": "spoločník „Metrostav Estate a. s.“ nesie značku skupiny",
    "retaz": "PRO TP 06 s. r. o. → Metrostav Estate a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "decathlon-bory": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "florian-offices": {
    "skupina": "Alto Real Estate",
    "dokaz": "spoločník Alto Real Estate j. s. a. (IČO 54331617) je kotva skupiny",
    "retaz": "Florian Offices, s.r.o. → Alto Real Estate j. s. a.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "forum-business-center-ii-bratislava": {
    "skupina": "Metrostav",
    "dokaz": "spoločník „Metrostav Estate a. s.“ nesie značku skupiny",
    "retaz": "Pressburg Urban Projects a. s. → Metrostav Estate a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "green-park--1": {
    "skupina": "Grafobal Group",
    "dokaz": "značka „grafobal group development“ v názve navrhovateľa",
    "retaz": "GRAFOBAL GROUP development, a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "green-park-": {
    "skupina": "Grafobal Group",
    "dokaz": "spoločník „GRAFOBAL GROUP development, a. s.“ nesie značku skupiny",
    "retaz": "RV Development 3 s. r. o. → GRAFOBAL GROUP development, a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "hotel-yasmin-bratislava": {
    "skupina": "Cresco Real Estate",
    "dokaz": "spoločník „Cresco Capital, a.s.“ nesie značku skupiny",
    "retaz": "VACHEL SK, s.r.o. → Cresco Capital, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "hroznovy-sad-bratislava-m-c-raca": {
    "skupina": "VI Group",
    "dokaz": "spoločník „VI GROUP REAL ESTATE HOLDING s.r.o.“ nesie značku skupiny",
    "retaz": "VI GROUP Bývanie pod lesom, s.r.o. → VI GROUP REAL ESTATE HOLDING s.r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "juzne-mesto-zona-a3-a5-viacpodlazna-bytova-vystavba": {
    "skupina": "Cresco Real Estate",
    "dokaz": "spoločník „Cresco Capital, a.s.“ nesie značku skupiny",
    "retaz": "South City W, s.r.o. → Cresco Capital, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "juzne-mesto-zona-ab1-ab4-bratislava-petrzalka": {
    "skupina": "Cresco Real Estate",
    "dokaz": "spoločník „Cresco Capital, a.s.“ nesie značku skupiny",
    "retaz": "South City E, s.r.o. → Cresco Capital, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "juzne-mesto-zona-ab1-bratislava-petrzalka": {
    "skupina": "Cresco Real Estate",
    "dokaz": "spoločník „Cresco Capital, a.s.“ nesie značku skupiny",
    "retaz": "South City E, s.r.o. → Cresco Capital, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "juzne-mesto-zona-c2-ii-etapa-bratislava": {
    "skupina": "Cresco Real Estate",
    "dokaz": "spoločník „Cresco Capital, a.s.“ nesie značku skupiny",
    "retaz": "Južné mesto IS s.r.o. → Cresco Capital, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "lakeside-park-03-": {
    "skupina": "Cresco Real Estate",
    "dokaz": "spoločník „JM - Cresco, s.r.o.“ nesie značku skupiny",
    "retaz": "Lakeside 3, s.r.o. → JM - Cresco, s.r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "logisticke-centrum-letisko-m-r-stefanika-bratislava": {
    "skupina": "P3 Logistic Parks",
    "dokaz": "spoločník „P3 Logistic Parks S.á r.l.“ nesie značku skupiny",
    "retaz": "P3 Logistic Parks Slovakia s. r. o. → P3 Logistic Parks S.á r.l.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "logisticko-vyrobny-park-dnv": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE HOLDING LTD“ nesie značku skupiny",
    "retaz": "Esterian, a.s. → JTRE HOLDING LTD",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "merkury-market-bratislava-ii": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "nabytkove-studio-segum": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "namestie-podzemne-garaze-pre-pradiaren-bct": {
    "skupina": "YIT Slovakia",
    "dokaz": "značka „yit slovakia“ v názve navrhovateľa",
    "retaz": "YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "nemocnica-novej-generacie-bratislava": {
    "skupina": "Penta Real Estate",
    "dokaz": "značka „svet zdravia“ v názve navrhovateľa",
    "retaz": "Svet zdravia Development, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "nido-2-projekt-obcianskej-vybavenosti-apartmanove-byvanie-komercne-pri": {
    "skupina": "Iuris Group",
    "dokaz": "spoločník „IURIS INVEST, s.r.o.“ nesie značku skupiny",
    "retaz": "Pri Kuchajde 2, s. r. o. → IURIS INVEST, s.r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "nove-suty-obytna-zona-dokumentacia-pre-stavebne-povolenie": {
    "skupina": "VI Group",
    "dokaz": "značka „vi group“ v názve navrhovateľa",
    "retaz": "VI GROUP, spol. s r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "nove-suty-obytna-zona": {
    "skupina": "VI Group",
    "dokaz": "značka „vi group“ v názve navrhovateľa",
    "retaz": "VI GROUP, spol. s r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "novostavba-administrativnej-budovy-the-mill": {
    "skupina": "Immocap",
    "dokaz": "značka „immocap“ v názve navrhovateľa",
    "retaz": "Mill Investments s. r. o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "novostavba-hotela-bratislava": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "novy-istropolis-integracia-funkcnych-zon": {
    "skupina": "Immocap",
    "dokaz": "spoločník Immocap, a.s. (IČO 35944536) je kotva skupiny",
    "retaz": "Trnavské Mýto, a.s. → Immocap, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obchodne-administrativne-centrum-spolocnosti-ptacek-sprava-bratislava": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obchodne-centrum-mobelix-bratislava-bory": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obchodno-vystavne-objekty": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obchodny-areal-ama-centrum-bratislava-bory-": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obchodny-dom-kika-ii-bory-mall-bratislava-lamac": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obnova-dostavba-casti-arealu-palma": {
    "skupina": "Corwin",
    "dokaz": "spoločník „CORWIN j. s. a.“ nesie značku skupiny",
    "retaz": "CC LAMBDA, s.r.o. → CORWIN j. s. a.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obytne-subory-viedenska-cesta-zapad-1": {
    "skupina": "YIT Slovakia",
    "dokaz": "značka „yit slovakia“ v názve navrhovateľa",
    "retaz": "YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obytny-subor-devinska-nova-ves-": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory Home s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obytny-subor-fazulova-1": {
    "skupina": "Alto Real Estate",
    "dokaz": "spoločník Alto Real Estate j. s. a. (IČO 54331617) je kotva skupiny",
    "retaz": "Florian Residence s.r.o. → Alto Real Estate j. s. a.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obytny-subor-jegeho-alej-iii-iv-etapa-jegeho-ulica-bratislava-zmena-do": {
    "skupina": "FINEP",
    "dokaz": "značka „finep“ v názve navrhovateľa",
    "retaz": "FINEP Jégeho alej a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obytny-subor-lamac": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory Home s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obytny-subor-rinok-raca": {
    "skupina": "Bencont",
    "dokaz": "spoločník BENCONT DEVELOPMENT, a. s. (IČO 44119640) je kotva skupiny",
    "retaz": "2JTI, s.r.o. → BENCONT DEVELOPMENT, a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obytny-subor-skultetyho-bratislava": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bavint, s.r.o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obytny-subor-skultetyho-ulica-bratislava": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bavint, s.r.o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obytny-subor-susedske-dvory": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „Penta Real Estate Holding Limited“ nesie značku skupiny",
    "retaz": "Bory Home II s.r.o. → Penta Real Estate Holding Limited",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "obytny-subor-teslova": {
    "skupina": "Metrostav",
    "dokaz": "spoločník „Metrostav Estate a. s.“ nesie značku skupiny",
    "retaz": "MTS SVK Development 10, s. r. o. → Metrostav Estate a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "office-space-bory": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "patio_hranicna_polyfunkcny-objekt-zmena-": {
    "skupina": "Grafobal Group",
    "dokaz": "značka „grafobal group development“ v názve navrhovateľa",
    "retaz": "GRAFOBAL GROUP development, a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "patio_hranicna_polyfunkcny-objekt": {
    "skupina": "Grafobal Group",
    "dokaz": "značka „grafobal group development“ v názve navrhovateľa",
    "retaz": "GRAFOBAL GROUP development, a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "petrzalka-city-lokalita-2-etapa-subor-stavieb-bratislava-petrzalka-cas": {
    "skupina": "Lentimex",
    "dokaz": "spoločník „Lentimex Development, a.s.“ nesie značku skupiny",
    "retaz": "FORESPO PETRŽALKA CITY a. s. → Lentimex Development, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "podkerepusky": {
    "skupina": "Grafobal Group",
    "dokaz": "spoločník „GRAFOBAL GROUP akciová spoločnosť“ nesie značku skupiny",
    "retaz": "Alcech, spol. s r.o. → GRAFOBAL GROUP akciová spoločnosť",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfuncny-subor-bct-1-bytove-domy": {
    "skupina": "YIT Slovakia",
    "dokaz": "značka „yit slovakia“ v názve navrhovateľa",
    "retaz": "YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcna-stavba-nova-bottova-1": {
    "skupina": "Alto Real Estate",
    "dokaz": "spoločník Alto Real Estate j. s. a. (IČO 54331617) je kotva skupiny",
    "retaz": "Smart City Office VIII s. r. o. → Alto Real Estate j. s. a.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcna-stavba-twin-city-bratislava-objekty-c0-c2-c34": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Smart City Office s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcne-centrum": {
    "skupina": "VI Group",
    "dokaz": "značka „vi group“ v názve navrhovateľa",
    "retaz": "VI GROUP Development s.r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcne-mestske-centrum-zuckermandel-celok-zizkova-nabrezie-arm-ge-3": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE PROPERTIES LIMITED“ nesie značku skupiny",
    "retaz": "Bratislavské podhradie, s.r.o. → JTRE PROPERTIES LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcne-objekty-vlcie-maky-budovy-obchodu-vyroby-sluzieb": {
    "skupina": "ELITE Holding",
    "dokaz": "značka „elite holding“ v názve navrhovateľa",
    "retaz": "ELITE HOLDING, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcne-uzemie-lamacska-brana-predlzenie-saratovskej": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-blok-cpr-bratislava": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE HOLDING LTD“ nesie značku skupiny",
    "retaz": "WOAL s. r. o. → JTRE HOLDING LTD",
-   "vypis": "2026-09-04",
+   "vypis": "2026-09-04 RPO",
    "sila": "register"
   },
   "polyfunkcny-bytovy-dom-rezidencia-medzi-hviezdami": {
    "skupina": "Proxenta",
    "dokaz": "štatutári Rezidencia medzi hviezdami a. s. sú zároveň štatutármi kotvy skupiny",
    "retaz": "Rezidencia medzi hviezdami a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "štatutári"
   },
   "polyfunkcny-bytovy-objekt-kreal-bratislava-petrzalka-": {
    "skupina": "VI Group",
    "dokaz": "štatutári VI GROUP Matadorka s. r. o. sú zároveň štatutármi kotvy skupiny",
-   "retaz": "VI GROUP Matadorka s. r. o.",
-   "vypis": "2026-09-07",
+   "retaz": "VI GROUP Matadorka s. r. o. → Feiglerov dom  a. s. v likvidácii",
+   "vypis": "2026-09-07 RPO",
    "sila": "štatutári"
   },
   "polyfunkcny-komplex-aura-mlynske-nivy-bratislava": {
    "skupina": "Immocap",
    "dokaz": "spoločník Immocap, a.s. (IČO 35944536) je kotva skupiny",
    "retaz": "Immocap Boulevard s. r. o. → Immocap, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-komplex-baurea-ivanska-cesta-1": {
    "skupina": "VI Group",
    "dokaz": "značka „vi group“ v názve navrhovateľa",
    "retaz": "VI GROUP Development s.r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-komplex-ceresne-2": {
    "skupina": "ITB Development",
    "dokaz": "štatutári ITIS s. r. o. sú zároveň štatutármi kotvy skupiny",
    "retaz": "ITIS s. r. o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "štatutári"
   },
   "polyfunkcny-komplex-cpr-blok-cpr-b-polyfunkcny-blok-cpr-c-": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE HOLDING LTD“ nesie značku skupiny",
    "retaz": "WOAL s. r. o. → JTRE HOLDING LTD",
-   "vypis": "2026-09-04",
+   "vypis": "2026-09-04 RPO",
    "sila": "register"
   },
   "polyfunkcny-komplex-ehq": {
    "skupina": "Immocap",
    "dokaz": "spoločník Immocap, a.s. (IČO 35944536) je kotva skupiny",
    "retaz": "EHQ s.r.o. → Immocap, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-komplex-harmincova-": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE HOLDING LTD“ nesie značku skupiny",
    "retaz": "Wayden, s.r.o. → JTRE HOLDING LTD",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-komplex-nova-cvernovka-century-residence-ii-etapa-cast-d-e": {
    "skupina": "FINEP",
    "dokaz": "značka „finep“ v názve navrhovateľa",
    "retaz": "FINEP Jégeho alej a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-komplex-polianky-1": {
    "skupina": "ITB Development",
    "dokaz": "spoločník ITB Development a.s. (IČO 35870176) je kotva skupiny",
    "retaz": "Jannis s. r. o. → ITB Development a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-objekt-brany-": {
    "skupina": "VI Group",
    "dokaz": "značka „vi group“ v názve navrhovateľa",
    "retaz": "VI GROUP, spol. s r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-objekt-chalupkova-r1": {
    "skupina": "Alto Real Estate",
    "dokaz": "spoločník Alto Real Estate j. s. a. (IČO 54331617) je kotva skupiny",
    "retaz": "Smart City Office I s. r. o. → Alto Real Estate j. s. a.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-objekt-endlicher-house-sancova-ulica-bratislava": {
    "skupina": "FINEP",
    "dokaz": "značka „finep“ v názve navrhovateľa",
    "retaz": "FINEP Premiére, s. r. o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-objekt-kosicka": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Smart City Office s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-objekt-kreal-bratislava-petrzalka": {
    "skupina": "VI Group",
    "dokaz": "štatutári VI GROUP Matadorka s. r. o. sú zároveň štatutármi kotvy skupiny",
-   "retaz": "VI GROUP Matadorka s. r. o.",
-   "vypis": "2026-09-07",
+   "retaz": "VI GROUP Matadorka s. r. o. → Feiglerov dom  a. s. v likvidácii",
+   "vypis": "2026-09-07 RPO",
    "sila": "štatutári"
   },
   "polyfunkcny-objekt-mlynske-nivy": {
    "skupina": "YIT Slovakia",
    "dokaz": "spoločník YIT Slovakia a.s. (IČO 35718625) je kotva skupiny",
    "retaz": "Nuppu Housing s. r. o. → YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-objekt-staromestska-office": {
    "skupina": "Cresco Real Estate",
    "dokaz": "spoločník „Cresco Capital, a.s.“ nesie značku skupiny",
    "retaz": "VACHEL SK, s.r.o. → Cresco Capital, a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-objekt-triangel": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE HOLDING LTD“ nesie značku skupiny",
    "retaz": "Ganz house, s.r.o. → JTRE HOLDING LTD",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-obytny-subor-dubravcice-vychod-i-etapa-bratislava-dubravka": {
    "skupina": "YIT Slovakia",
    "dokaz": "značka „yit slovakia“ v názve navrhovateľa",
    "retaz": "YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-subor-bajkalska": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE HOLDING LTD“ nesie značku skupiny",
    "retaz": "FUXTON, s. r. o. → JTRE HOLDING LTD",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-subor-bct-1-bytove-domy": {
    "skupina": "YIT Slovakia",
    "dokaz": "značka „yit slovakia“ v názve navrhovateľa",
    "retaz": "YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-subor-bct-2-bytove-domy-": {
    "skupina": "YIT Slovakia",
    "dokaz": "spoločník YIT Slovakia a.s. (IČO 35718625) je kotva skupiny",
    "retaz": "ZWIRN area s.r.o. → YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-subor-bct-3-administrativa-bytove-domy-": {
    "skupina": "YIT Slovakia",
    "dokaz": "spoločník YIT Slovakia a.s. (IČO 35718625) je kotva skupiny",
    "retaz": "ZWIRN area s.r.o. → YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-subor-hranicna-ulica-bratislava-ruzinov-1": {
    "skupina": "YIT Slovakia",
    "dokaz": "značka „yit slovakia“ v názve navrhovateľa",
    "retaz": "YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-subor-new-stein-bratislava": {
    "skupina": "YIT Slovakia",
    "dokaz": "značka „yit“ v názve navrhovateľa",
    "retaz": "YIT Slovakia a.s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-subor-r66-racianska-bratislava": {
    "skupina": "Corwin",
    "dokaz": "spoločník „CORWIN j. s. a.“ nesie značku skupiny",
    "retaz": "CC Pi s.r.o. → CORWIN j. s. a.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-subor-rybnicna-": {
    "skupina": "VI Group",
    "dokaz": "značka „vi group“ v názve navrhovateľa",
    "retaz": "VI GROUP, spol. s r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcny-subor-vajnorska": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "UNL, s.r.o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "polyfunkcy-subor-stavieb-klingerka-2-stavba-c-5-objekt-so-206-polyfunk": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE HOLDING LTD“ nesie značku skupiny",
    "retaz": "Averta, s.r.o. → JTRE HOLDING LTD",
-   "vypis": "2026-09-04",
+   "vypis": "2026-09-04 RPO",
    "sila": "register"
   },
   "predlzenie-dubravsko-karloveskej-radialy-cez-tiop-lamacska-brana-po-bo": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "pri-rybniku": {
    "skupina": "Retep Slovakia",
    "dokaz": "značka „retep slovakia“ v názve navrhovateľa",
    "retaz": "RETEP SLOVAKIA, s.r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "priemyselny-park-dnv-iii-etapa-so-01-6-montazno-skladova-hala-hqm-so-0": {
    "skupina": "J&T Real Estate",
    "dokaz": "spoločník „JTRE HOLDING LTD“ nesie značku skupiny",
    "retaz": "Esterian, a.s. → JTRE HOLDING LTD",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "prima-park-bytovy-dom-jasikova-ulica-bratislava-2-etapa-2016": {
    "skupina": "Cresco Real Estate",
    "dokaz": "značka „cresco“ v názve navrhovateľa",
    "retaz": "CRESCO Ružinov s.r.o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "priprava-uzemia-devinska-n-ves-lamac-i-etapa-2-cast": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "radove-domy-v-obytnej-zone-zahorske-sady-zahorska-bystrica": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Tirrellus, s.r.o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "retail-park-bory": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "revitalizacia-namestia-podzemne-garaze-na-ul-ivana-horvatha-v-bratisla": {
@@ -824,84 +831,84 @@
    "skupina": "Alto Real Estate",
    "dokaz": "spoločník Alto Real Estate j. s. a. (IČO 54331617) je kotva skupiny",
    "retaz": "STORE.TO Rača, s. r. o. → Alto Real Estate j. s. a.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "revitalizacia-transformacia-casti-brownfieldu-palma": {
    "skupina": "Corwin",
    "dokaz": "spoločník „CORWIN j. s. a.“ nesie značku skupiny",
    "retaz": "CG SK SPV 1 s.r.o. → CC LAMBDA, s.r.o. → CORWIN j. s. a.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "sancova-premiere": {
    "skupina": "FINEP",
    "dokaz": "značka „finep“ v názve navrhovateľa",
    "retaz": "FINEP Premiére, s. r. o.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "showroom-hyundai-v-bratislave-v-lokalite-bory": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "siko-bory-bratislava": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "southbank-bratislava": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "South Bank s. r. o. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "spojena-skola-felix-bory": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "sterilwave-440": {
    "skupina": "Penta Real Estate",
    "dokaz": "značka „nemocnica bory“ v názve navrhovateľa",
    "retaz": "Nemocnica BORY, a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "ubytovacie-zariadenie-pre-zdravotnicky-personal": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Ubytovne s. r. o. → Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "vystavno-predajne-centrum-asko-porta-bratislava": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "x-box-petzalka-bratislava": {
    "skupina": "Proxenta",
    "dokaz": "spoločník „PROXENTA a. s.“ nesie značku skupiny",
    "retaz": "StorageX a. s. → PROXENTA a. s.",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   },
   "zariadenie-socialnych-sluzieb-objekt-objekt-b-c-": {
    "skupina": "Penta Real Estate",
    "dokaz": "spoločník „PENTA REAL ESTATE HOLDING LIMITED“ nesie značku skupiny",
    "retaz": "Bory, a. s. → PENTA REAL ESTATE HOLDING LIMITED",
-   "vypis": "2026-09-07",
+   "vypis": "2026-09-07 RPO",
    "sila": "register"
   }
  }
