@@ -44,3 +44,8 @@ Mapa (`app.js`, `zlucRedakciu`) zlúči `redakcia.json` pri načítaní: poloha 
 `.github/workflows/tyzdenny.yml` spúšťa každý pondelok 06:00 (a ručne cez *Actions → tyzdenny-beh → Run workflow*) skript `beh_tyzdenny.py`: úradné tabule → staveniská z OSM (prvý týždeň v mesiaci alebo prepínač `osm`) → `ocisti.py` → nová verzia `?v=` → commit a push zmien mapy. Archív vyhlášok `tabule_zaznamy.json` žije v súkromnom repe `kto-stoji-za-projektom-archiv` (deploy key v tajomstve `ARCHIV_KEY`), do verejného repa sa nikdy nedostane. Priebeh každého behu je v `beh_log.md`.
 
 Čo v cloude zatiaľ nebeží: zber z Enviroportálu, parcely nových zámerov, ochranné známky (skripty sú tu, ale zber EIA leží mimo repa) — spúšťať lokálne raz mesačne, alebo doplniť do workflow.
+## Skupiny doložené z registra (20. 10. 2026)
+
+1. `yimba_polohy.py` → `yimba_skupiny.py` – jednorazová nápoveda z yimba.sk (pole Developer); výstupy sú v .gitignore, do mapy nejdú.
+2. `rpo_cache.py` – index výpisov RPO z lokálnej cache nástroja mib-register (`.cache`), beží aj keď RPO API neodpovedá.
+3. `overenie_skupin.py` – vlastnícka reťaz navrhovateľa (spoločník → spoločník…) proti tabuľke skupín (kotvy IČO + značky, `skupiny.py` v mib-register + aliasy); doložené → `mapa-zamerov/skupiny-overene.json` (karta: štítok „register“ s reťazou na hover), kontrola v `skupiny_overene.csv`.

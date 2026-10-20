@@ -441,7 +441,17 @@ function ukaz(p,z){
    firmy — a karta to musí povedať, nie tvrdiť „stavia X". */
 function riadokSkupiny(p){
   if(!p.skupina) return riadok('Skupina', null);
+  if(p.sk_ist==='dolozena'&&p.sk_dokaz){
+    const t='Doložené z Registra právnických osôb: '+p.sk_dokaz+'. Reťaz: '+(p.sk_retaz||'')
+      +(p.sk_vypis?' (výpis '+p.sk_vypis+')':'')+(p.sk_sila==='štatutári'?'. Slabší dôkaz — zhoda štatutárov, nie vlastníctvo.':'');
+    return riadok('Skupina', '<span class="v">'+esc(p.skupina)
+      +' <i class="ind reg" title="'+esc(t)+'">'+(p.sk_sila==='štatutári'?'štatutári':'register')+'</i></span>', true);
+  }
   if(p.sk_ist==='dolozena') return riadok('Skupina', esc(p.skupina));
+  if(p.sk_ist==='yimba') return riadok('Skupina', '<span class="v">'+esc(p.skupina)
+    +' <a class="ind yim" href="'+esc(p.yimba_url||'https://www.yimba.sk')+'" target="_blank" rel="noopener" '
+    +'title="Podľa yimba.sk — pri projekte „'+esc(p.yimba_nazov||'')+'“ uvádza ako developera '+esc(p.skupina)
+    +'. Je to ich redakčný údaj, nie doklad z registra (vlastníctvo ani značka nie sú overené).">podľa yimba</a></span>', true);
   return riadok('Skupina', '<span class="v">sídli na adrese skupiny '+esc(p.skupina)
     +' <i class="ind" title="Len zhoda sídla firmy so sídlom skupiny. '
     +'Nie je to doložené vlastníctvom ani značkou.">indícia</i></span>', true);
@@ -476,6 +486,12 @@ function riadokPolohy(p){
   if(p.zdroj_polohy==='osm')
     return riadok('Poloha', '<span class="v">stavenisko<span class="pozn-stav">podľa rovnomenného staveniska '
       +'v OpenStreetMap ('+esc(p.osm||'')+') — komunitný údaj</span></span>', true);
+  if(p.zdroj_polohy==='ručne')
+    return riadok('Poloha', '<span class="v">overené ručne'
+      +'<span class="pozn-stav">'+esc(p.poloha_zdroj||'bez uvedenia zdroja')+'</span></span>', true);
+  if(p.zdroj_polohy==='ulica v MČ' && p.poloha_zdroj)
+    return riadok('Poloha', '<span class="v">'+esc(p.ulica||'ulica')
+      +'<span class="pozn-stav">'+esc(p.poloha_zdroj)+' — stred úseku ulice, nie konkrétny pozemok</span></span>', true);
   return riadok('Poloha', '<span class="v">'+esc(p.ulica||'presná')
     +'<span class="pozn-stav">'+(p.ulica?'stred ulice podľa adresných bodov — nie konkrétny pozemok':'z prvého zberu, bez uvedenej ulice')+'</span></span>', true);
 }
@@ -930,7 +946,37 @@ const DATA=Promise.all([
   ber('osm-staveniska.geojson',null),
   ber('tabule-stavby.geojson',null),
   ber('redakcia.json',null),
-  ber('stav.json',{})]);
+  ber('stav.json',{}),
+  ber('yimba.json',null),
+  ber('skupiny-overene.json',null)]);
+
+/* ---------- skupiny doložené z registra ----------
+   dokumenty/overenie_skupin.py prejde vlastnícku reťaz navrhovateľa v RPO
+   (spoločník → spoločník spoločníka) a skupinu zapíše len tam, kde v reťazi
+   sedí kotva skupiny (IČO) alebo jej značka v názve firmy. Karta ukáže
+   reťaz a dátum výpisu. Prepisuje indíciu zo sídla — register je silnejší. */
+function zlucOverene(z,ov){
+  if(!ov||!ov.zamery) return;
+  z.features.forEach(f=>{
+    const p=f.properties, o=ov.zamery[p.id]; if(!o||!o.skupina) return;
+    p.skupina=o.skupina; p.sk_ist='dolozena'; p.sk_dokaz=o.dokaz||''; p.sk_retaz=o.retaz||'';
+    p.sk_vypis=o.vypis||''; p.sk_sila=o.sila||'register';
+  });
+}
+
+/* ---------- skupiny podľa yimba.sk ----------
+   Jednorazovo stiahnuté pole „Developer" zo stránok projektov na yimba.sk
+   (dokumenty/yimba_skupiny.py). Je to ich ručne vedený údaj, nie doklad
+   z registra — karta to píše ako „podľa yimba.sk" s odkazom na ich stránku.
+   Doloženú skupinu (IČO / značka) neprepisuje, len dopĺňa indície a prázdne. */
+function zlucYimbu(z,yim){
+  if(!yim||!yim.zamery) return;
+  z.features.forEach(f=>{
+    const p=f.properties, y=yim.zamery[p.id]; if(!y||!y.skupina) return;
+    if(p.sk_ist==='dolozena') return;
+    p.skupina=y.skupina; p.sk_ist='yimba'; p.yimba_url=y.url; p.yimba_nazov=y.nazov||'';
+  });
+}
 
 /* ---------- redakčná vrstva ----------
    Ručné doplnenia z aplikácie /redakcia/ (poloha, obrázky, obchodný názov,
@@ -965,10 +1011,10 @@ function zlucRedakciu(z,red){
 let spustene=false;
 async function spusti(){
   if(spustene) return; spustene=true;
-  let mc,z,ul,naz,osm,tab,red,stav;
+  let mc,z,ul,naz,osm,tab,red,stav,yim,ov;
   try{ pridajPodklad(); }
   catch(e){ console.warn('podklad sa nepridal:',e.message); }
-  try{ [KONFIG,mc,z,ul,naz,osm,tab,red,stav]=await DATA; }
+  try{ [KONFIG,mc,z,ul,naz,osm,tab,red,stav,yim,ov]=await DATA; }
   catch(e){ $('#c-spolu').textContent='Dáta sa nenačítali'; spustene=false; return; }
   Z=z;
   /* komerčné názvy sú ručný zoznam — register ich nepozná a ochranné
@@ -978,6 +1024,8 @@ async function spusti(){
     else if(n.nazov){ f.properties.nazov_obch=n.nazov; f.properties.nazov_zdroj=(n.zdroj||'')+(n.istota?' · istota '+n.istota:''); } });
   /* redakcia prepíše názov aj polohu — je to ručne overený údaj */
   zlucRedakciu(z,red);
+  zlucOverene(z,ov);
+  zlucYimbu(z,yim);
   oznacNovinky(z,tab,stav);
   mc.features.forEach(f=>{
     const a=f.properties||{}, nz=a.NAZOV_ZUJ||a.MC_LABEL||''; if(!nz||!f.geometry) return;

@@ -3,3 +3,13 @@ dokumenty/*_log.txt
 dokumenty/*_err.txt
 mapa-zamerov/_test*.html
 dokumenty/tabule_zaznamy.json
+
+# yimba.sk – stiahnuté redakčné údaje len ako lokálna nápoveda, nepublikovať
+dokumenty/yimba_detaily.json
+dokumenty/yimba_projekty.json
+dokumenty/yimba_tipy.json
+dokumenty/yimba_navrhy.json
+dokumenty/yimba_*.csv
+dokumenty/yimba_*log*.txt
+dokumenty/skupiny_overene.csv
+dokumenty/rpo_cache_index.json

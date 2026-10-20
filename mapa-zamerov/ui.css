@@ -274,6 +274,11 @@ body.tiaham .tahadlo-d{transition:background .15s}
   border:1.5px solid var(--cierna)}
 .udaje .ind{font-style:normal;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cervena2);
   border:1px solid var(--cervena);padding:1px 6px;margin-left:6px;vertical-align:1px;cursor:help}
+/* skupina doložená z registra: čierny štítok s vysvetlením reťaze na hover */
+.udaje .ind.reg{color:var(--tx);border-color:var(--tx)}
+/* skupina podľa yimba.sk: čierny štítok (nie je to varovanie ako indícia), odkaz na ich stránku projektu */
+.udaje a.ind.yim{color:var(--tx);border-color:var(--ciara,var(--tx3));text-decoration:none;cursor:pointer}
+.udaje a.ind.yim:hover{background:var(--tx);color:var(--papier,#fff)}
 .dalsie{display:flex;flex-direction:column;gap:6px}
 .dalsie .st{margin-bottom:4px}
 .dalsie a{display:flex;gap:10px;align-items:baseline;font-size:12.5px;color:var(--tx2);padding:8px 10px;
