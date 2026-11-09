@@ -1,5 +1,10 @@
 # Behy
 
+## 2026-11-09
+- `tabule_sledovac.py` — OK, 203 s — spracovaných PDF: 15 | druhy v archíve: iné 223, začatie konania 180, stavebné povolenie 40, kolaudácia 24, územné rozhodnutie 16, predĺženie 10, zmena stavby 1 | s bodom z parciel: 179 | spárované so zámerom: 55 (fáza zvýšená 0) | nová vrstva tabule-stavby: 17
+- `osm_staveniska.py` — preskočené (beží len v prvom týždni mesiaca)
+- `ocisti.py` — OK, 0 s — Zeleň a verejný priestor       18 | Iné                             3 | velkost zamery.geojson: 1408 kB
+- verzia mapy `?v=20261109w`
 ## 2026-11-02
 - `tabule_sledovac.py` — OK, 269 s — spracovaných PDF: 24 | druhy v archíve: iné 216, začatie konania 174, stavebné povolenie 39, kolaudácia 23, územné rozhodnutie 16, predĺženie 10, zmena stavby 1 | s bodom z parciel: 173 | spárované so zámerom: 53 (fáza zvýšená 0) | nová vrstva tabule-stavby: 16
 - `osm_staveniska.py` — OK, 242 s — Vrakuňa                Jazmínová alej                     bývanie | Záhorská Bystrica      Orešianky                          bývanie | Záhorská Bystrica      Livana                             bývanie
