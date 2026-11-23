@@ -1,5 +1,10 @@
 # Behy
 
+## 2026-11-23
+- `tabule_sledovac.py` — OK, 307 s — spracovaných PDF: 19 | druhy v archíve: iné 245, začatie konania 195, stavebné povolenie 41, kolaudácia 27, územné rozhodnutie 17, predĺženie 12, zmena stavby 2 | s bodom z parciel: 200 | spárované so zámerom: 55 (fáza zvýšená 0) | nová vrstva tabule-stavby: 21
+- `osm_staveniska.py` — preskočené (beží len v prvom týždni mesiaca)
+- `ocisti.py` — OK, 0 s — Zeleň a verejný priestor       18 | Iné                             3 | velkost zamery.geojson: 1408 kB
+- verzia mapy `?v=20261123w`
 ## 2026-11-16
 - `tabule_sledovac.py` — OK, 264 s — spracovaných PDF: 26 | druhy v archíve: iné 238, začatie konania 187, stavebné povolenie 41, kolaudácia 24, územné rozhodnutie 17, predĺženie 11, zmena stavby 2 | s bodom z parciel: 190 | spárované so zámerom: 55 (fáza zvýšená 0) | nová vrstva tabule-stavby: 18
 - `osm_staveniska.py` — preskočené (beží len v prvom týždni mesiaca)
